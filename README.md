@@ -1,1 +1,3 @@
 # MainProject
+---------
+School project
