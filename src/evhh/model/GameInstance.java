@@ -1,6 +1,9 @@
 package evhh.model;
 
 import evhh.controller.InputManager.UserInputManager;
+import evhh.view.renderers.FrameRenderer;
+
+import javax.swing.*;
 
 /***********************************************************************************************************************
  * @project: MainProject
@@ -14,5 +17,17 @@ public class GameInstance
 {
     private Grid mainGrid;
     private UserInputManager userInputManager;
+    private FrameRenderer frameRenderer;
+    private Timer renderTimer;
+
+    public void startRenderer()
+    {
+        frameRenderer.start();
+    }
+
+    public void stopRenderer()
+    {
+        frameRenderer.stop();
+    }
 
 }

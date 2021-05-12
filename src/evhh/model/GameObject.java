@@ -16,10 +16,10 @@ public class GameObject
 {
     private boolean staticObj;
     private int x, y;
-    private ArrayList<Component> componentList;
+    private ArrayList<GameComponent> componentList;
     private Grid grid;
 
-    public GameObject(Grid grid,boolean staticObj, int x, int y, ArrayList<Component> componentList)
+    public GameObject(Grid grid,boolean staticObj, int x, int y, ArrayList<GameComponent> componentList)
     {
         this.staticObj = staticObj;
         this.x = x;
@@ -42,15 +42,15 @@ public class GameObject
         return staticObj;
     }
 
-    public void addComponent(Component component)
+    public void addComponent(GameComponent component)
     {
         componentList.add(component);
     }
 
 
-    public Component getComponent(Class componentClass)
+    public GameComponent getComponent(Class componentClass)
     {
-        Optional<Component> obj = componentList.stream().filter(c-> c.getClass()==componentClass).findFirst();
+        Optional<GameComponent> obj = componentList.stream().filter(c-> c.getClass()==componentClass).findFirst();
         return obj.orElse(null);
 
     }

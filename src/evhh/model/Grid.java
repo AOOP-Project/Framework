@@ -41,7 +41,7 @@ public class Grid
     {
         if(isValidCoordinates(x1,y1))
             throw new NoSuchElementException("The coordinates :{x=" +x1+" ,y=" +y1 + "} Are not valid coordinates");
-        if(isValidCoordinates(x2,y2))
+        if(!isValidCoordinates(x2,y2))
             throw new IndexOutOfBoundsException("The coordinates :{x=" +x2+" ,y=" +y2 + "} Are not valid coordinates");
 
         if (isValidCoordinates(x2,y2))
@@ -53,28 +53,28 @@ public class Grid
 
     public void removeGameObject(int x, int y)
     {
-        if(isValidCoordinates(x,y))
+        if(!isValidCoordinates(x,y))
             throw new NoSuchElementException("The coordinates :{x=" +x+" ,y=" +y + "} Are not valid coordinates");
         grid[x][y] = null;
     }
 
     public boolean isEmpty(int x, int y)
     {
-        if(isValidCoordinates(x,y))
+        if(!isValidCoordinates(x,y))
             throw new NoSuchElementException("The coordinates :{x=" +x+" ,y=" +y + "} Are not valid coordinates");
         return grid[x][y] == null;
     }
 
     public boolean isStatic(int x, int y)
     {
-        if(isValidCoordinates(x,y))
+        if(!isValidCoordinates(x,y))
             throw new NoSuchElementException("The coordinates :{x=" +x+" ,y=" +y + "} Are not valid coordinates");
         return grid[x][y].isStatic();
     }
 
     public boolean isDynamic(int x, int y)
     {
-        if(isValidCoordinates(x,y))
+        if(!isValidCoordinates(x,y))
             throw new NoSuchElementException("The coordinates :{x=" +x+" ,y=" +y + "} Are not valid coordinates");
         return !grid[x][y].isStatic();
     }
