@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
  * @authors: Hamed Haghjo & Elias Vahlberg
  * @date: 2021-05-12
  * @time: 14:01
+ * A moveable graphical component (*TABORT*)
  **********************************************************************************************************************/
 public class Sprite extends GameComponent
 {

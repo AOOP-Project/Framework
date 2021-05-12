@@ -15,7 +15,7 @@ import java.util.HashMap;
  * @time: 12:31
  *
  * A class that manages mouse events, such as mouse being clicked, pressed, released, entered and exited.
- * The parameter buttonEventMap is required to map the button and the MouseEvent
+ * The parameter buttonEventMap is required to map button with MouseEvent
  **********************************************************************************************************************/
 public class MouseInput implements MouseListener
 {

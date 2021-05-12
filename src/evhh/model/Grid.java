@@ -54,7 +54,7 @@ public class Grid
     public void removeGameObject(int x, int y)
     {
         if(isValidCoordinates(x,y))
-            throw  new NoSuchElementException("The cordinates :{x=" +x+" ,y=" +y + "} Are not valid cordinates");
+            throw new NoSuchElementException("The coordinates :{x=" +x+" ,y=" +y + "} Are not valid coordinates");
         grid[x][y] = null;
     }
 
