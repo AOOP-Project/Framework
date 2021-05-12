@@ -32,12 +32,12 @@ public class KeyboardInput implements KeyListener
     @Override
     public void keyTyped(KeyEvent e)
     {
-
-        for (int i = 0; i < keyCode.length;i++)
-            if(keyCode[i]==e.getKeyCode())
-                if(keyEventType[i]==KeyEvent.KEY_TYPED)
-                    runnable.run(e);
-
+        keyEventMap.forEach((button,event)->
+        {
+            if(button == e.getKeyCode())
+                if(event== KeyEvent.KEY_TYPED)
+                    action.run(e);
+        });
 
     }
 

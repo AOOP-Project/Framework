@@ -48,3 +48,17 @@ AssetLoader
 
 
 
+---------------------------------------------
+Supervision session 13.15 2021-05-12
+---------------------------------------------
+Framework for family of games
+    Good enough
+    Cover different kinds of features/games
+    Design for the framework
+    Cover complicated actions / some actions don't require a specific design
+    Cover good problems
+
+    Implement a game using the framework, use as much of the framework as possible
+
+    Presentation and advertisement of the framework/game, include problems in presentation
+
