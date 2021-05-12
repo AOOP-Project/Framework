@@ -1,20 +1,13 @@
-package evhh;
-
-import java.awt.event.KeyListener;
+package evhh.controller.InputManager;
 
 /***********************************************************************************************************************
  * @project: MainProject
- * @package: PACKAGE_NAME
- * -----------------------------------------------------
+ * @package: evhh.controller.InputManager
+ * ---------------------------------------------------------------------------------------------------------------------
  * @authors: Hamed Haghjo & Elias Vahlberg
  * @date: 2021-05-12
- * @time: 11:18
+ * @time: 12:30
  **********************************************************************************************************************/
-public class Test
+public class UserInputManager
 {
-    public static void main(String[] args)
-    {
-        System.out.println("Hello World!");
-        System.out.println("Test2");
-    }
 }
