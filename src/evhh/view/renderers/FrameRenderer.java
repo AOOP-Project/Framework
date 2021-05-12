@@ -1,8 +1,6 @@
 package evhh.view.renderers;
 
 import javax.swing.*;
-
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 

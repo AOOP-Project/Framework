@@ -28,4 +28,10 @@ public class Sprite extends GameComponent
     {
         return image;
     }
+
+    //(*TABORT*) kan kanske komma till nytta, tänker för ifall en sprite behöver förändra lite karakteristik
+    public void switchImage(BufferedImage image)
+    {
+        this.image = image;
+    }
 }

@@ -31,5 +31,4 @@ public class GameComponent
         return parent.getY();
     }
 
-
 }

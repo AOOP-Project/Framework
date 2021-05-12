@@ -16,4 +16,12 @@ import java.awt.event.ActionListener;
  **********************************************************************************************************************/
 public class GameFrame extends JFrame
 {
+
+    public GameFrame(int w, int h, String gameTitle)
+    {
+        super();
+        this.setTitle(gameTitle);
+        this.setSize(w,h);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
 }

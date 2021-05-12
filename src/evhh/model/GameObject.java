@@ -69,7 +69,6 @@ public class GameObject
         grid.moveGameObject(this.x,this.y,x,y);
         this.x = x;
         this.y = y;
-
     }
 
     public Grid getGrid()

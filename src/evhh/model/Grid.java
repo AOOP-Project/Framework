@@ -24,7 +24,7 @@ public class Grid
 
     public void addGameObject(GameObject gObj, int x, int y)
     {
-        if(isValidCoordinates(x,y))
+        if(!isValidCoordinates(x,y))
             throw new IndexOutOfBoundsException("The coordinates :{x=" +x+" ,y=" +y + "} Are not valid coordinates");
         grid[x][y] = gObj;
         gObj.setGrid(this);
@@ -32,14 +32,14 @@ public class Grid
 
     public void addGameObject(int x, int y, boolean isStatic)
     {
-        if(isValidCoordinates(x,y))
+        if(!isValidCoordinates(x,y))
             throw new IndexOutOfBoundsException("The coordinates :{x=" +x+" ,y=" +y + "} Are not valid coordinates");
         grid[x][y] = new GameObject(this,isStatic,x,y);
     }
 
     public void moveGameObject(int x1, int y1, int x2, int y2)
     {
-        if(isValidCoordinates(x1,y1))
+        if(!isValidCoordinates(x1,y1))
             throw new NoSuchElementException("The coordinates :{x=" +x1+" ,y=" +y1 + "} Are not valid coordinates");
         if(!isValidCoordinates(x2,y2))
             throw new IndexOutOfBoundsException("The coordinates :{x=" +x2+" ,y=" +y2 + "} Are not valid coordinates");
