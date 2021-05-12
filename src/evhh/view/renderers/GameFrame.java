@@ -1,30 +1,15 @@
-package evhh.model.gamecomponents;
+package evhh.view.renderers;
 
-import evhh.model.GameComponent;
-import evhh.model.GameObject;
-
-import java.awt.image.BufferedImage;
+import javax.swing.*;
 
 /***********************************************************************************************************************
  * @project: MainProject
- * @package: evhh.model.gamecomponents
+ * @package: evhh.view.renderers
  * ---------------------------------------------------------------------------------------------------------------------
  * @authors: Hamed Haghjo & Elias Vahlberg
  * @date: 2021-05-12
- * @time: 14:01
+ * @time: 14:08
  **********************************************************************************************************************/
-public class Sprite extends GameComponent
+public class GameFrame extends JFrame
 {
-    BufferedImage image;
-
-    public Sprite(GameObject parent, BufferedImage image)
-    {
-        super(parent);
-        this.image = image;
-    }
-
-    public BufferedImage getImage()
-    {
-        return image;
-    }
 }

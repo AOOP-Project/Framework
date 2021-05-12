@@ -1,30 +1,26 @@
-package evhh.model.gamecomponents;
+package evhh.view.renderers;
 
-import evhh.model.GameComponent;
-import evhh.model.GameObject;
+import evhh.model.gamecomponents.Sprite;
 
-import java.awt.image.BufferedImage;
+import javax.swing.*;
+import java.util.ArrayList;
 
 /***********************************************************************************************************************
  * @project: MainProject
- * @package: evhh.model.gamecomponents
+ * @package: evhh.view.renderers
  * ---------------------------------------------------------------------------------------------------------------------
  * @authors: Hamed Haghjo & Elias Vahlberg
  * @date: 2021-05-12
- * @time: 14:01
+ * @time: 14:06
  **********************************************************************************************************************/
-public class Sprite extends GameComponent
+public class GridRenderer
 {
-    BufferedImage image;
+    private GridPanel gridPanel;
+    private Timer timer;
+    private ArrayList<Sprite> sprites;
 
-    public Sprite(GameObject parent, BufferedImage image)
+    public ArrayList<Sprite> getSprites()
     {
-        super(parent);
-        this.image = image;
-    }
-
-    public BufferedImage getImage()
-    {
-        return image;
+        return sprites;
     }
 }

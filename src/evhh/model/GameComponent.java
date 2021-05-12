@@ -22,5 +22,14 @@ public class GameComponent
         return parent;
     }
 
+    public int getX()
+    {
+        return parent.getX();
+    }
+    public int getY()
+    {
+        return parent.getY();
+    }
+
 
 }

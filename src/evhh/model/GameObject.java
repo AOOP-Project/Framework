@@ -16,8 +16,8 @@ public class GameObject
 {
     private boolean staticObj;
     private int x, y;
-    ArrayList<Component> componentList;
-    Grid grid;
+    private ArrayList<Component> componentList;
+    private Grid grid;
 
     public GameObject(Grid grid,boolean staticObj, int x, int y, ArrayList<Component> componentList)
     {
@@ -70,5 +70,15 @@ public class GameObject
         this.x = x;
         this.y = y;
 
+    }
+
+    public Grid getGrid()
+    {
+        return grid;
+    }
+
+    public void setGrid(Grid grid)
+    {
+        this.grid = grid;
     }
 }

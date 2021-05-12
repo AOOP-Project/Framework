@@ -1,4 +1,7 @@
-package evhh.view;
+package evhh.view.renderers;
+
+import javax.swing.*;
+import java.awt.*;
 
 /***********************************************************************************************************************
  * @project: MainProject
@@ -8,6 +11,6 @@ package evhh.view;
  * @date: 2021-05-12
  * @time: 11:51
  **********************************************************************************************************************/
-public class ViewPanel
+public class GridPanel extends JPanel
 {
 }
