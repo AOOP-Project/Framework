@@ -1,0 +1,50 @@
+Names:
+Model:{
+    GameInstance
+
+        WorldObject
+            GlobalComponents        (Ex. Musikinfo/Musikspelare, fps...)
+
+        Grid                        (Info om spelbanan/Gridden som innehåller GameObjects->Components)
+
+            GameObject
+
+                I GameComponent
+}
+
+View:{
+FrameRenderer
+
+    UIRenderer
+        UIPanel
+
+    GameRenderer
+        ViewPanel
+
+AudioManager
+}
+
+Controllers{
+
+UserInputManager
+    KeyboardInput ext KeyListener
+        UserKeyAction impl Runnable
+
+    MouseInput ext MouseListener
+        UserMouseAction impl Runnable
+}
+
+Common{
+AssetLoader
+
+*Math funcs
+
+*MultiThreading stuff
+}
+
+
+
+
+
+
+
