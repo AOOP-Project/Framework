@@ -1,7 +1,10 @@
 package evhh.controller.InputManager;
 
+import evhh.common.RunnableArg;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.HashMap;
 
 /***********************************************************************************************************************
  * @project: MainProject

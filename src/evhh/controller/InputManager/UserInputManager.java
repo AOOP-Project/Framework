@@ -1,5 +1,10 @@
 package evhh.controller.InputManager;
 
+import evhh.model.GameInstance;
+
+import java.io.File;
+import java.util.ArrayList;
+
 /***********************************************************************************************************************
  * @project: MainProject
  * @package: evhh.controller.InputManager
@@ -10,4 +15,21 @@ package evhh.controller.InputManager;
  **********************************************************************************************************************/
 public class UserInputManager
 {
+    ArrayList<MouseInput> mouseInputs;
+    ArrayList<KeyboardInput> keyboardInputs;
+    GameInstance gameInstance;
+
+    public UserInputManager(GameInstance gameInstance)
+    {
+        this.gameInstance = gameInstance;
+        mouseInputs = new ArrayList<>();
+        keyboardInputs = new ArrayList<>();
+    }
+
+
+    public void addInputs(KeyboardInput keyboardInput, MouseInput mouseInput)
+    {
+        mouseInputs.add(mouseInput);
+        keyboardInputs.add(keyboardInput);
+    }
 }

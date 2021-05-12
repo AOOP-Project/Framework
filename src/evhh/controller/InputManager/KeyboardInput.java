@@ -4,9 +4,8 @@ import evhh.common.RunnableArg;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.OptionalInt;
+import java.awt.event.MouseEvent;
+import java.util.HashMap;
 
 /***********************************************************************************************************************
  * @project: MainProject
@@ -18,16 +17,16 @@ import java.util.OptionalInt;
  **********************************************************************************************************************/
 public class KeyboardInput implements KeyListener
 {
-    RunnableArg<KeyEvent> runnable;
+    RunnableArg<KeyEvent> action;
     int[] keyCode;
     int[] keyEventType;
+    private HashMap<Integer,Integer> keyEventMap;
 
 
-    public KeyboardInput(RunnableArg<KeyEvent> runnable, int[] keyCode, int[] keyEventType)
+    public KeyboardInput(RunnableArg<KeyEvent> action, HashMap<Integer, Integer> keyEventMap)
     {
-        this.runnable = runnable;
-        this.keyCode = keyCode;
-        this.keyEventType = keyEventType;
+        this.action = action;
+        this.keyEventMap = keyEventMap;
     }
 
     @Override
@@ -45,18 +44,22 @@ public class KeyboardInput implements KeyListener
     @Override
     public void keyPressed(KeyEvent e)
     {
-        for (int i = 0; i < keyCode.length;i++)
-            if(keyCode[i]==e.getKeyCode())
-                if(keyEventType[i]==KeyEvent.KEY_PRESSED)
-                    runnable.run(e);
+        keyEventMap.forEach((button,event)->
+        {
+            if(button == e.getKeyCode())
+                if(event== KeyEvent.KEY_PRESSED)
+                    action.run(e);
+        });
     }
 
     @Override
     public void keyReleased(KeyEvent e)
     {
-        for (int i = 0; i < keyCode.length;i++)
-            if(keyCode[i]==e.getKeyCode())
-                if(keyEventType[i]==KeyEvent.KEY_RELEASED)
-                    runnable.run(e);
+        keyEventMap.forEach((button,event)->
+        {
+            if(button == e.getKeyCode())
+                if(event== KeyEvent.KEY_RELEASED)
+                    action.run(e);
+        });
     }
 }

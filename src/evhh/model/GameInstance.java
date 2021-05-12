@@ -1,5 +1,7 @@
 package evhh.model;
 
+import evhh.controller.InputManager.UserInputManager;
+
 /***********************************************************************************************************************
  * @project: MainProject
  * @package: evhh.model
@@ -11,4 +13,6 @@ package evhh.model;
 public class GameInstance
 {
     private Grid mainGrid;
+    private UserInputManager userInputManager;
+
 }

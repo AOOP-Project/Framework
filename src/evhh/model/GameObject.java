@@ -1,5 +1,9 @@
 package evhh.model;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Optional;
+
 /***********************************************************************************************************************
  * @project: MainProject
  * @package: evhh.model
@@ -10,4 +14,61 @@ package evhh.model;
  **********************************************************************************************************************/
 public class GameObject
 {
+    private boolean staticObj;
+    private int x, y;
+    ArrayList<Component> componentList;
+    Grid grid;
+
+    public GameObject(Grid grid,boolean staticObj, int x, int y, ArrayList<Component> componentList)
+    {
+        this.staticObj = staticObj;
+        this.x = x;
+        this.y = y;
+        this.componentList = componentList;
+        this.grid = grid;
+    }
+
+    public GameObject(Grid grid,boolean staticObj, int x, int y)
+    {
+        this.staticObj = staticObj;
+        this.x = x;
+        this.y = y;
+        componentList = new ArrayList<>();
+        this.grid = grid;
+    }
+
+    public boolean isStatic()
+    {
+        return staticObj;
+    }
+
+    public void addComponent(Component component)
+    {
+        componentList.add(component);
+    }
+
+
+    public Component getComponent(Class componentClass)
+    {
+        Optional<Component> obj = componentList.stream().filter(c-> c.getClass()==componentClass).findFirst();
+        return obj.orElse(null);
+
+    }
+
+    public int getX()
+    {
+        return x;
+    }
+
+    public int getY()
+    {
+        return y;
+    }
+    public void setPosition(int x, int y)
+    {
+        grid.moveGameObject(this.x,this.y,x,y);
+        this.x = x;
+        this.y = y;
+
+    }
 }

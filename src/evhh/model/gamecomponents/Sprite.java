@@ -1,26 +1,13 @@
-package evhh.model;
+package evhh.model.gamecomponents;
 
 /***********************************************************************************************************************
  * @project: MainProject
- * @package: evhh.model
+ * @package: evhh.model.gamecomponents
  * ---------------------------------------------------------------------------------------------------------------------
  * @authors: Hamed Haghjo & Elias Vahlberg
  * @date: 2021-05-12
- * @time: 12:25
+ * @time: 14:01
  **********************************************************************************************************************/
-public class GameComponent
+public class Sprite
 {
-    protected GameObject parent;
-
-    public GameComponent(GameObject parent)
-    {
-        this.parent = parent;
-    }
-
-    public GameObject getGameObject()
-    {
-        return parent;
-    }
-
-
 }
