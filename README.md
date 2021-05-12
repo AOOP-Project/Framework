@@ -2,7 +2,7 @@
 ---------------------------------------
 A school project whereas we were asked to create an API that supports creating two-dimensional logical puzzle game.
 ---------------------------------------
-**Project instructions: **
+**Project instructions:**
 
 **Framework**
 In short, your task is to design a framework for constructing computer games. There are very many different kinds of games, but the first basic framework that we have in mind is one to support logic puzzle games that are played on areas consisting of squares / tiles where the player (or many players) can rearrange items, or put items on it. One example of such a game is Sokoban, see https://en.wikipedia.org/wiki/Sokoban, another one would be 2-player tic-tac-toe (though this one is really too simple), or the memory game (also 2-player, see https://www.khanacademy.org/computing/computer-programming/programming-games-visualizations/memory-game/a/intro-to-memory, this one may get you ideas about some of the implementation challenges too). Your framework should provide facilities to display the game graphics, process user input (through mouse and/or keyboard), and interact with a game object that the concrete application defines. 
