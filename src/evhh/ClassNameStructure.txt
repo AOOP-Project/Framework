@@ -9,7 +9,7 @@ Model:{
 
             GameObject
 
-                I GameComponent
+                S GameComponent
 }
 
 View:{
@@ -43,6 +43,10 @@ AssetLoader
 }
 
 
+SETUP
+    new FrameRenderer
+    Load Assets
+    new Grid
 
 
 
@@ -61,4 +65,18 @@ Framework for family of games
     Implement a game using the framework, use as much of the framework as possible
 
     Presentation and advertisement of the framework/game, include problems in presentation
+
+
+
+Cover a family of games
+
+Common features
+
+cover diffrent kinds of features
+
+Based on the framework
+
+Cover Design  as much as you cover complicated aspects of the code
+
+Cover problems in the pressentation and report
 
