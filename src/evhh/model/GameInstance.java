@@ -46,11 +46,16 @@ public class GameInstance
         textures = new HashMap<>();
     }
 
-    //region Assets
+    public String getGameInstanceName()
+    {
+        return gameInstanceName;
+    }
 
+    //region Assets
 
     public void setAllowedTextureFileExtension(String[] allowedTextureFileExtension)
     {
+        assert allowedTextureFileExtension != null;
         this.allowedTextureFileExtension = allowedTextureFileExtension;
     }
 
@@ -67,6 +72,12 @@ public class GameInstance
         assert map != null;
         map.forEach((k, v) -> textures.put(k, v));
     }
+
+    public HashMap<String, BufferedImage> getTextures()
+    {
+        return textures;
+    }
+
     //endregion
 
     //region Grid
