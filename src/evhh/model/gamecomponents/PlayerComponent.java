@@ -95,4 +95,9 @@ public class PlayerComponent extends GameComponent
     {
 
     }
+
+    public UserInputManager getuIM()
+    {
+        return uIM;
+    }
 }

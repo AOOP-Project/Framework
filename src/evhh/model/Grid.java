@@ -2,6 +2,7 @@ package evhh.model;
 
 import evhh.model.gamecomponents.Sprite;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -16,14 +17,14 @@ import java.util.stream.Stream;
  * @date: 2021-05-12
  * @time: 12:26
  **********************************************************************************************************************/
-public class Grid
+public class Grid implements Serializable
 {
     private int nGameObjects = 0;
     private GameObject[][] grid;
     private int gridWidth, gridHeight;
     private ArrayList<GameObject> staticObjects;
     private ArrayList<GameObject> dynamicObjects;
-
+    private transient GameInstance gameInstance;
 
 
     public Grid(int gridWidth, int gridHeight)
@@ -164,4 +165,43 @@ public class Grid
                 filter(Objects::nonNull).filter(g->g.hasComponent(containedComponent)).toArray();
     }
 
+    public static void serializeGrid(Grid grid, String path)
+    {
+
+        try
+        {
+            FileOutputStream fileOut = new FileOutputStream(path);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(grid);
+            out.close();
+            fileOut.close();
+            System.out.println("SAVING...");
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+    public static Grid deserializeGrid(String path)
+    {
+        Grid grid = null;
+        try (FileInputStream fileIn = new FileInputStream(path); ObjectInputStream in = new ObjectInputStream(fileIn))
+        {
+            grid = (Grid) in.readObject();
+        } catch (IOException | ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        return grid;
+    }
+
+    public GameInstance getGameInstance()
+    {
+        return gameInstance;
+    }
+
+    public void setGameInstance(GameInstance gameInstance)
+    {
+        this.gameInstance = gameInstance;
+    }
 }

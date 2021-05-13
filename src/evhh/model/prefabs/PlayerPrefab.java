@@ -35,8 +35,9 @@ public class PlayerPrefab implements ObjectPrefab
     private int rightKey                = DEFAULT_RIGHT_KEY;
     private int leftKey                 = DEFAULT_LEFT_KEY;
 
-    public PlayerPrefab(Grid grid, BufferedImage playerIcon, UserInputManager uIM)
+    public PlayerPrefab(Grid grid, BufferedImage playerIcon,String textureRef, UserInputManager uIM)
     {
+        this.textureRef = textureRef;
         this.grid = grid;
         this.playerIcon = playerIcon;
         this.uIM = uIM;
@@ -46,7 +47,7 @@ public class PlayerPrefab implements ObjectPrefab
     public GameObject getInstance(int x, int y)
     {
         playerObject = new GameObject(grid, false, x,y);
-        playerObject.addComponent(new Sprite(playerObject, playerIcon));
+        playerObject.addComponent(new Sprite(playerObject, playerIcon,textureRef));
         playerObject.addComponent(new PlayerComponent(playerObject,uIM ,upKey ,downKey, rightKey, leftKey));
         playerObject.setCreator(this);
         return playerObject;

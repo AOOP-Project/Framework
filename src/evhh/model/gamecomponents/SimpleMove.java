@@ -15,8 +15,9 @@ import evhh.model.GameObject;
  **********************************************************************************************************************/
 public class SimpleMove extends GameComponent
 {
-    private TimeReference timeReference;
-    long deltaTime;
+    transient private TimeReference timeReference;
+    private long deltaTime;
+
     public SimpleMove(GameObject parent, long deltaTime)
     {
         super(parent);
@@ -31,6 +32,9 @@ public class SimpleMove extends GameComponent
      */
     public void move()
     {
+        //Since it is transient
+        if(timeReference ==null)
+            timeReference = new TimeReference();
             assert deltaTime!=0 : "Division by 0";
             long n = timeReference.getDeltaTime() / deltaTime;
             timeReference.incrementStartTime(n*deltaTime);
@@ -45,18 +49,24 @@ public class SimpleMove extends GameComponent
     @Override
     public void onStart()
     {
+        if(timeReference ==null)
+            timeReference = new TimeReference();
         timeReference.start();
     }
 
     @Override
     public void update()
     {
+        if(timeReference ==null)
+            timeReference = new TimeReference();
         move();
     }
 
     @Override
     public void onExit()
     {
+        if(timeReference ==null)
+            timeReference = new TimeReference();
 
     }
 }

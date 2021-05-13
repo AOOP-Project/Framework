@@ -1,5 +1,7 @@
 package evhh.model;
 
+import java.io.Serializable;
+
 /***********************************************************************************************************************
  * @project: MainProject
  * @package: evhh.model
@@ -8,7 +10,7 @@ package evhh.model;
  * @date: 2021-05-12
  * @time: 12:25
  **********************************************************************************************************************/
-public abstract class GameComponent
+public abstract class GameComponent implements Serializable
 {
     protected GameObject parent;
 

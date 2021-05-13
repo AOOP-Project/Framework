@@ -3,6 +3,7 @@ package evhh.controller.InputManager;
 import evhh.model.GameInstance;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /***********************************************************************************************************************
@@ -13,15 +14,13 @@ import java.util.ArrayList;
  * @date: 2021-05-12
  * @time: 12:30
  **********************************************************************************************************************/
-public class UserInputManager
+public class UserInputManager implements Serializable
 {
     private ArrayList<MouseInput> mouseInputs;
     private ArrayList<KeyboardInput> keyboardInputs;
-    private GameInstance gameInstance;
 
     public UserInputManager(GameInstance gameInstance)
     {
-        this.gameInstance = gameInstance;
         mouseInputs = new ArrayList<>();
         keyboardInputs = new ArrayList<>();
     }

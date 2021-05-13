@@ -1,6 +1,7 @@
 package evhh.model;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Optional;
 
@@ -12,14 +13,14 @@ import java.util.Optional;
  * @date: 2021-05-12
  * @time: 12:25
  **********************************************************************************************************************/
-public class GameObject
+public class GameObject implements Serializable
 {
     private boolean staticObj;
     private int x, y;
     private ArrayList<GameComponent> componentList;
     private Grid grid;
     private long id = 0;
-    private ObjectPrefab creator;
+    transient private ObjectPrefab creator;
 
     public GameObject(Grid grid,boolean staticObj, int x, int y, ArrayList<GameComponent> componentList)
     {

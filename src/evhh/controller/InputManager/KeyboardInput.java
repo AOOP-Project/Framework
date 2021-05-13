@@ -5,6 +5,7 @@ import evhh.common.RunnableArg;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.io.Serializable;
 import java.util.HashMap;
 
 /***********************************************************************************************************************
@@ -15,7 +16,7 @@ import java.util.HashMap;
  * @date: 2021-05-12
  * @time: 12:31
  **********************************************************************************************************************/
-public class KeyboardInput implements KeyListener
+public class KeyboardInput implements KeyListener, Serializable
 {
     RunnableArg<KeyEvent> action;
     int[] keyCode;

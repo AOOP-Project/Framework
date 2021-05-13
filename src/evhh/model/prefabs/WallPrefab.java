@@ -17,13 +17,14 @@ import java.awt.image.BufferedImage;
  **********************************************************************************************************************/
 public class WallPrefab implements ObjectPrefab
 {
+    private Grid grid;
+    private GameObject wallObject;
+    private BufferedImage wallTexture;
+    private String textureRef;
 
-    Grid grid;
-    GameObject wallObject;
-    BufferedImage wallTexture;
-
-    public WallPrefab(Grid grid, BufferedImage wallTexture)
+    public WallPrefab(Grid grid, BufferedImage wallTexture,String textureRef)
     {
+        this.textureRef = textureRef;
         this.grid = grid;
         this.wallTexture = wallTexture;
     }
@@ -32,7 +33,7 @@ public class WallPrefab implements ObjectPrefab
     public GameObject getInstance(int x, int y)
     {
         wallObject = new GameObject(grid,true,x,y);
-        wallObject.addComponent(new Sprite(wallObject,wallTexture));
+        wallObject.addComponent(new Sprite(wallObject,wallTexture,textureRef));
         wallObject.setCreator(this);
         return wallObject;
     }

@@ -21,11 +21,12 @@ public class MovingSquare implements ObjectPrefab
     Grid grid;
     BufferedImage squareTexture;
     int deltaTime;
-
-    public MovingSquare(Grid grid, BufferedImage squareTexture,int deltaTime)
+    String textureRef;
+    public MovingSquare(Grid grid, BufferedImage squareTexture,String textureRef,int deltaTime)
     {
         this.grid = grid;
         this.squareTexture = squareTexture;
+        this.textureRef = textureRef;
         this.deltaTime = deltaTime;
     }
 
@@ -39,7 +40,7 @@ public class MovingSquare implements ObjectPrefab
     {
         GameObject gameObject = new GameObject(grid,false,x,y);
         gameObject.addComponent(new SimpleMove(gameObject,deltaTime));
-        gameObject.addComponent(new Sprite(gameObject,squareTexture));
+        gameObject.addComponent(new Sprite(gameObject,squareTexture,textureRef));
         return gameObject;
     }
 }

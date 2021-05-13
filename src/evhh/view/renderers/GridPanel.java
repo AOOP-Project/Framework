@@ -35,7 +35,7 @@ public class GridPanel extends JPanel
         Graphics2D g2d = (Graphics2D) g;
         gridRenderer.getSprites().forEach(s->
                 g2d.drawImage(
-                        s.getImage(),
+                        s.getTexture(),
                         (int) s.getX()*cellSize,
                         (int) gridHeight*cellSize-((s.getY()+1)*cellSize),
                         this

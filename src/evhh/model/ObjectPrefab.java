@@ -1,5 +1,7 @@
 package evhh.model;
 
+import java.io.Serializable;
+
 /***********************************************************************************************************************
  * @project: MainProject
  * @package: evhh.model

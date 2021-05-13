@@ -16,17 +16,19 @@ import java.awt.image.BufferedImage;
  **********************************************************************************************************************/
 public class Sprite extends GameComponent
 {
-    BufferedImage image;
+    private String imageRef;
+    private transient BufferedImage texture;
 
-    public Sprite(GameObject parent, BufferedImage image)
+    public Sprite(GameObject parent, BufferedImage image,String imageRef)
     {
         super(parent);
-        this.image = image;
+        this.texture = image;
+        this.imageRef = imageRef;
     }
 
-    public BufferedImage getImage()
+    public BufferedImage getTexture()
     {
-        return image;
+        return texture;
     }
 
     //(*TABORT*) kan kanske komma till nytta, tänker för ifall en sprite behöver förändra lite karakteristik
@@ -38,7 +40,8 @@ public class Sprite extends GameComponent
     @Override
     public void onStart()
     {
-
+        if(texture == null && imageRef != null)
+            texture = parent.getGrid().getGameInstance().getTexture(imageRef);
     }
 
     @Override

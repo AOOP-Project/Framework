@@ -1,5 +1,7 @@
 package evhh.common;
 
+import java.io.Serializable;
+
 /***********************************************************************************************************************
  * @project: MainProject
  * @package: evhh.common
@@ -8,7 +10,7 @@ package evhh.common;
  * @date: 2021-05-12
  * @time: 12:41
  **********************************************************************************************************************/
-public interface RunnableArg<T>
+public interface RunnableArg<T> extends Serializable
 {
     void run(T t);
 }

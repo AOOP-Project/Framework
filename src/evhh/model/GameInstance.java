@@ -144,6 +144,7 @@ public class GameInstance implements ActionListener
     public void setMainGrid(Grid mainGrid)
     {
         this.mainGrid = mainGrid;
+        mainGrid.setGameInstance(this);
     }
 
     public Grid getMainGrid()
