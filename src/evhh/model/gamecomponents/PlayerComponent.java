@@ -45,27 +45,38 @@ public class PlayerComponent extends GameComponent
     }
     public void move(int action)
     {
-        System.out.println("MOVING: " + action);
+        int x2 = 0,y2 = 0;
         if(action == upKeyCode)
         {
-            if(parent.getGrid().isValidCoordinates(getX(),getY()+1))
-                parent.setPosition(getX(),getY()+1);
+            if(!parent.getGrid().isValidCoordinates(getX(),getY()+1))
+                return;
+            x2 = getX();
+            y2 = getY()+1;
         }
         else if(action == downKeyCode)
         {
-            if(parent.getGrid().isValidCoordinates(getX(),getY()-1))
-                parent.setPosition(getX(),getY()-1);
+
+            if(!parent.getGrid().isValidCoordinates(getX(),getY()-1))
+                return;
+            x2 = getX();
+            y2 = getY()-1;
         }
         else if(action == rightKeyCode)
         {
-            if(parent.getGrid().isValidCoordinates(getX()+1,getY()))
-                parent.setPosition(getX()+1,getY());
+            if(!parent.getGrid().isValidCoordinates(getX()+1,getY()))
+                return;
+            x2 = getX()+1;
+            y2 = getY();
         }
         else if(action == leftKeyCode)
         {
-            if(parent.getGrid().isValidCoordinates(getX()-1,getY()))
-                parent.setPosition(getX()-1,getY());
+            if(!parent.getGrid().isValidCoordinates(getX()-1,getY()))
+                return;
+            x2 = getX()-1;
+            y2 = getY();
         }
+        if(parent.getGrid().isEmpty(x2,y2))
+            parent.setPosition(x2,y2);
     }
     @Override
     public void onStart()

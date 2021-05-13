@@ -281,6 +281,5 @@ public class GameInstance implements ActionListener
                         getMouseListeners()).
                         contains(m1)).
                 forEach(m ->frameRenderer.getGameFrame().addMouseListener(m));
-        System.out.println(getFrameRenderer().getGameFrame().getKeyListeners().length);
     }
 }

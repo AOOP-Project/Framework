@@ -37,7 +37,8 @@ public class SimpleMove extends GameComponent
         for (int i = 0; i < n; i++)
         {
             int w = getGameObject().getGrid().getGridWidth();
-            getGameObject().setPosition((getX()+1)%w, getY());
+            if(parent.getGrid().isEmpty((getX()+1)%w, getY()))
+                getGameObject().setPosition((getX()+1)%w, getY());
         }
     }
 
