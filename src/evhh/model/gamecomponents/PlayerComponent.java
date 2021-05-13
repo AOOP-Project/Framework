@@ -20,9 +20,9 @@ import java.util.stream.Stream;
  **********************************************************************************************************************/
 public class PlayerComponent extends GameComponent
 {
-    int upKeyCode, downKeyCode,rightKeyCode, leftKeyCode;
-    KeyboardInput keyboardInput;
-    UserInputManager uIM;
+    private int upKeyCode, downKeyCode,rightKeyCode, leftKeyCode;
+    private KeyboardInput keyboardInput;
+    private UserInputManager uIM;
 
     public PlayerComponent(GameObject parent, UserInputManager uIM, int upKeyCode, int downKeyCode, int rightKeyCode, int leftKeyCode)
     {

@@ -31,10 +31,11 @@ public class Sprite extends GameComponent
         return texture;
     }
 
-    //(*TABORT*) kan kanske komma till nytta, tänker för ifall en sprite behöver förändra lite karakteristik
-    public void switchImage(BufferedImage image)
+    //(*TABORT*) kan kanske komma till nytta, tänker för ifall en sprite behöver förändra lite karakteristik ("CRATE BURNING!")
+    public void switchImage(BufferedImage image, String imageRef)
     {
-        this.image = image;
+        this.texture = image;
+        this.imageRef = imageRef;
     }
 
     @Override

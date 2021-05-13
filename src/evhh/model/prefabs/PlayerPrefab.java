@@ -20,10 +20,11 @@ import java.awt.image.BufferedImage;
  **********************************************************************************************************************/
 public class PlayerPrefab implements ObjectPrefab
 {
-    Grid grid;
-    GameObject playerObject;
-    BufferedImage playerIcon;
-    UserInputManager uIM;
+    private Grid grid;
+    private GameObject playerObject;
+    private BufferedImage playerIcon;
+    private UserInputManager uIM;
+    private String textureRef;
 
     private final int DEFAULT_UP_KEY    = KeyEvent.VK_W;
     private final int DEFAULT_DOWN_KEY  = KeyEvent.VK_S;
