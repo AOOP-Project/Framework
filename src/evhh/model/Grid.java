@@ -1,7 +1,12 @@
 package evhh.model;
 
+import evhh.model.gamecomponents.Sprite;
+
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /***********************************************************************************************************************
  * @project: MainProject
@@ -37,6 +42,15 @@ public class Grid
 
     }
 
+    public GameObject get(long id)
+    {
+        Optional<GameObject> gameObject = dynamicObjects.stream().filter(g -> g.getId() == id).findFirst();
+        if(gameObject.isPresent())
+            return gameObject.get();
+        gameObject = staticObjects.stream().filter(g -> g.getId() == id).findFirst();
+        return gameObject.orElse(null);
+
+    }
     public GameObject addGameObject(GameObject gObj, int x, int y)
     {
         if (!isValidCoordinates(x, y))
@@ -142,5 +156,12 @@ public class Grid
         return dynamicObjects;
     }
 
+    public GameObject[] getGameObjectsWithComponent(Class<? extends GameComponent> containedComponent)
+    {
+        Stream<GameObject> stream1 = getStaticObjects().stream();
+        Stream<GameObject> stream2 = getDynamicObjects().stream();
+        return (GameObject[])Stream.concat(stream1,stream2).
+                filter(Objects::nonNull).filter(g->g.hasComponent(containedComponent)).toArray();
+    }
 
 }

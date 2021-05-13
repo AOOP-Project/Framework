@@ -19,16 +19,16 @@ public class FrameRenderer implements ActionListener
     private Timer renderTimer;
     private boolean started = false;
 
-    public FrameRenderer(GameFrame gameFrame, int gridWidth, int  gridHeight,int cellSize)
+    public FrameRenderer(GameFrame gameFrame, int gridWidth, int gridHeight, int cellSize)
     {
         this.gameFrame = gameFrame;
-        this.gridRenderer = new GridRenderer(gridWidth,gridHeight,cellSize);
+        this.gridRenderer = new GridRenderer(gridWidth, gridHeight, cellSize);
         this.gameFrame.add(this.gridRenderer.getGridPanel());
         this.gameFrame.pack();
 
     }
 
-    public FrameRenderer(GameFrame gameFrame,GridRenderer gridRenderer)
+    public FrameRenderer(GameFrame gameFrame, GridRenderer gridRenderer)
     {
         this.gameFrame = gameFrame;
         this.gridRenderer = gridRenderer;
@@ -53,15 +53,16 @@ public class FrameRenderer implements ActionListener
 
     public void start()
     {
-        if(renderTimer!=null)
+        if (renderTimer != null)
             renderTimer.start();
         started = true;
         gameFrame.setVisible(true);
     }
+
     public void stop()
     {
 
-        if(renderTimer!=null)
+        if (renderTimer != null)
             renderTimer.stop();
         started = false;
     }
@@ -70,11 +71,28 @@ public class FrameRenderer implements ActionListener
     {
         renderTimer = new Timer(delay, this);
     }
+
+    public void addTimer(Timer timer)
+    {
+        renderTimer = timer;
+        timer.addActionListener(this);
+    }
+
+    public Timer getRenderTimer()
+    {
+        return renderTimer;
+    }
+
+    public boolean isStarted()
+    {
+        return started;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        if(started)
-            if(e.getSource() == renderTimer)
+        if (started)
+            if (e.getSource() == renderTimer)
                 renderFrame();
 
     }

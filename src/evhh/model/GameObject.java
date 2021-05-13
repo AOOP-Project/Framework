@@ -56,6 +56,10 @@ public class GameObject
         return obj.orElse(null);
     }
 
+    public boolean hasComponent(Class<? extends GameComponent> componentClass)
+    {
+        return componentList.stream().anyMatch(c-> c.getClass()==componentClass);
+    }
     public int getX()
     {
         return x;
