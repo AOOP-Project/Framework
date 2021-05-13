@@ -24,12 +24,12 @@ public class Test
     public static void main(String[] args)
     {
         //frameRenderer.renderFrame();
-        FrameRenderer frameRenderer = new FrameRenderer(new GameFrame(16*32,16*32,"YEE"), 16,16,32);
-        frameRenderer.addTimer(100);
         //HashMap<String, BufferedImage> images = AssetLoader.LoadImageAssets(AssetLoader.getPathToDir(), new String[]{"jpg", "png"});
+        FrameRenderer frameRenderer = new FrameRenderer(new GameFrame(16*32,16*32,"YEE"), 16,16,32);
         HashMap<String, BufferedImage> images = AssetLoader.LoadImageAssets(System.getProperty("user.dir")+"\\Assets", new String[]{"jpg", "png"});
         System.out.println(images.keySet());
         Grid grid = new Grid(16,16);
+        frameRenderer.addTimer(100);
         System.out.println(frameRenderer.getGameFrame().getWidth());
         System.out.println(frameRenderer.getGameFrame().getHeight());
 

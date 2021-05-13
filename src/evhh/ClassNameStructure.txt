@@ -47,7 +47,11 @@ SETUP
     new FrameRenderer
     Load Assets
     new Grid
-
+    frameRenderer.addTimer()
+    Create GameObjects
+    add components to gameobjects
+    add sprites to frameRenderer
+    frameRenderer.start
 
 
 
