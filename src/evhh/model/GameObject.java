@@ -66,9 +66,11 @@ public class GameObject
     }
     public void setPosition(int x, int y)
     {
-        grid.moveGameObject(this.x,this.y,x,y);
+        int x1 = this.x;
+        int y1 = this.y;
         this.x = x;
         this.y = y;
+        grid.moveGameObject(x1,y1,x,y);
     }
 
     public Grid getGrid()

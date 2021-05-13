@@ -32,6 +32,7 @@ public class Grid
 
     public void addGameObject(int x, int y, boolean isStatic)
     {
+        System.out.println(x + ", " + y  );
         if(!isValidCoordinates(x,y))
             throw new IndexOutOfBoundsException("The coordinates :{x=" +x+" ,y=" +y + "} Are not valid coordinates");
         grid[x][y] = new GameObject(this,isStatic,x,y);
@@ -43,11 +44,15 @@ public class Grid
             throw new NoSuchElementException("The coordinates :{x=" +x1+" ,y=" +y1 + "} Are not valid coordinates");
         if(!isValidCoordinates(x2,y2))
             throw new IndexOutOfBoundsException("The coordinates :{x=" +x2+" ,y=" +y2 + "} Are not valid coordinates");
+        if(grid[x1][y1]==null)
+            throw new NoSuchElementException("The coordinates :{x=" +x1+" ,y=" +y1 + "} do not contain a game object");
 
         if (isValidCoordinates(x2,y2))
         {
-            grid[x2][y2] = grid[x1][x2];
+            grid[x2][y2] = grid[x1][y1];
             grid[x1][y1] = null;
+            if(grid[x2][y2].getX()!=x2||grid[x2][y2].getY()!=y2)
+                grid[x2][y2].setPosition(x2,y2);
         }
     }
 
@@ -82,5 +87,15 @@ public class Grid
     public boolean isValidCoordinates(int x, int y)
     {
         return !(x >= gridWidth || y >= gridHeight || x < 0 || y < 0);
+    }
+
+    public int getGridWidth()
+    {
+        return gridWidth;
+    }
+
+    public int getGridHeight()
+    {
+        return gridHeight;
     }
 }

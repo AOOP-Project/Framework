@@ -3,6 +3,7 @@ package evhh;
 import evhh.common.assetloading.AssetLoader;
 import evhh.model.GameObject;
 import evhh.model.Grid;
+import evhh.model.gamecomponents.SimpleMove;
 import evhh.model.gamecomponents.Sprite;
 import evhh.view.renderers.FrameRenderer;
 import evhh.view.renderers.GameFrame;
@@ -35,18 +36,18 @@ public class Test
         //frameRenderer.getGameFrame().get
 
 
+
         GameObject spriteObj1 = new GameObject(grid, false, 1, 1);
         GameObject spriteObj2 = new GameObject(grid, false, 2, 2);
+        grid.addGameObject(spriteObj1,spriteObj1.getX(),spriteObj1.getY());
+        grid.addGameObject(spriteObj2,spriteObj2.getX(),spriteObj2.getY());
         spriteObj1.addComponent(new Sprite(spriteObj1, images.get("blank")));
         spriteObj2.addComponent(new Sprite(spriteObj2, images.get("crate")));
+        spriteObj1.addComponent(new SimpleMove(spriteObj1,300));
 
         frameRenderer.getGridRenderer().addSprite((Sprite) spriteObj1.getComponent(Sprite.class));
         frameRenderer.getGridRenderer().addSprite((Sprite) spriteObj2.getComponent(Sprite.class));
 
         frameRenderer.start();
-    }
-    public static void test1()
-    {
-
     }
 }
