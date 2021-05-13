@@ -35,8 +35,6 @@ public class Test
 
         //frameRenderer.getGameFrame().get
 
-
-
         GameObject spriteObj1 = new GameObject(grid, false, 1, 1);
         GameObject spriteObj2 = new GameObject(grid, false, 2, 2);
         grid.addGameObject(spriteObj1,spriteObj1.getX(),spriteObj1.getY());
