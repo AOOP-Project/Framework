@@ -17,10 +17,10 @@ public class SimpleMove extends GameComponent
 {
     private TimeReference timeReference;
     long deltaTime;
-    public SimpleMove(GameObject parent, long deltTime)
+    public SimpleMove(GameObject parent, long deltaTime)
     {
         super(parent);
-        this.deltaTime = deltTime;
+        this.deltaTime = deltaTime;
         this.timeReference = new TimeReference();
     }
 
