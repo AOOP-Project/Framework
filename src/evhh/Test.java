@@ -1,11 +1,16 @@
 package evhh;
 
 import evhh.common.assetloading.AssetLoader;
+import evhh.controller.InputManager.UserInputManager;
 import evhh.model.GameInstance;
 import evhh.model.GameObject;
 import evhh.model.Grid;
+import evhh.model.ObjectPrefab;
 import evhh.model.gamecomponents.SimpleMove;
 import evhh.model.gamecomponents.Sprite;
+import evhh.model.prefabs.MovingSquare;
+import evhh.model.prefabs.PlayerPrefab;
+import evhh.model.prefabs.WallPrefab;
 import evhh.view.renderers.FrameRenderer;
 import evhh.view.renderers.GameFrame;
 
@@ -40,15 +45,27 @@ public class Test
         game1.addRendererTimer(100);
         game1.loadTextureAssets(System.getProperty("user.dir")+"\\Assets\\Images");
         game1.setMainGrid(new Grid(DEFAULT_GRID_WIDTH,DEFAULT_GRID_HEIGHT));
+        game1.setUserInputManager(new UserInputManager(game1));
+
         game1.setUpdateTimer(100);
 
         GameObject gameObject1 = game1.addGameObject(1,1,false);
         GameObject gameObject2 = game1.addGameObject(4,4,false);
-        gameObject1.addComponent(new Sprite(gameObject1,game1.getTextures().get("blank")));
-        gameObject2.addComponent(new Sprite(gameObject2,game1.getTextures().get("crate")));
-        gameObject1.addComponent(new SimpleMove(gameObject1,300));
+        WallPrefab wallPrefab = new WallPrefab(game1.getMainGrid(),game1.getTexture("wall"));
+        MovingSquare movingSquare = new MovingSquare(game1.getMainGrid(),game1.getTexture("blank"),500);
 
+        for (int i = 5; i < 14; i++)
+            game1.addGameObject(wallPrefab.getInstance(i,i),i,i);
 
+        game1.addGameObject(movingSquare.getInstance(1,1),1,1);
+        movingSquare.setDeltaTime(400);
+        game1.addGameObject(movingSquare.getInstance(2,2),2,2);
+        movingSquare.setDeltaTime(300);
+        game1.addGameObject(movingSquare.getInstance(3,3),3,3);
+        PlayerPrefab playerPrefab = new PlayerPrefab(game1.getMainGrid(), game1.getTexture("player"),game1.getUserInputManager());
+        game1.addGameObject(playerPrefab.getInstance(15,15),15,15);
+
+        game1.refreshMappedUserInput();
 
         game1.refreshSpritesInRenderer();
         game1.startRenderer();

@@ -34,8 +34,11 @@ public class SimpleMove extends GameComponent
             assert deltaTime!=0 : "Division by 0";
             long n = timeReference.getDeltaTime() / deltaTime;
             timeReference.incrementStartTime(n*deltaTime);
+        for (int i = 0; i < n; i++)
+        {
             int w = getGameObject().getGrid().getGridWidth();
             getGameObject().setPosition((getX()+1)%w, getY());
+        }
     }
 
     @Override

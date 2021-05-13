@@ -19,6 +19,7 @@ public class GameObject
     private ArrayList<GameComponent> componentList;
     private Grid grid;
     private long id = 0;
+    private ObjectPrefab creator;
 
     public GameObject(Grid grid,boolean staticObj, int x, int y, ArrayList<GameComponent> componentList)
     {
@@ -112,5 +113,15 @@ public class GameObject
     public void onExit()
     {
         componentList.forEach(GameComponent::onExit);
+    }
+
+    public ObjectPrefab getCreator()
+    {
+        return creator;
+    }
+
+    public void setCreator(ObjectPrefab creator)
+    {
+        this.creator = creator;
     }
 }

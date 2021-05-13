@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -132,12 +133,22 @@ public class GameInstance implements ActionListener
         return textures;
     }
 
+    public BufferedImage getTexture(String name)
+    {
+        assert textures!=null:"Texture map is null!";
+        return textures.get(name);
+    }
     //endregion
 
     //region Grid
     public void setMainGrid(Grid mainGrid)
     {
         this.mainGrid = mainGrid;
+    }
+
+    public Grid getMainGrid()
+    {
+        return mainGrid;
     }
 
     public GameObject addGameObject(GameObject gameObject, int x, int y)
@@ -239,4 +250,37 @@ public class GameInstance implements ActionListener
     //endregion
 
 
+    public void setUserInputManager(UserInputManager userInputManager)
+    {
+        this.userInputManager = userInputManager;
+    }
+
+    public UserInputManager getUserInputManager()
+    {
+        return userInputManager;
+    }
+
+    public void refreshMappedUserInput()
+    {
+        assert userInputManager!=null : "The user input manager is null!";
+
+        userInputManager.
+                getKeyboardInputs().
+                stream().
+                filter(key1-> !Arrays.asList(frameRenderer.
+                        getGameFrame().
+                        getKeyListeners()).
+                        contains(key1)).
+                forEach(k ->frameRenderer.getGameFrame().addKeyListener(k));
+
+        userInputManager.
+                getMouseInputs().
+                stream().
+                filter(m1-> !Arrays.asList(frameRenderer.
+                        getGameFrame().
+                        getMouseListeners()).
+                        contains(m1)).
+                forEach(m ->frameRenderer.getGameFrame().addMouseListener(m));
+        System.out.println(getFrameRenderer().getGameFrame().getKeyListeners().length);
+    }
 }

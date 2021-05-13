@@ -3,6 +3,7 @@ package evhh.common;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalField;
 import java.util.Date;
 
 /***********************************************************************************************************************
@@ -37,6 +38,11 @@ public class TimeReference
     {
         if(n==0)
             return;
-        startTime.plus(n, ChronoUnit.MILLIS);
+        startTime = startTime.plusMillis(n);
+
+    }
+    public long getStartTime()
+    {
+        return startTime.toEpochMilli();
     }
 }

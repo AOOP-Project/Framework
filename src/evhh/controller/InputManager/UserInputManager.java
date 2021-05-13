@@ -15,9 +15,9 @@ import java.util.ArrayList;
  **********************************************************************************************************************/
 public class UserInputManager
 {
-    ArrayList<MouseInput> mouseInputs;
-    ArrayList<KeyboardInput> keyboardInputs;
-    GameInstance gameInstance;
+    private ArrayList<MouseInput> mouseInputs;
+    private ArrayList<KeyboardInput> keyboardInputs;
+    private GameInstance gameInstance;
 
     public UserInputManager(GameInstance gameInstance)
     {
@@ -29,7 +29,31 @@ public class UserInputManager
 
     public void addInputs(KeyboardInput keyboardInput, MouseInput mouseInput)
     {
-        mouseInputs.add(mouseInput);
-        keyboardInputs.add(keyboardInput);
+        if(!keyboardInputs.contains(keyboardInput))
+            keyboardInputs.add(keyboardInput);
+        if(!mouseInputs.contains(mouseInput))
+            mouseInputs.add(mouseInput);
+    }
+
+    public void addKeyInput(KeyboardInput keyboardInput)
+    {
+        if(!keyboardInputs.contains(keyboardInput))
+            keyboardInputs.add(keyboardInput);
+    }
+
+    public void addMouseInput(MouseInput mouseInput)
+    {
+        if(!mouseInputs.contains(mouseInput))
+            mouseInputs.add(mouseInput);
+    }
+
+    public ArrayList<KeyboardInput> getKeyboardInputs()
+    {
+        return keyboardInputs;
+    }
+
+    public ArrayList<MouseInput> getMouseInputs()
+    {
+        return mouseInputs;
     }
 }

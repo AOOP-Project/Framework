@@ -44,6 +44,7 @@ public class KeyboardInput implements KeyListener
     @Override
     public void keyPressed(KeyEvent e)
     {
+        System.out.println(e.getKeyCode());
         keyEventMap.forEach((button,event)->
         {
             if(button == e.getKeyCode())
