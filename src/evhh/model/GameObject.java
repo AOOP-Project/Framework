@@ -18,6 +18,7 @@ public class GameObject
     private int x, y;
     private ArrayList<GameComponent> componentList;
     private Grid grid;
+    private long id = 0;
 
     public GameObject(Grid grid,boolean staticObj, int x, int y, ArrayList<GameComponent> componentList)
     {
@@ -48,11 +49,11 @@ public class GameObject
     }
 
 
-    public GameComponent getComponent(Class componentClass)
+    public GameComponent getComponent(Class<? extends GameComponent> componentClass)
     {
+
         Optional<GameComponent> obj = componentList.stream().filter(c-> c.getClass()==componentClass).findFirst();
         return obj.orElse(null);
-
     }
 
     public int getX()
@@ -64,13 +65,16 @@ public class GameObject
     {
         return y;
     }
+
     public void setPosition(int x, int y)
     {
         int x1 = this.x;
         int y1 = this.y;
         this.x = x;
         this.y = y;
-        grid.moveGameObject(x1,y1,x,y);
+        if(grid.get(x,y)!=this)
+            grid.moveGameObject(x1,y1,x,y);
+
     }
 
     public Grid getGrid()
@@ -82,4 +86,16 @@ public class GameObject
     {
         this.grid = grid;
     }
+
+    public long getId()
+    {
+        return id;
+    }
+
+    public void setId(long id)
+    {
+        this.id = id;
+    }
+
+
 }
