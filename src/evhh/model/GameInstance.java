@@ -41,7 +41,7 @@ public class GameInstance implements ActionListener
     private long gObjectId = GAMEOBJECT_ID_START;
     private String[] allowedTextureFileExtension = DEFAULT_ALLOWED_TEXTURE_FILE_EXTENSIONS;
     private HashMap<String, BufferedImage> textures;
-    private boolean running;
+    private boolean running = false;
     //endregion
 
     public GameInstance(String gameInstanceName)
@@ -65,6 +65,7 @@ public class GameInstance implements ActionListener
         assert(renderTimer != null): "Cant't start while renderTimer is null";
         running = true;
         frameRenderer.start();
+        updateTimer.start();
         mainGrid.getDynamicObjects().forEach(GameObject::onStart);
         mainGrid.getStaticObjects().forEach(GameObject::onStart);
     }
@@ -77,8 +78,8 @@ public class GameInstance implements ActionListener
     public void exit()
     {
         running = false;
-        mainGrid.getDynamicObjects().forEach(GameObject::update);
-        mainGrid.getStaticObjects().forEach(GameObject::update);
+        mainGrid.getDynamicObjects().forEach(GameObject::onExit);
+        mainGrid.getStaticObjects().forEach(GameObject::onExit);
     }
 
 

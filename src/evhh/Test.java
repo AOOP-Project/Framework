@@ -40,6 +40,7 @@ public class Test
         game1.addRendererTimer(100);
         game1.loadTextureAssets(System.getProperty("user.dir")+"\\Assets\\Images");
         game1.setMainGrid(new Grid(DEFAULT_GRID_WIDTH,DEFAULT_GRID_HEIGHT));
+        game1.setUpdateTimer(100);
 
         GameObject gameObject1 = game1.addGameObject(1,1,false);
         GameObject gameObject2 = game1.addGameObject(4,4,false);
@@ -48,8 +49,10 @@ public class Test
         gameObject1.addComponent(new SimpleMove(gameObject1,300));
 
 
+
         game1.refreshSpritesInRenderer();
         game1.startRenderer();
+        game1.start();
 
         if(false)
         {
