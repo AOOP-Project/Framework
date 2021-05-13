@@ -44,15 +44,38 @@ AssetLoader
 
 
 SETUP
+    new GameInstance
     new FrameRenderer
     Load Assets
     new Grid
+    gameInstance.addTimer()
     frameRenderer.addTimer()
-    Create GameObjects
-    add components to gameobjects
-    add sprites to frameRenderer
-    frameRenderer.start
+        *Create GameObjects
+        *add components to gameobjects
+        *add sprites to frameRenderer
+    gameInstance.start
 
+Main game Loop
+{
+    Implementation
+        GameInstance
+
+
+    OnStart
+        GameInstance
+        GameObject
+        GameComponent
+
+    Update
+        GameInstance
+        Dynamic GameObject
+        GameComponent
+
+    OnExit
+        GameInstance
+        GameObject
+        GameComponent
+}
 
 
 

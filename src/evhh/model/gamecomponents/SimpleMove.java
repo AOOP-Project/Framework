@@ -1,9 +1,9 @@
 package evhh.model.gamecomponents;
 
+import evhh.annotations.Precondition;
+import evhh.common.TimeReference;
 import evhh.model.GameComponent;
 import evhh.model.GameObject;
-import java.util.TimerTask;
-import java.util.Timer;
 
 /***********************************************************************************************************************
  * @project: MainProject
@@ -15,27 +15,44 @@ import java.util.Timer;
  **********************************************************************************************************************/
 public class SimpleMove extends GameComponent
 {
-    private TimerTask timerTask;
-    private Timer timer;
-    public SimpleMove(GameObject parent, int delay)
+    private TimeReference timeReference;
+    long deltaTime;
+    public SimpleMove(GameObject parent, long deltTime)
     {
         super(parent);
-        timerTask = new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                move();
-            }
-        };
-        timer = new Timer();
-        timer.scheduleAtFixedRate(timerTask,1000,300);
-
+        this.deltaTime = deltTime;
+        this.timeReference = new TimeReference();
     }
 
+
+
+    /**
+     @precondition deltaTime!=0
+     */
     public void move()
     {
-        int w = getGameObject().getGrid().getGridWidth();
-        getGameObject().setPosition((getX()+1)%w, getY());
+            assert deltaTime!=0 : "Division by 0";
+            long n = timeReference.getDeltaTime() / deltaTime;
+            timeReference.incrementStartTime(n*deltaTime);
+            int w = getGameObject().getGrid().getGridWidth();
+            getGameObject().setPosition((getX()+1)%w, getY());
+    }
+
+    @Override
+    public void onStart()
+    {
+        timeReference.start();
+    }
+
+    @Override
+    public void update()
+    {
+        move();
+    }
+
+    @Override
+    public void onExit()
+    {
+
     }
 }

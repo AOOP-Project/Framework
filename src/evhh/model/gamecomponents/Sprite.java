@@ -34,4 +34,22 @@ public class Sprite extends GameComponent
     {
         this.image = image;
     }
+
+    @Override
+    public void onStart()
+    {
+
+    }
+
+    @Override
+    public void update()
+    {
+
+    }
+
+    @Override
+    public void onExit()
+    {
+
+    }
 }

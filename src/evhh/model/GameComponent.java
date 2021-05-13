@@ -8,7 +8,7 @@ package evhh.model;
  * @date: 2021-05-12
  * @time: 12:25
  **********************************************************************************************************************/
-public class GameComponent
+public abstract class GameComponent
 {
     protected GameObject parent;
 
@@ -30,5 +30,9 @@ public class GameComponent
     {
         return parent.getY();
     }
+
+    abstract public void onStart();
+    abstract public void update();
+    abstract public void onExit();
 
 }

@@ -6,6 +6,8 @@ import evhh.model.gamecomponents.Sprite;
 import evhh.view.renderers.FrameRenderer;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Objects;
@@ -19,7 +21,7 @@ import java.util.stream.Stream;
  * @date: 2021-05-12
  * @time: 12:26
  **********************************************************************************************************************/
-public class GameInstance
+public class GameInstance implements ActionListener
 {
 
     //region Constants
@@ -33,11 +35,13 @@ public class GameInstance
     private Grid mainGrid;
     private UserInputManager userInputManager;
     private FrameRenderer frameRenderer;
+    private Timer updateTimer;
     private Timer renderTimer;
     private String gameInstanceName;
     private long gObjectId = GAMEOBJECT_ID_START;
     private String[] allowedTextureFileExtension = DEFAULT_ALLOWED_TEXTURE_FILE_EXTENSIONS;
     private HashMap<String, BufferedImage> textures;
+    private boolean running;
     //endregion
 
     public GameInstance(String gameInstanceName)
@@ -49,6 +53,55 @@ public class GameInstance
     public String getGameInstanceName()
     {
         return gameInstanceName;
+    }
+
+    public void start()
+    {
+        if(running)
+            return;
+        assert(frameRenderer != null): "Cant't start while frame renderer is null";
+        assert(mainGrid != null): "Cant't start while mainGrid is null";
+        assert(updateTimer != null): "Cant't start while updateTimer is null";
+        assert(renderTimer != null): "Cant't start while renderTimer is null";
+        running = true;
+        frameRenderer.start();
+        mainGrid.getDynamicObjects().forEach(GameObject::onStart);
+        mainGrid.getStaticObjects().forEach(GameObject::onStart);
+    }
+
+    private void update()
+    {
+        mainGrid.getDynamicObjects().forEach(GameObject::update);
+    }
+
+    public void exit()
+    {
+        running = false;
+        mainGrid.getDynamicObjects().forEach(GameObject::update);
+        mainGrid.getStaticObjects().forEach(GameObject::update);
+    }
+
+
+    public void setUpdateTimer(Timer updateTimer)
+    {
+        this.updateTimer = updateTimer;
+    }
+
+    public void setUpdateTimer(int timeDelta)
+    {
+        this.updateTimer = new Timer(timeDelta, this);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e)
+    {
+        if (e.getSource() == updateTimer)
+            update();
+    }
+
+    public boolean isRunning()
+    {
+        return running;
     }
 
     //region Assets
@@ -88,7 +141,7 @@ public class GameInstance
 
     public GameObject addGameObject(GameObject gameObject, int x, int y)
     {
-        assert mainGrid !=null;
+        assert mainGrid != null;
         mainGrid.addGameObject(gameObject, x, y).setId(gObjectId);
         gObjectId += GAMEOBJECT_ID_INCREMENT;
         return gameObject;
@@ -96,7 +149,7 @@ public class GameInstance
 
     public GameObject addGameObject(int x, int y, boolean isStatic)
     {
-        assert mainGrid !=null;
+        assert mainGrid != null;
         GameObject gameObject = mainGrid.addGameObject(x, y, isStatic);
         gameObject.setId(gObjectId);
         gObjectId += GAMEOBJECT_ID_INCREMENT;
@@ -105,19 +158,19 @@ public class GameInstance
 
     public GameObject getGameObject(int x, int y)
     {
-        assert mainGrid !=null;
+        assert mainGrid != null;
         return mainGrid.get(x, y);
     }
 
     public GameObject getGameObject(long id)
     {
-        assert mainGrid !=null;
+        assert mainGrid != null;
         return mainGrid.get(id);
     }
 
     public GameObject[] getGameObjects(Class<? extends GameComponent> containedComponent)
     {
-        assert mainGrid !=null;
+        assert mainGrid != null;
         return mainGrid.getGameObjectsWithComponent(containedComponent);
     }
     //endregion
@@ -180,6 +233,8 @@ public class GameInstance
         assert frameRenderer != null;
         return frameRenderer.isStarted();
     }
+
+
     //endregion
 
 

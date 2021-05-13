@@ -68,7 +68,6 @@ public class Grid
 
     public GameObject addGameObject(int x, int y, boolean isStatic)
     {
-        System.out.println(x + ", " + y);
         if (!isValidCoordinates(x, y))
             throw new IndexOutOfBoundsException("The coordinates :{x=" + x + " ,y=" + y + "} Are not valid coordinates");
         grid[x][y] = new GameObject(this, isStatic, x, y);

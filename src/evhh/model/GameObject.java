@@ -101,5 +101,16 @@ public class GameObject
         this.id = id;
     }
 
-
+    public void onStart()
+    {
+        componentList.forEach(GameComponent::onStart);
+    }
+    public void update()
+    {
+        componentList.forEach(GameComponent::update);
+    }
+    public void onExit()
+    {
+        componentList.forEach(GameComponent::onExit);
+    }
 }
