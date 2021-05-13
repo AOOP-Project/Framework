@@ -54,7 +54,6 @@ public class GameObject
 
         Optional<GameComponent> obj = componentList.stream().filter(c-> c.getClass()==componentClass).findFirst();
         return obj.orElse(null);
-
     }
 
     public int getX()

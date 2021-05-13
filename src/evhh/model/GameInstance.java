@@ -78,6 +78,39 @@ public class GameInstance
 
     public void addGameObject(int x, int y, boolean isStatic)
     {
+        mainGrid.addGameObject(x, y, isStatic).setId(gObjectId);
+        gObjectId += GAMEOBJECT_ID_INCREMENT;
+    }
+
+    public GameObject getGameObject(int x, int y)
+    {
+        return mainGrid.get(x, y);
+    }
+    //endregion
+
+    //region Renderer
+    public void setFrameRenderer(FrameRenderer frameRenderer)
+    {
+        this.frameRenderer = frameRenderer;
+    }
+
+    public void refreshSpritesInRenderer()
+    {
+        Stream<GameObject> stream1 = mainGrid.getStaticObjects().stream();
+        Stream<GameObject> stream2 =mainGrid.getDynamicObjects().stream();
+        Stream.concat(stream1,stream2).
+                map(g->g.getComponent(Sprite.class)).
+                        filter(Objects::nonNull).map(c->(Sprite)c).
+                            forEach(c->frameRenderer.getGridRenderer().addSprite(c));
+    }
+
+    public void addSprite(Sprite sprite)
+    {
+        frameRenderer.getGridRenderer().addSprite(sprite);
+    }
+
+    public void startRenderer()
+    {
         frameRenderer.start();
     }
 
@@ -85,5 +118,13 @@ public class GameInstance
     {
         frameRenderer.stop();
     }
+
+    public void addRendererTimer(Timer timer)
+    {
+        renderTimer = timer;
+    }
+    //endregion
+
+
 
 }

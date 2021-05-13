@@ -21,8 +21,6 @@ public class AssetLoader
 
     public static String getPathToDir()
     {
-
-
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
