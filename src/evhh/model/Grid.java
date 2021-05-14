@@ -161,36 +161,33 @@ public class Grid implements Serializable
     {
         Stream<GameObject> stream1 = getStaticObjects().stream();
         Stream<GameObject> stream2 = getDynamicObjects().stream();
-        return (GameObject[])Stream.concat(stream1,stream2).
-                filter(Objects::nonNull).filter(g->g.hasComponent(containedComponent)).toArray();
+        return Stream.concat(stream1,stream2).
+                filter(Objects::nonNull).filter(g->g.hasComponent(containedComponent)).toArray(GameObject[]::new);
     }
 
-    public static void serializeGrid(Grid grid, String path)
+    public static void serializeGrid(Grid grid, String path) throws IOException
     {
-
-        try
+        try (FileOutputStream fileOut = new FileOutputStream(path); ObjectOutputStream out = new ObjectOutputStream(fileOut))
         {
-            FileOutputStream fileOut = new FileOutputStream(path);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
             out.writeObject(grid);
             out.close();
             fileOut.close();
-            System.out.println("SAVING...");
-        } catch (IOException e)
-        {
-            e.printStackTrace();
+            System.out.println("SAVING GRID...");
         }
 
     }
-    public static Grid deserializeGrid(String path)
+    public static Grid deserializeGrid(String path) throws IOException, ClassNotFoundException
     {
         Grid grid = null;
         try (FileInputStream fileIn = new FileInputStream(path); ObjectInputStream in = new ObjectInputStream(fileIn))
         {
             grid = (Grid) in.readObject();
-        } catch (IOException | ClassNotFoundException e)
+        } catch (IOException e1)
         {
-            e.printStackTrace();
+           throw new IOException(e1.getMessage());
+        } catch (ClassNotFoundException e2)
+        {
+            throw new ClassNotFoundException("Grid file wrong version or not found!");
         }
         return grid;
     }
@@ -203,5 +200,10 @@ public class Grid implements Serializable
     public void setGameInstance(GameInstance gameInstance)
     {
         this.gameInstance = gameInstance;
+    }
+    public void onStart()
+    {
+        dynamicObjects.forEach(g->g.setGrid(this));
+        staticObjects.forEach(g->g.setGrid(this));
     }
 }

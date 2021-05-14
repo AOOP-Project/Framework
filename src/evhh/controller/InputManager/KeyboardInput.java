@@ -6,7 +6,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 
 /***********************************************************************************************************************
  * @project: MainProject
@@ -19,10 +21,23 @@ import java.util.HashMap;
 public class KeyboardInput implements KeyListener, Serializable
 {
     RunnableArg<KeyEvent> action;
-    int[] keyCode;
-    int[] keyEventType;
     private HashMap<Integer,Integer> keyEventMap;
 
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        KeyboardInput that = (KeyboardInput) o;
+        return that.hashCode()==this.hashCode();
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result =  keyEventMap.hashCode();
+        return result;
+    }
 
     public KeyboardInput(RunnableArg<KeyEvent> action, HashMap<Integer, Integer> keyEventMap)
     {
@@ -63,4 +78,5 @@ public class KeyboardInput implements KeyListener, Serializable
                     action.run(e);
         });
     }
+
 }

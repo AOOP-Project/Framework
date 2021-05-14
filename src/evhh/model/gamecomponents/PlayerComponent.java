@@ -3,6 +3,7 @@ package evhh.model.gamecomponents;
 import evhh.common.RunnableArg;
 import evhh.controller.InputManager.KeyboardInput;
 import evhh.controller.InputManager.UserInputManager;
+import evhh.model.ControllableComponent;
 import evhh.model.GameComponent;
 import evhh.model.GameObject;
 
@@ -18,11 +19,11 @@ import java.util.stream.Stream;
  * @date: 2021-05-13
  * @time: 15:21
  **********************************************************************************************************************/
-public class PlayerComponent extends GameComponent
+public class PlayerComponent extends ControllableComponent
 {
     private int upKeyCode, downKeyCode,rightKeyCode, leftKeyCode;
     private KeyboardInput keyboardInput;
-    private UserInputManager uIM;
+    transient private UserInputManager uIM;
 
     public PlayerComponent(GameObject parent, UserInputManager uIM, int upKeyCode, int downKeyCode, int rightKeyCode, int leftKeyCode)
     {
@@ -81,7 +82,6 @@ public class PlayerComponent extends GameComponent
     @Override
     public void onStart()
     {
-
     }
 
     @Override
@@ -96,8 +96,17 @@ public class PlayerComponent extends GameComponent
 
     }
 
-    public UserInputManager getuIM()
+    @Override
+    public void onUIMRefresh(UserInputManager uIM)
     {
-        return uIM;
+        this.uIM = uIM;
+        RunnableArg<KeyEvent> keyInputEvent = keyEvent -> move(keyEvent.getKeyCode());
+        HashMap<Integer,Integer> map = new HashMap<>();
+        map.put(upKeyCode,KeyEvent.KEY_PRESSED);
+        map.put(downKeyCode,KeyEvent.KEY_PRESSED);
+        map.put(rightKeyCode,KeyEvent.KEY_PRESSED);
+        map.put(leftKeyCode,KeyEvent.KEY_PRESSED);
+        keyboardInput = new KeyboardInput(keyInputEvent,map);
+        uIM.addKeyInput(keyboardInput);
     }
 }

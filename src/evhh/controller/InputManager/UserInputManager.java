@@ -1,9 +1,9 @@
 package evhh.controller.InputManager;
 
 import evhh.model.GameInstance;
+import evhh.model.Grid;
 
-import java.io.File;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 
 /***********************************************************************************************************************
@@ -28,21 +28,21 @@ public class UserInputManager implements Serializable
 
     public void addInputs(KeyboardInput keyboardInput, MouseInput mouseInput)
     {
-        if(!keyboardInputs.contains(keyboardInput))
+        if (!keyboardInputs.contains(keyboardInput))
             keyboardInputs.add(keyboardInput);
-        if(!mouseInputs.contains(mouseInput))
+        if (!mouseInputs.contains(mouseInput))
             mouseInputs.add(mouseInput);
     }
 
     public void addKeyInput(KeyboardInput keyboardInput)
     {
-        if(!keyboardInputs.contains(keyboardInput))
+        if (!keyboardInputs.contains(keyboardInput))
             keyboardInputs.add(keyboardInput);
     }
 
     public void addMouseInput(MouseInput mouseInput)
     {
-        if(!mouseInputs.contains(mouseInput))
+        if (!mouseInputs.contains(mouseInput))
             mouseInputs.add(mouseInput);
     }
 
@@ -54,5 +54,36 @@ public class UserInputManager implements Serializable
     public ArrayList<MouseInput> getMouseInputs()
     {
         return mouseInputs;
+    }
+
+    @Deprecated
+    public static void serializeUIM(UserInputManager userInputManager, String path)
+    {
+
+        try
+        {
+            FileOutputStream fileOut = new FileOutputStream(path);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(userInputManager);
+            out.close();
+            fileOut.close();
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+    @Deprecated
+    public static UserInputManager deserializeUIM(String path)
+    {
+        UserInputManager userInputManager = null;
+        try (FileInputStream fileIn = new FileInputStream(path); ObjectInputStream in = new ObjectInputStream(fileIn))
+        {
+            userInputManager = (UserInputManager) in.readObject();
+        } catch (IOException | ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        return userInputManager;
     }
 }

@@ -22,7 +22,7 @@ public class GameObject implements Serializable
     private long id = 0;
     transient private ObjectPrefab creator;
 
-    public GameObject(Grid grid,boolean staticObj, int x, int y, ArrayList<GameComponent> componentList)
+    public GameObject(Grid grid, boolean staticObj, int x, int y, ArrayList<GameComponent> componentList)
     {
         this.staticObj = staticObj;
         this.x = x;
@@ -31,7 +31,7 @@ public class GameObject implements Serializable
         this.grid = grid;
     }
 
-    public GameObject(Grid grid,boolean staticObj, int x, int y)
+    public GameObject(Grid grid, boolean staticObj, int x, int y)
     {
         this.staticObj = staticObj;
         this.x = x;
@@ -54,14 +54,15 @@ public class GameObject implements Serializable
     public GameComponent getComponent(Class<? extends GameComponent> componentClass)
     {
 
-        Optional<GameComponent> obj = componentList.stream().filter(c-> c.getClass()==componentClass).findFirst();
+        Optional<GameComponent> obj = componentList.stream().filter(c -> c.getClass() == componentClass).findFirst();
         return obj.orElse(null);
     }
 
     public boolean hasComponent(Class<? extends GameComponent> componentClass)
     {
-        return componentList.stream().anyMatch(c-> c.getClass()==componentClass);
+        return componentList.stream().anyMatch(c -> c.getClass() == componentClass);
     }
+
     public int getX()
     {
         return x;
@@ -78,8 +79,9 @@ public class GameObject implements Serializable
         int y1 = this.y;
         this.x = x;
         this.y = y;
-        if(grid.get(x,y)!=this)
-            grid.moveGameObject(x1,y1,x,y);
+        if (grid.get(x, y) != this)
+            grid.moveGameObject(x1, y1, x, y);
+
 
     }
 
@@ -107,10 +109,12 @@ public class GameObject implements Serializable
     {
         componentList.forEach(GameComponent::onStart);
     }
+
     public void update()
     {
         componentList.forEach(GameComponent::update);
     }
+
     public void onExit()
     {
         componentList.forEach(GameComponent::onExit);
@@ -124,5 +128,10 @@ public class GameObject implements Serializable
     public void setCreator(ObjectPrefab creator)
     {
         this.creator = creator;
+    }
+
+    public ArrayList<GameComponent> getComponentList()
+    {
+        return componentList;
     }
 }

@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
@@ -43,6 +44,7 @@ public class GameInstance implements ActionListener
     private String[] allowedTextureFileExtension = DEFAULT_ALLOWED_TEXTURE_FILE_EXTENSIONS;
     private HashMap<String, BufferedImage> textures;
     private boolean running = false;
+    private String gridSavePath;
     //endregion
 
     public GameInstance(String gameInstanceName)
@@ -58,13 +60,14 @@ public class GameInstance implements ActionListener
 
     public void start()
     {
-        if(running)
+        if (running)
             return;
-        assert(frameRenderer != null): "Cant't start while frame renderer is null";
-        assert(mainGrid != null): "Cant't start while mainGrid is null";
-        assert(updateTimer != null): "Cant't start while updateTimer is null";
-        assert(renderTimer != null): "Cant't start while renderTimer is null";
+        assert (frameRenderer != null) : "Cant't start while frame renderer is null";
+        assert (mainGrid != null) : "Cant't start while mainGrid is null";
+        assert (updateTimer != null) : "Cant't start while updateTimer is null";
+        assert (renderTimer != null) : "Cant't start while renderTimer is null";
         running = true;
+
         frameRenderer.start();
         updateTimer.start();
         mainGrid.getDynamicObjects().forEach(GameObject::onStart);
@@ -135,7 +138,7 @@ public class GameInstance implements ActionListener
 
     public BufferedImage getTexture(String name)
     {
-        assert textures!=null:"Texture map is null!";
+        assert textures != null : "Texture map is null!";
         return textures.get(name);
     }
     //endregion
@@ -263,24 +266,76 @@ public class GameInstance implements ActionListener
 
     public void refreshMappedUserInput()
     {
-        assert userInputManager!=null : "The user input manager is null!";
-
+        assert userInputManager != null : "The user input manager is null!";
+        getMainGrid().
+                getDynamicObjects().
+                forEach(g -> g.getComponentList().
+                        stream().
+                        filter(c -> c instanceof ControllableComponent).
+                        forEach(c -> ((ControllableComponent) c).onUIMRefresh(userInputManager)));
         userInputManager.
                 getKeyboardInputs().
                 stream().
-                filter(key1-> !Arrays.asList(frameRenderer.
+                filter(key1 -> !Arrays.asList(frameRenderer.
                         getGameFrame().
                         getKeyListeners()).
                         contains(key1)).
-                forEach(k ->frameRenderer.getGameFrame().addKeyListener(k));
+                forEach(k -> frameRenderer.getGameFrame().addKeyListener(k));
 
         userInputManager.
                 getMouseInputs().
                 stream().
-                filter(m1-> !Arrays.asList(frameRenderer.
+                filter(m1 -> !Arrays.asList(frameRenderer.
                         getGameFrame().
                         getMouseListeners()).
                         contains(m1)).
-                forEach(m ->frameRenderer.getGameFrame().addMouseListener(m));
+                forEach(m -> frameRenderer.getGameFrame().addMouseListener(m));
+    }
+
+    public void loadGridFromSave(String gridSavePath) throws IOException, ClassNotFoundException
+    {
+        setMainGrid(Grid.deserializeGrid(gridSavePath));
+        if (userInputManager == null)
+        {
+            setUserInputManager(new UserInputManager(this));
+            refreshMappedUserInput();
+        }
+    }
+
+    public void loadGridFromSave() throws IOException, ClassNotFoundException
+    {
+        assert gridSavePath != null;
+        setMainGrid(Grid.deserializeGrid(gridSavePath));
+        if (userInputManager == null)
+        {
+            setUserInputManager(new UserInputManager(this));
+            refreshMappedUserInput();
+        }
+    }
+
+    public void saveMainGrid(String gridSavePath) throws IOException
+    {
+        Grid.serializeGrid(mainGrid, gridSavePath);
+    }
+
+    public void saveMainGrid() throws IOException
+    {
+        assert gridSavePath != null;
+        Grid.serializeGrid(mainGrid, gridSavePath);
+    }
+
+    public String getGridSavePath()
+    {
+        return gridSavePath;
+    }
+
+    public void setGridSavePath(String gridSavePath)
+    {
+        this.gridSavePath = gridSavePath;
+    }
+
+    public void setGridSavePath()
+    {
+        this.gridSavePath = AssetLoader.setPathToSaveData();
     }
 }

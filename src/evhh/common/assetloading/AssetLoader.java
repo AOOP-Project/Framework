@@ -2,6 +2,7 @@ package evhh.common.assetloading;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +20,29 @@ import java.util.Objects;
 public class AssetLoader
 {
 
+    public static String getPathToSavedData()
+    {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Serialized data","ser"));
+        int response = fileChooser.showOpenDialog(null);
+        if(response == JFileChooser.APPROVE_OPTION)
+            return fileChooser.getSelectedFile().getAbsolutePath();
+        else
+            return "";
+    }
+    public static String setPathToSaveData()
+    {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int response = fileChooser.showSaveDialog(null);
+        if(response == JFileChooser.APPROVE_OPTION)
+            return fileChooser.getSelectedFile().getAbsolutePath();
+        else
+            return "";
+    }
     public static String getPathToDir()
     {
         JFileChooser fileChooser = new JFileChooser();
