@@ -3,6 +3,7 @@ package evhh.view.renderers;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 
 /***********************************************************************************************************************
  * @project: MainProject
@@ -100,5 +101,13 @@ public class FrameRenderer implements ActionListener
     public GameFrame getGameFrame()
     {
         return gameFrame;
+    }
+    public BufferedImage getGridBackgroundImage()
+    {
+        return gridRenderer.getBackground();
+    }
+    public  void setGridBackgroundImage(BufferedImage image)
+    {
+        gridRenderer.setBackground(image);
     }
 }

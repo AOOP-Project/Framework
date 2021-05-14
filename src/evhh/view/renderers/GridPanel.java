@@ -18,6 +18,7 @@ public class GridPanel extends JPanel
     private int gridHeight;
     private int cellSize;
     private GridRenderer gridRenderer;
+    private Image backgroundImage;
 
     public GridPanel(int gridWidth, int gridHeight, int cellSize,GridRenderer gridRenderer)
     {
@@ -31,8 +32,9 @@ public class GridPanel extends JPanel
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
         Graphics2D g2d = (Graphics2D) g;
+        if(backgroundImage!=null)
+            g2d.drawImage(backgroundImage,0,0,this);
         gridRenderer.getSprites().forEach(s->
                 g2d.drawImage(
                         s.getTexture(),
@@ -43,5 +45,15 @@ public class GridPanel extends JPanel
         );
 
         Toolkit.getDefaultToolkit().sync();
+    }
+
+    public Image getBackgroundImage()
+    {
+        return backgroundImage;
+    }
+
+    public void setBackgroundImage(Image backgroundImage)
+    {
+        this.backgroundImage = backgroundImage;
     }
 }

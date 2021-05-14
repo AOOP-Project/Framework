@@ -1,10 +1,6 @@
 package evhh.view.renderers;
 
-import evhh.model.GameComponent;
-
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionListener;
 
 /***********************************************************************************************************************
  * @project: MainProject

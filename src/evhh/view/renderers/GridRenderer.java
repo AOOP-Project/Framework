@@ -3,6 +3,7 @@ package evhh.view.renderers;
 import evhh.model.gamecomponents.Sprite;
 
 import javax.swing.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 /***********************************************************************************************************************
@@ -20,6 +21,7 @@ public class GridRenderer
     private int gridWidth;
     private int gridHeight;
     private int cellSize;
+    private BufferedImage background;
 
     public GridRenderer(int gridWidth, int gridHeight, int cellSize)
     {
@@ -51,5 +53,16 @@ public class GridRenderer
     public GridPanel getGridPanel()
     {
         return gridPanel;
+    }
+
+    public BufferedImage getBackground()
+    {
+        return background;
+    }
+
+    public void setBackground(BufferedImage background)
+    {
+        this.background = background;
+        gridPanel.setBackgroundImage(background);
     }
 }
