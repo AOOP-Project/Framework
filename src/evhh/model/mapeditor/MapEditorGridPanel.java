@@ -1,9 +1,7 @@
 package evhh.model.mapeditor;
 
-import evhh.model.GameObject;
 import evhh.model.Grid;
 import evhh.model.ObjectPrefab;
-import evhh.model.gamecomponents.Sprite;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -30,7 +28,7 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
     private MapEditor mapEditor;
     private int cellSize,gridWidth,gridHeight;
     private Grid workingGrid;
-    LinkedList<SimpleEntry<BufferedImage,Point>> addedPrefabTextures;
+    private LinkedList<SimpleEntry<BufferedImage,Point>> addedPrefabTextures;
 
     public MapEditorGridPanel(MapEditor mapEditor, int cellSize)
     {
@@ -44,6 +42,7 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
         setPreferredSize(new Dimension(gridWidth*cellSize,gridHeight*cellSize));
         addMouseListener(this);
         setBorder(new LineBorder(Color.BLACK, 1));
+        mapEditor.setAddedPrefabTextures(addedPrefabTextures);
     }
 
     public void loadNewGrid()
@@ -53,16 +52,19 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
         System.out.println(workingGrid.getDynamicObjects().size());
         Stream.concat(workingGrid.getStaticObjects().stream(),workingGrid.getDynamicObjects().stream()).forEach(g-> {
             Optional<ObjectPrefab> prefab = Arrays.stream(mapEditor.getAvailablePrefabs()).filter(p->g.getCreator().equals(p)).findFirst();
-            prefab.ifPresent(objectPrefab -> addedPrefabTextures.add(new SimpleEntry<>(objectPrefab.getSprite().getTexture(), new Point(g.getX(), g.getY()))));
+            prefab.ifPresent(objectPrefab -> addedPrefabTextures.add(new SimpleEntry<>(objectPrefab.getSprite().getTexture(), new Point(g.getX()*cellSize, g.getY()*cellSize))));
             if(prefab.isPresent())
-                System.out.println("FOUND: " + prefab.get().getClass().getSimpleName());
+                System.out.println("FOUND: " + prefab.get().getSprite().getTexture());
         });
-        System.out.println(addedPrefabTextures.size());
-        repaint();
+        mapEditor.setAddedPrefabTextures(addedPrefabTextures);
+
+
+
     }
     @Override
     protected void paintComponent(Graphics g)
     {
+        addedPrefabTextures = mapEditor.getAddedPrefabTextures();
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         for (int i = 0; i < gridWidth; i++)
@@ -75,12 +77,17 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
         }
 
         addedPrefabTextures.forEach(sE->{g2d.drawImage(sE.getKey(), sE.getValue().x, (gridHeight-1)*cellSize-sE.getValue().y,this);});
-        System.out.println("Repaint");
 
     }
 
     @Override
     public void mouseClicked(MouseEvent e)
+    {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e)
     {
         if (e.getSource()==this && mapEditor.getSelectedPrefab() != null)
         {
@@ -92,15 +99,26 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
                 addedPrefabTextures.add(new SimpleEntry<>(mapEditor.getSelectedPrefab().getSprite().getTexture(), new Point(cellSize * x, cellSize * y)));
                 repaint();
             }
-            System.out.println(x + ", " + y);
 
         }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e)
-    {
-
+        else if(mapEditor.getSelectedPrefab()==null)
+        {
+            int x = e.getX()/cellSize;
+            int y = (gridHeight-1)-e.getY()/cellSize;
+            if(!workingGrid.isEmpty(x,y))
+            {
+                for (int i = 0; i < addedPrefabTextures.size(); i++)
+                {
+                    int x2 = addedPrefabTextures.get(i).getValue().x/cellSize;
+                    int y2 = addedPrefabTextures.get(i).getValue().y/cellSize;
+                    if (x==x2&&y==y2)
+                    {
+                        addedPrefabTextures.remove(i);
+                    }
+                }
+            }
+            repaint();
+        }
     }
 
     @Override

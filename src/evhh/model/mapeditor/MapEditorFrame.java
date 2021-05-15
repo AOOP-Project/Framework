@@ -5,6 +5,7 @@ import evhh.model.Grid;
 import evhh.model.ObjectPrefab;
 import evhh.model.gamecomponents.Sprite;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -12,7 +13,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.util.AbstractMap;
+import java.util.LinkedList;
 
 /***********************************************************************************************************************
  * @project: MainProject
@@ -33,7 +38,8 @@ public class MapEditorFrame extends JFrame
     private JPanel saveLoadPanel;
     private JButton saveButton;
     private JButton loadButton;
-
+    private String eraserPath = System.getProperty("user.dir") +"/Assets/Images/eraser.png";
+    BufferedImage eraser;
 
     private int gridWidth, gridHeight, cellSize;
     private MapEditor mapEditor;
@@ -84,10 +90,14 @@ public class MapEditorFrame extends JFrame
     }
     public void createAvailablePrefabsPanel()
     {
-        GridLayout layout = new GridLayout(gridHeight/2,2*prefabs.length/gridHeight+1,1,cellSize/2);
+        GridLayout layout = new GridLayout(gridHeight/2,2*(prefabs.length+1)/gridHeight+1,1,cellSize/2);
         prefabContainerPanel = new JPanel(layout);
         prefabContainerPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         prefabPanels = new PrefabPanel[prefabs.length];
+        try
+        {eraser = ImageIO.read(new File(eraserPath));}
+        catch (IOException e) {System.err.println("Eraser picture not found :< ");}
+        prefabContainerPanel.add(new PrefabPanel(null,eraser,new Dimension(cellSize, cellSize),mapEditor));
         int i = 0;
         for (ObjectPrefab prefab : prefabs)
         {
@@ -99,8 +109,16 @@ public class MapEditorFrame extends JFrame
     }
     public void updateSelectedPrefabPanel()
     {
-        selectedPrefabLabel.setText(mapEditor.getSelectedPrefab().getClass().getSimpleName());
-        ((ImageIcon)selectedPrefabIcon.getIcon()).setImage(mapEditor.getSelectedPrefab().getSprite().getTexture());
+        if(mapEditor.getSelectedPrefab()==null)
+        {
+            selectedPrefabLabel.setText("Eraser");
+            ((ImageIcon)selectedPrefabIcon.getIcon()).setImage(eraser);
+        }
+        else
+        {
+            selectedPrefabLabel.setText(mapEditor.getSelectedPrefab().getClass().getSimpleName());
+            ((ImageIcon) selectedPrefabIcon.getIcon()).setImage(mapEditor.getSelectedPrefab().getSprite().getTexture());
+        }
         selectedPrefabPanel.repaint();
     }
     public void createSaveLoadButtons()
@@ -131,8 +149,12 @@ public class MapEditorFrame extends JFrame
             {
                 String path = AssetLoader.getPathToSavedData();
                 if(!path.equals(""))
+                {
                     setWorkingGrid(Grid.deserializeGrid(path));
-                workingGridPanel.loadNewGrid();
+                    this.workingGrid = mapEditor.getWorkingGrid();
+                    workingGridPanel.loadNewGrid();
+                }
+                repaint();
             } catch (IOException | ClassNotFoundException ioException)
             {
                 JOptionPane.showMessageDialog(new JFrame(),
@@ -162,4 +184,6 @@ public class MapEditorFrame extends JFrame
         validate();
         repaint();
     }
+
+
 }

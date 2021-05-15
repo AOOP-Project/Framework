@@ -3,6 +3,11 @@ package evhh.model.mapeditor;
 import evhh.model.Grid;
 import evhh.model.ObjectPrefab;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.AbstractMap;
+import java.util.LinkedList;
+
 /***********************************************************************************************************************
  * @project: MainProject
  * @package: evhh.model.mapeditor
@@ -18,6 +23,7 @@ public class MapEditor
     private ObjectPrefab selectedPrefab;
     private MapEditorFrame frame;
     private int cellSize;
+    private LinkedList<AbstractMap.SimpleEntry<BufferedImage, Point>> addedPrefabTextures;
 
 
     public MapEditor(Grid workingGrid, int cellSize, ObjectPrefab[] availablePrefabs)
@@ -54,5 +60,20 @@ public class MapEditor
     public ObjectPrefab[] getAvailablePrefabs()
     {
         return availablePrefabs;
+    }
+
+    public MapEditorFrame getFrame()
+    {
+        return frame;
+    }
+
+    public LinkedList<AbstractMap.SimpleEntry<BufferedImage, Point>> getAddedPrefabTextures()
+    {
+        return addedPrefabTextures;
+    }
+
+    public void setAddedPrefabTextures(LinkedList<AbstractMap.SimpleEntry<BufferedImage, Point>> addedPrefabTextures)
+    {
+        this.addedPrefabTextures = addedPrefabTextures;
     }
 }

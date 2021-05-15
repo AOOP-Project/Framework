@@ -45,18 +45,17 @@ public class PrefabPanel extends JPanel implements MouseListener
     @Override
     public void mouseClicked(MouseEvent e)
     {
-        if(e.getSource()==this)
-        {
-            mapEditor.setSelectedPrefab(prefab);
-            System.out.println("Selected: " + prefab.getClass().getSimpleName());
-        }
+
 
     }
 
     @Override
     public void mousePressed(MouseEvent e)
     {
-
+        if(e.getSource()==this)
+        {
+            mapEditor.setSelectedPrefab(prefab);
+        }
     }
 
     @Override
