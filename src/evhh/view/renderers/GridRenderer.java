@@ -25,10 +25,10 @@ public class GridRenderer
 
     public GridRenderer(int gridWidth, int gridHeight, int cellSize)
     {
-        this.gridWidth =gridWidth;
-        this.gridHeight =gridHeight;
-        this.cellSize =cellSize;
-        gridPanel = new GridPanel(gridWidth,gridHeight,cellSize,this);
+        this.gridWidth = gridWidth;
+        this.gridHeight = gridHeight;
+        this.cellSize = cellSize;
+        gridPanel = new GridPanel(gridWidth, gridHeight, cellSize, this);
         sprites = new ArrayList<>();
     }
 
@@ -36,15 +36,18 @@ public class GridRenderer
     {
         gridPanel.repaint();
     }
+
     public ArrayList<Sprite> getSprites()
     {
         return sprites;
     }
+
     public void addSprite(Sprite sprite)
     {
-        if(!sprites.contains(sprite))
+        if (!sprites.contains(sprite))
             sprites.add(sprite);
     }
+
     public void removeSprite(Sprite sprite)
     {
         sprites.remove(sprite);

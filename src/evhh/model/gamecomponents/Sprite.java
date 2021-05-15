@@ -19,7 +19,7 @@ public class Sprite extends GameComponent
     private String imageRef;
     private transient BufferedImage texture;
 
-    public Sprite(GameObject parent, BufferedImage image,String imageRef)
+    public Sprite(GameObject parent, BufferedImage image, String imageRef)
     {
         super(parent);
         this.texture = image;
@@ -41,7 +41,7 @@ public class Sprite extends GameComponent
     @Override
     public void onStart()
     {
-        if(texture == null && imageRef != null)
+        if (texture == null && imageRef != null)
             texture = parent.getGrid().getGameInstance().getTexture(imageRef);
     }
 

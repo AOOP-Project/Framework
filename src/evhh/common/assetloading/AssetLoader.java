@@ -25,44 +25,46 @@ public class AssetLoader
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Serialized data","ser"));
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Serialized data", "ser"));
         int response = fileChooser.showOpenDialog(null);
-        if(response == JFileChooser.APPROVE_OPTION)
+        if (response == JFileChooser.APPROVE_OPTION)
             return fileChooser.getSelectedFile().getAbsolutePath();
         else
             return "";
     }
+
     public static String setPathToSaveData()
     {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         int response = fileChooser.showSaveDialog(null);
-        if(response == JFileChooser.APPROVE_OPTION)
+        if (response == JFileChooser.APPROVE_OPTION)
             return fileChooser.getSelectedFile().getAbsolutePath();
         else
             return "";
     }
+
     public static String getPathToDir()
     {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         int response = fileChooser.showOpenDialog(null);
-        if(response == JFileChooser.APPROVE_OPTION)
+        if (response == JFileChooser.APPROVE_OPTION)
             return fileChooser.getSelectedFile().getAbsolutePath();
         else
             return "";
 
     }
 
-    public static HashMap<String, BufferedImage> LoadImageAssets(String path,String[] acceptedFileExtensions)
+    public static HashMap<String, BufferedImage> LoadImageAssets(String path, String[] acceptedFileExtensions)
     {
         File dir = new File(path);
-        if(!dir.isDirectory())
+        if (!dir.isDirectory())
             return null;
         HashMap<String, BufferedImage> map = new HashMap<>();
-        for(File file: Objects.requireNonNull(dir.listFiles()))
+        for (File file : Objects.requireNonNull(dir.listFiles()))
         {
             BufferedImage img = null;
             String name = "";
@@ -76,8 +78,8 @@ public class AssetLoader
                 e.printStackTrace();
                 continue;
             }
-            map.put(name,img);
+            map.put(name, img);
         }
-        return  map;
+        return map;
     }
 }

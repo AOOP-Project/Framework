@@ -19,12 +19,12 @@ public class MapEditor
     MapEditorFrame frame;
     int cellSize;
 
-    public MapEditor(Grid workingGrid,int cellSize, ObjectPrefab[] availablePrefabs)
+    public MapEditor(Grid workingGrid, int cellSize, ObjectPrefab[] availablePrefabs)
     {
         this.workingGrid = workingGrid;
         this.availablePrefabs = availablePrefabs;
         this.cellSize = cellSize;
-        frame = new MapEditorFrame(this,workingGrid,cellSize,availablePrefabs);
+        frame = new MapEditorFrame(this, workingGrid, cellSize, availablePrefabs);
         frame.setVisible(true);
 
     }

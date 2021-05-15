@@ -102,11 +102,13 @@ public class FrameRenderer implements ActionListener
     {
         return gameFrame;
     }
+
     public BufferedImage getGridBackgroundImage()
     {
         return gridRenderer.getBackground();
     }
-    public  void setGridBackgroundImage(BufferedImage image)
+
+    public void setGridBackgroundImage(BufferedImage image)
     {
         gridRenderer.setBackground(image);
     }
