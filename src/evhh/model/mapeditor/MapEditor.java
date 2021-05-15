@@ -13,11 +13,12 @@ import evhh.model.ObjectPrefab;
  **********************************************************************************************************************/
 public class MapEditor
 {
-    Grid workingGrid;
-    ObjectPrefab[] availablePrefabs;
-    ObjectPrefab selectedPrefab;
-    MapEditorFrame frame;
-    int cellSize;
+    private Grid workingGrid;
+    private ObjectPrefab[] availablePrefabs;
+    private ObjectPrefab selectedPrefab;
+    private MapEditorFrame frame;
+    private int cellSize;
+
 
     public MapEditor(Grid workingGrid, int cellSize, ObjectPrefab[] availablePrefabs)
     {
@@ -37,5 +38,21 @@ public class MapEditor
     public void setSelectedPrefab(ObjectPrefab selectedPrefab)
     {
         this.selectedPrefab = selectedPrefab;
+        frame.updateSelectedPrefabPanel();
+    }
+
+    public Grid getWorkingGrid()
+    {
+        return workingGrid;
+    }
+
+    public void setWorkingGrid(Grid workingGrid)
+    {
+        this.workingGrid = workingGrid;
+    }
+
+    public ObjectPrefab[] getAvailablePrefabs()
+    {
+        return availablePrefabs;
     }
 }

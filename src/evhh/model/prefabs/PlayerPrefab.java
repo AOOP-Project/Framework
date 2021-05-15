@@ -1,5 +1,6 @@
 package evhh.model.prefabs;
 
+import evhh.annotations.UniqueSerializableField;
 import evhh.controller.InputManager.UserInputManager;
 import evhh.model.GameObject;
 import evhh.model.Grid;
@@ -9,6 +10,7 @@ import evhh.model.gamecomponents.Sprite;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 /***********************************************************************************************************************
  * @project: MainProject
@@ -22,8 +24,9 @@ public class PlayerPrefab implements ObjectPrefab
 {
     private Grid grid;
     private GameObject playerObject;
-    private BufferedImage playerIcon;
+    transient  private BufferedImage playerIcon;
     private UserInputManager uIM;
+    @UniqueSerializableField
     private String textureRef;
 
     private final int DEFAULT_UP_KEY    = KeyEvent.VK_W;
@@ -31,9 +34,13 @@ public class PlayerPrefab implements ObjectPrefab
     private final int DEFAULT_RIGHT_KEY = KeyEvent.VK_D;
     private final int DEFAULT_LEFT_KEY  = KeyEvent.VK_A;
 
+    @UniqueSerializableField
     private int upKey                   = DEFAULT_UP_KEY;
+    @UniqueSerializableField
     private int downKey                 = DEFAULT_DOWN_KEY;
+    @UniqueSerializableField
     private int rightKey                = DEFAULT_RIGHT_KEY;
+    @UniqueSerializableField
     private int leftKey                 = DEFAULT_LEFT_KEY;
 
     public PlayerPrefab(Grid grid, BufferedImage playerIcon,String textureRef, UserInputManager uIM)
@@ -54,6 +61,12 @@ public class PlayerPrefab implements ObjectPrefab
         return playerObject;
     }
 
+    @Override
+    public Sprite getSprite()
+    {
+        return new Sprite(null,playerIcon,textureRef);
+    }
+
     public void setUpKey(int upKey)
     {
         this.upKey = upKey;
@@ -72,5 +85,20 @@ public class PlayerPrefab implements ObjectPrefab
     public void setLeftKey(int leftKey)
     {
         this.leftKey = leftKey;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlayerPrefab that = (PlayerPrefab) o;
+        return upKey == that.upKey && downKey == that.downKey && rightKey == that.rightKey && leftKey == that.leftKey && textureRef.equals(that.textureRef);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(textureRef, upKey, downKey, rightKey, leftKey);
     }
 }

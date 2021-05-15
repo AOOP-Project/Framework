@@ -1,5 +1,6 @@
 package evhh.model.prefabs;
 
+import evhh.annotations.UniqueSerializableField;
 import evhh.model.GameObject;
 import evhh.model.Grid;
 import evhh.model.ObjectPrefab;
@@ -7,6 +8,7 @@ import evhh.model.gamecomponents.SimpleMove;
 import evhh.model.gamecomponents.Sprite;
 
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 
 /***********************************************************************************************************************
  * @project: MainProject
@@ -18,10 +20,13 @@ import java.awt.image.BufferedImage;
  **********************************************************************************************************************/
 public class MovingSquare implements ObjectPrefab
 {
-    Grid grid;
-    BufferedImage squareTexture;
-    int deltaTime;
-    String textureRef;
+    private Grid grid;
+    private transient BufferedImage squareTexture;
+    @UniqueSerializableField
+    private int deltaTime;
+    @UniqueSerializableField
+    private String textureRef;
+
     public MovingSquare(Grid grid, BufferedImage squareTexture,String textureRef,int deltaTime)
     {
         this.grid = grid;
@@ -42,5 +47,26 @@ public class MovingSquare implements ObjectPrefab
         gameObject.addComponent(new SimpleMove(gameObject,deltaTime));
         gameObject.addComponent(new Sprite(gameObject,squareTexture,textureRef));
         return gameObject;
+    }
+
+    @Override
+    public Sprite getSprite()
+    {
+        return new Sprite(null,squareTexture,textureRef);
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MovingSquare that = (MovingSquare) o;
+        return deltaTime == that.deltaTime && textureRef.equals(that.textureRef);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return Objects.hash(deltaTime, textureRef);
     }
 }

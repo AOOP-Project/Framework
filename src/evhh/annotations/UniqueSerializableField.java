@@ -1,19 +1,13 @@
-package evhh.model;
-
-import evhh.model.gamecomponents.Sprite;
-
-import java.io.Serializable;
+package evhh.annotations;
 
 /***********************************************************************************************************************
  * @project: MainProject
- * @package: evhh.model
+ * @package: evhh.annotations
  * ---------------------------------------------------------------------------------------------------------------------
  * @authors: Hamed Haghjo & Elias Vahlberg
- * @date: 2021-05-13
- * @time: 14:31
+ * @date: 2021-05-15
+ * @time: 14:46
  **********************************************************************************************************************/
-public interface ObjectPrefab extends Serializable
+public @interface UniqueSerializableField
 {
-    public GameObject getInstance(int x, int y);
-    public Sprite getSprite();
 }

@@ -1,5 +1,6 @@
 package evhh.model.mapeditor;
 
+import evhh.common.assetloading.AssetLoader;
 import evhh.model.Grid;
 import evhh.model.ObjectPrefab;
 import evhh.model.gamecomponents.Sprite;
@@ -7,8 +8,11 @@ import evhh.model.gamecomponents.Sprite;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 
 /***********************************************************************************************************************
  * @project: MainProject
@@ -20,15 +24,26 @@ import java.awt.event.MouseListener;
  **********************************************************************************************************************/
 public class MapEditorFrame extends JFrame
 {
-    private JPanel workingGridPanel;
+    private MapEditorGridPanel workingGridPanel;
     private PrefabPanel[] prefabPanels;
-    int gridWidth, gridHeight, cellSize;
-    MapEditor mapEditor;
-    ObjectPrefab[] prefabs;
+    private JPanel prefabContainerPanel;
+    private JPanel selectedPrefabPanel;
+    private JLabel selectedPrefabLabel;
+    private JLabel selectedPrefabIcon;
+    private JPanel saveLoadPanel;
+    private JButton saveButton;
+    private JButton loadButton;
+
+
+    private int gridWidth, gridHeight, cellSize;
+    private MapEditor mapEditor;
+    private ObjectPrefab[] prefabs;
+    private Grid workingGrid;
 
     public MapEditorFrame(MapEditor mapEditor, Grid workingGrid, int cellSize, ObjectPrefab[] prefabs) throws HeadlessException
     {
         super();
+        this.workingGrid = workingGrid;
         this.mapEditor = mapEditor;
         this.prefabs = prefabs;
         setLayout(new FlowLayout());
@@ -36,21 +51,115 @@ public class MapEditorFrame extends JFrame
         this.gridWidth = workingGrid.getGridWidth();
         this.gridHeight = workingGrid.getGridHeight();
         this.cellSize = cellSize;
-        workingGridPanel = new JPanel();
-        workingGridPanel.setPreferredSize(new Dimension(gridWidth * cellSize, gridHeight * cellSize));
-        workingGridPanel.setBorder(new LineBorder(Color.BLACK, 1));
-        add(workingGridPanel);
+        createSelectedPrefabPanel();
+        workingGridPanel = new MapEditorGridPanel(mapEditor,cellSize);
+        add(workingGridPanel,FlowLayout.CENTER);
+        createAvailablePrefabsPanel();
+        createSaveLoadButtons();
+
+        pack();
+
+
+    }
+    public void createSelectedPrefabPanel()
+    {
+        selectedPrefabPanel = new JPanel();
+        selectedPrefabPanel.setLayout(new BoxLayout(selectedPrefabPanel, BoxLayout.Y_AXIS));
+
+        selectedPrefabLabel = new JLabel("NONE",SwingConstants.LEFT);
+        selectedPrefabIcon= new JLabel(new ImageIcon());
+        JLabel label = new JLabel("<html>Selected<br/>ObjectPrefab</html>",SwingConstants.LEFT);
+
+        selectedPrefabLabel.setFont(new Font("Courier New", Font.BOLD, 18));
+        selectedPrefabLabel.setForeground(new Color(23, 103, 138));
+
+        label.setFont(new Font("Courier New", Font.BOLD, 18));
+        label.setForeground(new Color(23, 103, 138));
+
+        selectedPrefabPanel.add(label);
+        selectedPrefabPanel.add(selectedPrefabLabel);
+        selectedPrefabPanel.add(selectedPrefabIcon);
+
+        add(selectedPrefabPanel,FlowLayout.LEFT);
+    }
+    public void createAvailablePrefabsPanel()
+    {
+        GridLayout layout = new GridLayout(gridHeight/2,2*prefabs.length/gridHeight+1,1,cellSize/2);
+        prefabContainerPanel = new JPanel(layout);
+        prefabContainerPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         prefabPanels = new PrefabPanel[prefabs.length];
         int i = 0;
         for (ObjectPrefab prefab : prefabs)
         {
-            Sprite sprite = (Sprite) prefab.getInstance(0, 0).getComponent(Sprite.class);
-            prefabPanels[i] = new PrefabPanel(prefab,sprite.getTexture(),new Dimension(cellSize, cellSize),mapEditor);
-            add(prefabPanels[i]);
+            prefabPanels[i] = new PrefabPanel(prefab,prefab.getSprite().getTexture(),new Dimension(cellSize, cellSize),mapEditor);
+            prefabContainerPanel.add(prefabPanels[i]);
             i++;
         }
-        pack();
+        add(prefabContainerPanel);
+    }
+    public void updateSelectedPrefabPanel()
+    {
+        selectedPrefabLabel.setText(mapEditor.getSelectedPrefab().getClass().getSimpleName());
+        ((ImageIcon)selectedPrefabIcon.getIcon()).setImage(mapEditor.getSelectedPrefab().getSprite().getTexture());
+        selectedPrefabPanel.repaint();
+    }
+    public void createSaveLoadButtons()
+    {
+        saveLoadPanel = new JPanel();
+        saveLoadPanel.setLayout(new BoxLayout(saveLoadPanel, BoxLayout.Y_AXIS));
+        saveButton = new JButton("Save");
+        loadButton = new JButton("Load");
+        ActionListener saveListener = e ->
+        {
+            try
+            {
+                String path = AssetLoader.getPathToSavedData();
+                if(!path.equals(""))
+                    Grid.serializeGrid(workingGrid,path);
+            } catch (IOException ioException)
+            {
+                JOptionPane.showMessageDialog(new JFrame(),
+                        "Error occurred during grid save. \n " +
+                                "Pleas try again and select a valid file destination.",
+                        "Saving Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        };
+        ActionListener loadListener = e ->
+        {
+            try
+            {
+                String path = AssetLoader.getPathToSavedData();
+                if(!path.equals(""))
+                    setWorkingGrid(Grid.deserializeGrid(path));
+                workingGridPanel.loadNewGrid();
+            } catch (IOException | ClassNotFoundException ioException)
+            {
+                JOptionPane.showMessageDialog(new JFrame(),
+                        "Error occurred during loading of grid. \n" +
+                                "Pleas try again and select a valid file path. \n" +
+                                "And make sure there is no class version mismatch.",
+                        "Loading Error",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        };
+        saveButton.addActionListener(saveListener);
+        loadButton.addActionListener(loadListener);
+        saveLoadPanel.add(saveButton);
+        saveLoadPanel.add(loadButton);
+        add(saveLoadPanel);
 
 
+    }
+
+    public void setWorkingGrid(Grid workingGrid)
+    {
+        this.workingGrid = workingGrid;
+        mapEditor.setWorkingGrid(workingGrid);
+        this.gridWidth = workingGrid.getGridWidth();
+        this.gridHeight = workingGrid.getGridHeight();
+        workingGridPanel = new MapEditorGridPanel(mapEditor,cellSize);
+        validate();
+        repaint();
     }
 }

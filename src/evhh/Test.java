@@ -114,6 +114,7 @@ public class Test
                 } catch (IOException e)
                 {
                     System.err.println(e.getMessage());
+                    e.printStackTrace();
                     System.err.println("File not saved");
                     return;
                 }

@@ -1,5 +1,7 @@
 package evhh.model;
 
+import evhh.model.gamecomponents.Sprite;
+
 import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,7 +22,8 @@ public class GameObject implements Serializable
     private ArrayList<GameComponent> componentList;
     private Grid grid;
     private long id = 0;
-    transient private ObjectPrefab creator;
+    private ObjectPrefab creator;
+    private Sprite sprite;
 
     public GameObject(Grid grid, boolean staticObj, int x, int y, ArrayList<GameComponent> componentList)
     {
@@ -47,6 +50,8 @@ public class GameObject implements Serializable
 
     public void addComponent(GameComponent component)
     {
+        if(component.getClass()==Sprite.class)
+            sprite = (Sprite) component;
         componentList.add(component);
     }
 
@@ -133,5 +138,10 @@ public class GameObject implements Serializable
     public ArrayList<GameComponent> getComponentList()
     {
         return componentList;
+    }
+
+    public Sprite getSprite()
+    {
+        return sprite;
     }
 }
