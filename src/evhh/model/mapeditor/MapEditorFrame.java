@@ -143,6 +143,7 @@ public class MapEditorFrame extends JFrame
                 String path = AssetLoader.getPathToSavedData();
                 if(!path.equals(""))
                     Grid.serializeGrid(workingGrid,path);
+                mapEditor.setWorkingGridSavePath(path);
             } catch (IOException ioException)
             {
                 JOptionPane.showMessageDialog(new JFrame(),
@@ -160,6 +161,7 @@ public class MapEditorFrame extends JFrame
                 if(!path.equals(""))
                 {
                     setWorkingGrid(Grid.deserializeGrid(path));
+                    mapEditor.setWorkingGridLoadPath(path);
                     this.workingGrid = mapEditor.getWorkingGrid();
                     workingGridPanel.loadNewGrid();
                 }

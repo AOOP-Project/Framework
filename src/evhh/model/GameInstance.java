@@ -82,6 +82,7 @@ public class GameInstance implements ActionListener
     public void exit()
     {
         running = false;
+        frameRenderer.stop();
         mainGrid.getDynamicObjects().forEach(GameObject::onExit);
         mainGrid.getStaticObjects().forEach(GameObject::onExit);
     }

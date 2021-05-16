@@ -24,6 +24,8 @@ public class MapEditor
     private MapEditorFrame frame;
     private int cellSize;
     private LinkedList<AbstractMap.SimpleEntry<BufferedImage, Point>> addedPrefabTextures;
+    private String workingGridLoadPath;
+    private String workingGridSavePath;
 
 
     public MapEditor(Grid workingGrid, int cellSize, ObjectPrefab[] availablePrefabs)
@@ -75,5 +77,25 @@ public class MapEditor
     public void setAddedPrefabTextures(LinkedList<AbstractMap.SimpleEntry<BufferedImage, Point>> addedPrefabTextures)
     {
         this.addedPrefabTextures = addedPrefabTextures;
+    }
+
+    public String getWorkingGridLoadPath()
+    {
+        return workingGridLoadPath;
+    }
+
+    public void setWorkingGridLoadPath(String workingGridLoadPath)
+    {
+        this.workingGridLoadPath = workingGridLoadPath;
+    }
+
+    public String getWorkingGridSavePath()
+    {
+        return workingGridSavePath;
+    }
+
+    public void setWorkingGridSavePath(String workingGridSavePath)
+    {
+        this.workingGridSavePath = workingGridSavePath;
     }
 }
