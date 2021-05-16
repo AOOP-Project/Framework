@@ -67,7 +67,7 @@ public class GameInstance implements ActionListener
         assert (updateTimer != null) : "Cant't start while updateTimer is null";
         assert (renderTimer != null) : "Cant't start while renderTimer is null";
         running = true;
-
+        refreshSpritesInRenderer();
         frameRenderer.start();
         updateTimer.start();
         mainGrid.getDynamicObjects().forEach(GameObject::onStart);
