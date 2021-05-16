@@ -36,7 +36,7 @@ public class Grid implements Serializable
         dynamicObjects = new ArrayList<>();
     }
 
-    public GameObject get(int x, int y)
+    synchronized public GameObject get(int x, int y)
     {
         if (!isValidCoordinates(x, y))
             throw new NoSuchElementException("The coordinates :{x=" + x + " ,y=" + y + "} Are not valid coordinates");

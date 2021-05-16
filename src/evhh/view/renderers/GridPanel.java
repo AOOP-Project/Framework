@@ -1,7 +1,10 @@
 package evhh.view.renderers;
 
+import evhh.model.gamecomponents.Sprite;
+
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 /***********************************************************************************************************************
  * @project: MainProject
@@ -35,7 +38,8 @@ public class GridPanel extends JPanel
         Graphics2D g2d = (Graphics2D) g;
         if(backgroundImage!=null)
             g2d.drawImage(backgroundImage,0,0,this);
-        gridRenderer.getSprites().forEach(s->
+        ArrayList<Sprite> sprites = (ArrayList<Sprite>) gridRenderer.getSprites().clone(); //This is to avoid ConcurrentModificationException
+        sprites.stream().parallel().forEach(s->
                 g2d.drawImage(
                         s.getTexture(),
                         (int) s.getX()*cellSize,
