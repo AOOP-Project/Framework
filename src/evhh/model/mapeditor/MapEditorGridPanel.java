@@ -25,10 +25,12 @@ import java.util.stream.Stream;
  **********************************************************************************************************************/
 public class MapEditorGridPanel extends JPanel implements MouseListener
 {
+    private static final int REPAINT_REPEAT_DELAY = 20;
     private MapEditor mapEditor;
     private int cellSize,gridWidth,gridHeight;
     private Grid workingGrid;
     private LinkedList<SimpleEntry<BufferedImage,Point>> addedPrefabTextures;
+    volatile private boolean mouseDown = false;
 
     public MapEditorGridPanel(MapEditor mapEditor, int cellSize)
     {
@@ -43,18 +45,26 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
         addMouseListener(this);
         setBorder(new LineBorder(Color.BLACK, 1));
         mapEditor.setAddedPrefabTextures(addedPrefabTextures);
+
+    }
+
+    public Grid getWorkingGrid()
+    {
+        return workingGrid;
+    }
+
+    public void setWorkingGrid(Grid workingGrid)
+    {
+        this.workingGrid = workingGrid;
     }
 
     public void loadNewGrid()
     {
         addedPrefabTextures = new LinkedList<>();
-        System.out.println(workingGrid.getStaticObjects().size());
-        System.out.println(workingGrid.getDynamicObjects().size());
+        workingGrid = mapEditor.getWorkingGrid();
         Stream.concat(workingGrid.getStaticObjects().stream(),workingGrid.getDynamicObjects().stream()).forEach(g-> {
             Optional<ObjectPrefab> prefab = Arrays.stream(mapEditor.getAvailablePrefabs()).filter(p->g.getCreator().equals(p)).findFirst();
             prefab.ifPresent(objectPrefab -> addedPrefabTextures.add(new SimpleEntry<>(objectPrefab.getSprite().getTexture(), new Point(g.getX()*cellSize, g.getY()*cellSize))));
-            if(prefab.isPresent())
-                System.out.println("FOUND: " + prefab.get().getSprite().getTexture());
         });
         mapEditor.setAddedPrefabTextures(addedPrefabTextures);
 
@@ -89,42 +99,76 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
     @Override
     public void mousePressed(MouseEvent e)
     {
-        if (e.getSource()==this && mapEditor.getSelectedPrefab() != null)
+
+        if(e.getButton() == MouseEvent.BUTTON1)
         {
-            int x = e.getX()/cellSize;
-            int y = (gridHeight-1)-e.getY()/cellSize;
-            if(workingGrid.isEmpty(x,y))
+            mouseDown = true;
+            Thread duringMouseDown = new Thread(() ->
             {
-                workingGrid.addGameObject(mapEditor.getSelectedPrefab().getInstance(x,y),x,y);
-                addedPrefabTextures.add(new SimpleEntry<>(mapEditor.getSelectedPrefab().getSprite().getTexture(), new Point(cellSize * x, cellSize * y)));
-                repaint();
-            }
+                try
+                {
+                    mouseHeldDown();
+                } catch (InterruptedException interruptedException)
+                {
+                    mouseDown = false;
+                }
+            });
+            duringMouseDown.start();
+        }
+
+
+
+    }
+    public void mouseHeldDown() throws InterruptedException
+    {
+        try
+        {
+            do{
+                Point p = MouseInfo.getPointerInfo().getLocation();
+                SwingUtilities.convertPointFromScreen(p,this);
+                int x = p.x/cellSize;
+                int y = (gridHeight-1)-p.y/cellSize;
+                if (mapEditor.getSelectedPrefab() != null)
+                {
+                    if(workingGrid.isEmpty(x,y))
+                    {
+                        workingGrid.addGameObject(mapEditor.getSelectedPrefab().getInstance(x,y),x,y);
+                        addedPrefabTextures.add(new SimpleEntry<>(mapEditor.getSelectedPrefab().getSprite().getTexture(), new Point(cellSize * x, cellSize * y)));
+                        repaint();
+                    }
+
+                }
+                else
+                {
+                    if(!workingGrid.isEmpty(x,y))
+                    {
+                        for (int i = 0; i < addedPrefabTextures.size(); i++)
+                        {
+                            int x2 = addedPrefabTextures.get(i).getValue().x/cellSize;
+                            int y2 = addedPrefabTextures.get(i).getValue().y/cellSize;
+                            if (x==x2&&y==y2)
+                            {
+                                addedPrefabTextures.remove(i);
+                            }
+                        }
+                        workingGrid.removeGameObject(x,y);
+                    }
+                    repaint();
+                }
+                Thread.sleep(REPAINT_REPEAT_DELAY);
+            }while (mouseDown);
+        } catch (Exception ignored)
+        {
 
         }
-        else if(mapEditor.getSelectedPrefab()==null)
-        {
-            int x = e.getX()/cellSize;
-            int y = (gridHeight-1)-e.getY()/cellSize;
-            if(!workingGrid.isEmpty(x,y))
-            {
-                for (int i = 0; i < addedPrefabTextures.size(); i++)
-                {
-                    int x2 = addedPrefabTextures.get(i).getValue().x/cellSize;
-                    int y2 = addedPrefabTextures.get(i).getValue().y/cellSize;
-                    if (x==x2&&y==y2)
-                    {
-                        addedPrefabTextures.remove(i);
-                    }
-                }
-            }
-            repaint();
-        }
+
     }
 
     @Override
     public void mouseReleased(MouseEvent e)
     {
-
+        if(e.getButton() == MouseEvent.BUTTON1)
+            mouseDown = false;
     }
 
     @Override

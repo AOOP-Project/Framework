@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.AbstractMap;
 import java.util.LinkedList;
+import java.util.stream.IntStream;
 
 /***********************************************************************************************************************
  * @project: MainProject
@@ -95,8 +96,15 @@ public class MapEditorFrame extends JFrame
         prefabContainerPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         prefabPanels = new PrefabPanel[prefabs.length];
         try
-        {eraser = ImageIO.read(new File(eraserPath));}
-        catch (IOException e) {System.err.println("Eraser picture not found :< ");}
+        {
+            eraser = ImageIO.read(new File(eraserPath));
+        }
+        catch (IOException e)
+        {
+            System.err.println("Eraser picture not found :< ");
+            eraser = new BufferedImage(cellSize,cellSize,BufferedImage.TYPE_INT_RGB);
+            IntStream.range(cellSize/4,cellSize*3/4).forEach(x->IntStream.range(cellSize/4,cellSize*3/4).forEach(y->eraser.setRGB(x,y,	255)));
+        }
         prefabContainerPanel.add(new PrefabPanel(null,eraser,new Dimension(cellSize, cellSize),mapEditor));
         int i = 0;
         for (ObjectPrefab prefab : prefabs)
@@ -119,6 +127,7 @@ public class MapEditorFrame extends JFrame
             selectedPrefabLabel.setText(mapEditor.getSelectedPrefab().getClass().getSimpleName());
             ((ImageIcon) selectedPrefabIcon.getIcon()).setImage(mapEditor.getSelectedPrefab().getSprite().getTexture());
         }
+        pack();
         selectedPrefabPanel.repaint();
     }
     public void createSaveLoadButtons()
@@ -177,6 +186,7 @@ public class MapEditorFrame extends JFrame
     public void setWorkingGrid(Grid workingGrid)
     {
         this.workingGrid = workingGrid;
+        workingGridPanel.setWorkingGrid(workingGrid);
         mapEditor.setWorkingGrid(workingGrid);
         this.gridWidth = workingGrid.getGridWidth();
         this.gridHeight = workingGrid.getGridHeight();

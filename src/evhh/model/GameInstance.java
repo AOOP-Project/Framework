@@ -208,6 +208,7 @@ public class GameInstance implements ActionListener
         assert frameRenderer != null;
         Stream<GameObject> stream1 = mainGrid.getStaticObjects().stream();
         Stream<GameObject> stream2 = mainGrid.getDynamicObjects().stream();
+        frameRenderer.getGridRenderer().getSprites().clear();
         Stream.concat(stream1, stream2).
                 map(g -> g.getComponent(Sprite.class)).
                 filter(Objects::nonNull).map(c -> (Sprite) c).
@@ -295,22 +296,20 @@ public class GameInstance implements ActionListener
     public void loadGridFromSave(String gridSavePath) throws IOException, ClassNotFoundException
     {
         setMainGrid(Grid.deserializeGrid(gridSavePath));
+        refreshSpritesInRenderer();
         if (userInputManager == null)
-        {
             setUserInputManager(new UserInputManager(this));
-            refreshMappedUserInput();
-        }
+        refreshMappedUserInput();
     }
 
     public void loadGridFromSave() throws IOException, ClassNotFoundException
     {
         assert gridSavePath != null;
         setMainGrid(Grid.deserializeGrid(gridSavePath));
+        refreshSpritesInRenderer();
         if (userInputManager == null)
-        {
             setUserInputManager(new UserInputManager(this));
-            refreshMappedUserInput();
-        }
+        refreshMappedUserInput();
     }
 
     public void saveMainGrid(String gridSavePath) throws IOException
