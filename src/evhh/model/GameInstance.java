@@ -269,29 +269,32 @@ public class GameInstance implements ActionListener
     public void refreshMappedUserInput()
     {
         assert userInputManager != null : "The user input manager is null!";
-        getMainGrid().
-                getDynamicObjects().
-                forEach(g -> g.getComponentList().
-                        stream().
-                        filter(c -> c instanceof ControllableComponent).
-                        forEach(c -> ((ControllableComponent) c).onUIMRefresh(userInputManager)));
-        userInputManager.
-                getKeyboardInputs().
-                stream().
-                filter(key1 -> !Arrays.asList(frameRenderer.
-                        getGameFrame().
-                        getKeyListeners()).
-                        contains(key1)).
-                forEach(k -> frameRenderer.getGameFrame().addKeyListener(k));
+        synchronized (this)
+        {
+            getMainGrid().
+                    getDynamicObjects().
+                    forEach(g -> g.getComponentList().
+                            stream().
+                            filter(c -> c instanceof ControllableComponent).
+                            forEach(c -> ((ControllableComponent) c).onUIMRefresh(userInputManager)));
+            userInputManager.
+                    getKeyboardInputs().
+                    stream().
+                    filter(key1 -> !Arrays.asList(frameRenderer.
+                            getGameFrame().
+                            getKeyListeners()).
+                            contains(key1)).
+                    forEach(k -> frameRenderer.getGameFrame().addKeyListener(k));
 
-        userInputManager.
-                getMouseInputs().
-                stream().
-                filter(m1 -> !Arrays.asList(frameRenderer.
-                        getGameFrame().
-                        getMouseListeners()).
-                        contains(m1)).
-                forEach(m -> frameRenderer.getGameFrame().addMouseListener(m));
+            userInputManager.
+                    getMouseInputs().
+                    stream().
+                    filter(m1 -> !Arrays.asList(frameRenderer.
+                            getGameFrame().
+                            getMouseListeners()).
+                            contains(m1)).
+                    forEach(m -> frameRenderer.getGameFrame().addMouseListener(m));
+        }
     }
 
     public void loadGridFromSave(String gridSavePath) throws IOException, ClassNotFoundException
