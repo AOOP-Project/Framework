@@ -12,7 +12,7 @@ import evhh.controller.InputManager.UserInputManager;
  **********************************************************************************************************************/
 public abstract class ControllableComponent extends GameComponent
 {
-    protected UserInputManager uIM;
+    transient protected UserInputManager uIM;
     public ControllableComponent(GameObject parent,UserInputManager uIM)
     {
         super(parent);

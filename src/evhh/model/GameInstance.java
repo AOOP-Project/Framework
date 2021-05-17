@@ -5,7 +5,6 @@ import evhh.controller.InputManager.UserInputManager;
 import evhh.model.gamecomponents.Sprite;
 import evhh.view.renderers.FrameRenderer;
 
-import javax.swing.*;
 import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,8 +45,9 @@ public class GameInstance implements ActionListener
     private String gridSavePath;
     private ArrayList<EventTrigger> events;
     private java.util.Timer eventTimer;
-    private ArrayList<String> savedGridsPath;
     private boolean checkEventsOnUpdate = false;
+    private ArrayList<String> savedGridPaths;
+    private int currentGridIndex = -1;
     //endregion
 
     public GameInstance(String gameInstanceName)
@@ -386,40 +386,65 @@ public class GameInstance implements ActionListener
     }
     public void addSavedGridPath(String path)
     {
-        if(savedGridsPath ==null)
-            savedGridsPath = new ArrayList<>();
-        savedGridsPath.add(path);
+        if(savedGridPaths ==null)
+            savedGridPaths = new ArrayList<>();
+        savedGridPaths.add(path);
     }
     public boolean removeSavedGridPath(String path)
     {
-        if(savedGridsPath ==null)
+        if(savedGridPaths ==null)
             return false;
-        return savedGridsPath.remove(path);
+        return savedGridPaths.remove(path);
     }
     public boolean removeSavedGridPath(int index)
     {
-        if(savedGridsPath ==null)
+        if(savedGridPaths ==null)
             return false;
-        if(index>=savedGridsPath.size() || index<0)
+        if(index>= savedGridPaths.size() || index<0)
             return false;
-        savedGridsPath.remove(index);
+        savedGridPaths.remove(index);
         return  true;
     }
 
     public void switchGrid(int index)
     {
-        assert savedGridsPath !=null;
-        assert savedGridsPath.size()>index;
+        assert savedGridPaths !=null;
+        assert savedGridPaths.size()>index;
         assert index>0;
         try
         {
-            loadGridFromSave(savedGridsPath.get(index));
+            loadGridFromSave(savedGridPaths.get(index));
         } catch (IOException | ClassNotFoundException e)
         {
             e.printStackTrace();
         }
 
     }
+    public void reloadGrid()
+    {
+        assert !(currentGridIndex<0||savedGridPaths==null);
+        try
+        {
+            loadGridFromSave(savedGridPaths.get(currentGridIndex));
+        } catch (IOException e)
+        {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
+    public int getCurrentGridIndex()
+    {
+        return currentGridIndex;
+    }
+    public int numSavedGrids()
+    {
+        if(savedGridPaths==null)
+            return 0;
+        else
+            return savedGridPaths.size();
+    }
 
 }
