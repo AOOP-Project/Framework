@@ -18,20 +18,15 @@ import java.util.Objects;
  * @date: 2021-05-13
  * @time: 14:56
  **********************************************************************************************************************/
-public class MovingSquare implements ObjectPrefab
+public class MovingSquare extends ObjectPrefab
 {
-    private Grid grid;
-    private transient BufferedImage squareTexture;
+
     @UniqueSerializableField
     private int deltaTime;
-    @UniqueSerializableField
-    private String textureRef;
 
-    public MovingSquare(Grid grid, BufferedImage squareTexture,String textureRef,int deltaTime)
+    public MovingSquare(BufferedImage squareTexture,String textureRef,int id,int deltaTime)
     {
-        this.grid = grid;
-        this.squareTexture = squareTexture;
-        this.textureRef = textureRef;
+        super(squareTexture,textureRef,false,id);
         this.deltaTime = deltaTime;
     }
 
@@ -41,32 +36,11 @@ public class MovingSquare implements ObjectPrefab
     }
 
     @Override
-    public GameObject getInstance(int x, int y)
+    public GameObject getInstance(Grid grid, int x, int y)
     {
-        GameObject gameObject = new GameObject(grid,false,x,y);
-        gameObject.addComponent(new SimpleMove(gameObject,deltaTime));
-        gameObject.addComponent(new Sprite(gameObject,squareTexture,textureRef));
-        return gameObject;
-    }
-
-    @Override
-    public Sprite getSprite()
-    {
-        return new Sprite(null,squareTexture,textureRef);
-    }
-
-    @Override
-    public boolean equals(Object o)
-    {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        MovingSquare that = (MovingSquare) o;
-        return deltaTime == that.deltaTime && textureRef.equals(that.textureRef);
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash(deltaTime, textureRef);
+        GameObject instance = super.getInstance(grid,x,y);
+        instance.addComponent(new SimpleMove(instance,deltaTime));
+        instance.setCreator(this);
+        return instance;
     }
 }

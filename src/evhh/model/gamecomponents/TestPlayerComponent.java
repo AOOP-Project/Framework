@@ -19,15 +19,14 @@ import java.util.stream.Stream;
  * @date: 2021-05-13
  * @time: 15:21
  **********************************************************************************************************************/
-public class PlayerComponent extends ControllableComponent
+public class TestPlayerComponent extends ControllableComponent
 {
     private int upKeyCode, downKeyCode,rightKeyCode, leftKeyCode;
     private KeyboardInput keyboardInput;
-    transient private UserInputManager uIM;
 
-    public PlayerComponent(GameObject parent, UserInputManager uIM, int upKeyCode, int downKeyCode, int rightKeyCode, int leftKeyCode)
+    public TestPlayerComponent(GameObject parent, UserInputManager uIM, int upKeyCode, int downKeyCode, int rightKeyCode, int leftKeyCode)
     {
-        super(parent);
+        super(parent,uIM);
         this.uIM = uIM;
         this.upKeyCode = upKeyCode;
         this.downKeyCode = downKeyCode;

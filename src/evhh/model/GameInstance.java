@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
@@ -207,10 +208,11 @@ public class GameInstance implements ActionListener
     public void refreshSpritesInRenderer()
     {
         assert frameRenderer != null;
-        Stream<GameObject> stream1 = mainGrid.getStaticObjects().stream();
-        Stream<GameObject> stream2 = mainGrid.getDynamicObjects().stream();
+        ArrayList<GameObject> staticObjects = (ArrayList<GameObject>) mainGrid.getStaticObjects().clone();
+        ArrayList<GameObject> dynamicObjects = (ArrayList<GameObject>) mainGrid.getDynamicObjects().clone();
+
         frameRenderer.getGridRenderer().getSprites().clear();
-        Stream.concat(stream1, stream2).
+        Stream.concat(staticObjects.stream(), dynamicObjects.stream()).
                 map(g -> g.getComponent(Sprite.class)).
                 filter(Objects::nonNull).map(c -> (Sprite) c).
                 forEach(c -> frameRenderer.getGridRenderer().addSprite(c));

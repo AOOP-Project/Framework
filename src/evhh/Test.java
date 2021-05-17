@@ -4,7 +4,7 @@ import evhh.controller.InputManager.UserInputManager;
 import evhh.model.GameInstance;
 import evhh.model.Grid;
 import evhh.model.prefabs.MovingSquare;
-import evhh.model.prefabs.PlayerPrefab;
+import evhh.model.prefabs.TestPlayerPrefab;
 import evhh.model.prefabs.WallPrefab;
 import evhh.view.renderers.FrameRenderer;
 import evhh.view.renderers.GameFrame;
@@ -87,19 +87,19 @@ public class Test
     {
         game1.setUserInputManager(new UserInputManager(game1));
         game1.setMainGrid(new Grid(DEFAULT_GRID_WIDTH, DEFAULT_GRID_HEIGHT));
-        WallPrefab wallPrefab = new WallPrefab(game1.getMainGrid(), game1.getTexture("wall"), "wall");
-        MovingSquare movingSquare = new MovingSquare(game1.getMainGrid(), game1.getTexture("blank"), "blank", 500);
+        WallPrefab wallPrefab = new WallPrefab(game1.getTexture("wall"), "wall",100);
+        MovingSquare movingSquare = new MovingSquare( game1.getTexture("blank"), "blank", 120,500);
 
         for (int i = 5; i < 14; i++)
-            game1.addGameObject(wallPrefab.getInstance(i, i), i, i);
+            game1.addGameObject(wallPrefab.getInstance(game1.getMainGrid(),i, i), i, i);
 
-        game1.addGameObject(movingSquare.getInstance(1, 1), 1, 1);
+        game1.addGameObject(movingSquare.getInstance(game1.getMainGrid(),1, 1), 1, 1);
         movingSquare.setDeltaTime(400);
-        game1.addGameObject(movingSquare.getInstance(2, 2), 2, 2);
+        game1.addGameObject(movingSquare.getInstance(game1.getMainGrid(),2, 2), 2, 2);
         movingSquare.setDeltaTime(300);
-        game1.addGameObject(movingSquare.getInstance(3, 3), 3, 3);
-        PlayerPrefab playerPrefab = new PlayerPrefab(game1.getMainGrid(), game1.getTexture("player"), "player", game1.getUserInputManager());
-        game1.addGameObject(playerPrefab.getInstance(15, 15), 15, 15);
+        game1.addGameObject(movingSquare.getInstance(game1.getMainGrid(),3, 3), 3, 3);
+        TestPlayerPrefab playerPrefab = new TestPlayerPrefab(game1.getTexture("player"), "player", 150,game1.getUserInputManager());
+        game1.addGameObject(playerPrefab.getInstance(game1.getMainGrid(),15, 15), 15, 15);
     }
     public static void saveGameWithDelay(int delay, GameInstance game1)
     {

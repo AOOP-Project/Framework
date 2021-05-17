@@ -37,7 +37,9 @@ public class UserInputManager implements Serializable
     public void addKeyInput(KeyboardInput keyboardInput)
     {
         if (!keyboardInputs.contains(keyboardInput))
+        {
             keyboardInputs.add(keyboardInput);
+        }
     }
 
     public void addMouseInput(MouseInput mouseInput)

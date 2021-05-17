@@ -12,10 +12,12 @@ import evhh.controller.InputManager.UserInputManager;
  **********************************************************************************************************************/
 public abstract class ControllableComponent extends GameComponent
 {
-    public ControllableComponent(GameObject parent)
+    protected UserInputManager uIM;
+    public ControllableComponent(GameObject parent,UserInputManager uIM)
     {
         super(parent);
         assert !parent.isStatic() : "Controllable componenet can't be added to a static GameObject";
+        this.uIM = uIM;
     }
     public abstract void onUIMRefresh(UserInputManager uIM);
 

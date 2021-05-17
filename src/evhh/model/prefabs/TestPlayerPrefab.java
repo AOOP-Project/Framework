@@ -5,8 +5,7 @@ import evhh.controller.InputManager.UserInputManager;
 import evhh.model.GameObject;
 import evhh.model.Grid;
 import evhh.model.ObjectPrefab;
-import evhh.model.gamecomponents.PlayerComponent;
-import evhh.model.gamecomponents.Sprite;
+import evhh.model.gamecomponents.TestPlayerComponent;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -20,20 +19,15 @@ import java.util.Objects;
  * @date: 2021-05-13
  * @time: 15:38
  **********************************************************************************************************************/
-public class PlayerPrefab implements ObjectPrefab
+public class TestPlayerPrefab extends ObjectPrefab
 {
-    private Grid grid;
-    private GameObject playerObject;
-    transient  private BufferedImage playerIcon;
-    private UserInputManager uIM;
-    @UniqueSerializableField
-    private String textureRef;
 
     private final int DEFAULT_UP_KEY    = KeyEvent.VK_W;
     private final int DEFAULT_DOWN_KEY  = KeyEvent.VK_S;
     private final int DEFAULT_RIGHT_KEY = KeyEvent.VK_D;
     private final int DEFAULT_LEFT_KEY  = KeyEvent.VK_A;
 
+    private UserInputManager uIM;
     @UniqueSerializableField
     private int upKey                   = DEFAULT_UP_KEY;
     @UniqueSerializableField
@@ -43,29 +37,21 @@ public class PlayerPrefab implements ObjectPrefab
     @UniqueSerializableField
     private int leftKey                 = DEFAULT_LEFT_KEY;
 
-    public PlayerPrefab(Grid grid, BufferedImage playerIcon,String textureRef, UserInputManager uIM)
+    public TestPlayerPrefab(BufferedImage playerIcon, String textureRef, int id, UserInputManager uIM)
     {
-        this.textureRef = textureRef;
-        this.grid = grid;
-        this.playerIcon = playerIcon;
+        super(playerIcon,textureRef,false,id);
         this.uIM = uIM;
     }
 
     @Override
-    public GameObject getInstance(int x, int y)
+    public GameObject getInstance(Grid grid, int x, int y)
     {
-        playerObject = new GameObject(grid, false, x,y);
-        playerObject.addComponent(new Sprite(playerObject, playerIcon,textureRef));
-        playerObject.addComponent(new PlayerComponent(playerObject,uIM ,upKey ,downKey, rightKey, leftKey));
-        playerObject.setCreator(this);
-        return playerObject;
+        GameObject instance = super.getInstance(grid,x,y);
+        instance.addComponent(new TestPlayerComponent(instance,uIM ,upKey ,downKey, rightKey, leftKey));
+        instance.setCreator(this);
+        return instance;
     }
 
-    @Override
-    public Sprite getSprite()
-    {
-        return new Sprite(null,playerIcon,textureRef);
-    }
 
     public void setUpKey(int upKey)
     {
@@ -92,7 +78,7 @@ public class PlayerPrefab implements ObjectPrefab
     {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PlayerPrefab that = (PlayerPrefab) o;
+        TestPlayerPrefab that = (TestPlayerPrefab) o;
         return upKey == that.upKey && downKey == that.downKey && rightKey == that.rightKey && leftKey == that.leftKey && textureRef.equals(that.textureRef);
     }
 
