@@ -6,14 +6,12 @@ import evhh.model.gamecomponents.Sprite;
 import evhh.view.renderers.FrameRenderer;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 
 /***********************************************************************************************************************
@@ -46,6 +44,7 @@ public class GameInstance implements ActionListener
     private HashMap<String, BufferedImage> textures;
     private boolean running = false;
     private String gridSavePath;
+    private ArrayList<EventTrigger> events;
     //endregion
 
     public GameInstance(String gameInstanceName)
@@ -342,6 +341,34 @@ public class GameInstance implements ActionListener
     public void setGridSavePath()
     {
         this.gridSavePath = AssetLoader.setPathToSaveData();
+    }
+
+    public boolean removeEvent(EventTrigger eventTrigger)
+    {
+        assert events!=null;
+        return events.remove(eventTrigger);
+    }
+    public void addEvent(EventTrigger eventTrigger)
+    {
+        if(events==null)
+            events = new ArrayList<>();
+        events.add(eventTrigger);
+    }
+    public ArrayList<EventTrigger> getEvents()
+    {
+        ArrayList<EventTrigger> eventsCopy = new ArrayList<>();
+                Collections.copy(eventsCopy,events);
+        return eventsCopy;
+    }
+    public void checkEvents()
+    {
+        if(events==null)
+            return;
+        for (EventTrigger eT:events)
+        {
+            if(eT.checkTrigger())
+                eT.runEvent();
+        }
     }
 
 
