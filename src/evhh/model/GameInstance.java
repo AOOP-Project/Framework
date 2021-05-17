@@ -45,6 +45,9 @@ public class GameInstance implements ActionListener
     private boolean running = false;
     private String gridSavePath;
     private ArrayList<EventTrigger> events;
+    private java.util.Timer eventTimer;
+    private ArrayList<String> savedGridsPath;
+    private boolean checkEventsOnUpdate = false;
     //endregion
 
     public GameInstance(String gameInstanceName)
@@ -77,6 +80,8 @@ public class GameInstance implements ActionListener
     private void update()
     {
         mainGrid.getDynamicObjects().forEach(GameObject::update);
+        if(checkEventsOnUpdate)
+            checkEvents();
     }
 
     public void exit()
@@ -369,6 +374,51 @@ public class GameInstance implements ActionListener
             if(eT.checkTrigger())
                 eT.runEvent();
         }
+    }
+    public void startPeriodicEventChecking()
+    {
+        assert events!=null&&events.size()>0;
+        checkEventsOnUpdate = true;
+    }
+    public void stopPeriodicEventChecking()
+    {
+        checkEventsOnUpdate = false;
+    }
+    public void addSavedGridPath(String path)
+    {
+        if(savedGridsPath ==null)
+            savedGridsPath = new ArrayList<>();
+        savedGridsPath.add(path);
+    }
+    public boolean removeSavedGridPath(String path)
+    {
+        if(savedGridsPath ==null)
+            return false;
+        return savedGridsPath.remove(path);
+    }
+    public boolean removeSavedGridPath(int index)
+    {
+        if(savedGridsPath ==null)
+            return false;
+        if(index>=savedGridsPath.size() || index<0)
+            return false;
+        savedGridsPath.remove(index);
+        return  true;
+    }
+
+    public void switchGrid(int index)
+    {
+        assert savedGridsPath !=null;
+        assert savedGridsPath.size()>index;
+        assert index>0;
+        try
+        {
+            loadGridFromSave(savedGridsPath.get(index));
+        } catch (IOException | ClassNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
     }
 
 
