@@ -30,6 +30,8 @@ public class GridPanel extends JPanel
         this.cellSize = cellSize;
         this.gridRenderer = gridRenderer;
         setPreferredSize(new Dimension(gridWidth*cellSize,gridHeight*cellSize));
+        setFocusable(true);
+        requestFocusInWindow();
     }
 
     @Override

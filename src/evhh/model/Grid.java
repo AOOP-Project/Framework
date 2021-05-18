@@ -1,7 +1,5 @@
 package evhh.model;
 
-import evhh.model.gamecomponents.Sprite;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
@@ -24,6 +22,7 @@ public class Grid implements Serializable
     private int gridWidth, gridHeight;
     private ArrayList<GameObject> staticObjects;
     private ArrayList<GameObject> dynamicObjects;
+    private ArrayList<GameObject> controllableObjects;
     private transient GameInstance gameInstance;
 
 
@@ -34,6 +33,7 @@ public class Grid implements Serializable
         grid = new GameObject[gridWidth][gridHeight];
         staticObjects = new ArrayList<>();
         dynamicObjects = new ArrayList<>();
+        controllableObjects = new ArrayList<>();
     }
 
     synchronized public GameObject get(int x, int y)
@@ -65,6 +65,8 @@ public class Grid implements Serializable
             staticObjects.add(gObj);
         else
             dynamicObjects.add(gObj);
+        if(gObj.getComponentList().stream().anyMatch(c->c instanceof ControllableComponent))
+            addControllableObject(gObj);
         return gObj;
     }
 
@@ -107,8 +109,16 @@ public class Grid implements Serializable
             staticObjects.remove(grid[x][y]);
         else
             dynamicObjects.remove(grid[x][y]);
+        if(controllableObjects.remove(grid[x][y]))
+        {
+            gameInstance.removeAllMappedUserInputFromFrame();
+            grid[x][y] = null;
+            gameInstance.refreshMappedUserInput();
+            nGameObjects--;
+            return;
+        }
         grid[x][y] = null;
-        nGameObjects++;
+        nGameObjects--;
     }
 
     public boolean isEmpty(int x, int y)
@@ -172,7 +182,6 @@ public class Grid implements Serializable
             out.writeObject(grid);
             out.close();
             fileOut.close();
-            System.out.println("SAVING GRID...");
         }
 
     }
@@ -205,5 +214,20 @@ public class Grid implements Serializable
     {
         dynamicObjects.forEach(g->g.setGrid(this));
         staticObjects.forEach(g->g.setGrid(this));
+    }
+
+    public void addControllableObject(GameObject gameObject)
+    {
+        assert gameObject !=null;
+        controllableObjects.add(gameObject);
+    }
+    public boolean removeControllableObject(GameObject gameObject)
+    {
+        assert gameObject!=null;
+        return  controllableObjects.remove(gameObject);
+    }
+    public ArrayList<GameObject> getControllableObjects()
+    {
+        return controllableObjects;
     }
 }

@@ -1,13 +1,18 @@
 package evhh.model;
 
 import evhh.common.assetloading.AssetLoader;
+import evhh.controller.InputManager.KeyboardInput;
+import evhh.controller.InputManager.MouseInput;
 import evhh.controller.InputManager.UserInputManager;
 import evhh.model.gamecomponents.Sprite;
 import evhh.view.renderers.FrameRenderer;
 
+import javax.swing.*;
 import javax.swing.Timer;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.*;
@@ -48,6 +53,7 @@ public class GameInstance implements ActionListener
     private boolean checkEventsOnUpdate = false;
     private ArrayList<String> savedGridPaths;
     private int currentGridIndex = -1;
+    private boolean removeLock = false;
     //endregion
 
     public GameInstance(String gameInstanceName)
@@ -70,17 +76,17 @@ public class GameInstance implements ActionListener
         assert (updateTimer != null) : "Cant't start while updateTimer is null";
         assert (renderTimer != null) : "Cant't start while renderTimer is null";
         running = true;
-        refreshSpritesInRenderer();
         frameRenderer.start();
-        updateTimer.start();
         mainGrid.getDynamicObjects().forEach(GameObject::onStart);
         mainGrid.getStaticObjects().forEach(GameObject::onStart);
+        updateTimer.start();
+        refreshSpritesInRenderer();
     }
 
     private void update()
     {
         mainGrid.getDynamicObjects().forEach(GameObject::update);
-        if(checkEventsOnUpdate)
+        if (checkEventsOnUpdate)
             checkEvents();
     }
 
@@ -150,10 +156,25 @@ public class GameInstance implements ActionListener
     //endregion
 
     //region Grid
-    public void setMainGrid(Grid mainGrid)
+    public synchronized void setMainGrid(Grid mainGrid)
     {
+        if(mainGrid!=null && userInputManager!=null)
+        {
+            removeAllMappedUserInputFromFrame();
+        }
         this.mainGrid = mainGrid;
         mainGrid.setGameInstance(this);
+        mainGrid.getDynamicObjects().forEach(g->g.setGrid(mainGrid));
+        mainGrid.getStaticObjects().forEach(g->g.setGrid(mainGrid));
+        if(userInputManager!=null)
+            refreshMappedUserInput();
+        if(frameRenderer!=null)
+            refreshSpritesInRenderer();
+        if(isRunning())
+        {
+            running = false;
+            start();
+        }
     }
 
     public Grid getMainGrid()
@@ -209,11 +230,11 @@ public class GameInstance implements ActionListener
         this.frameRenderer = frameRenderer;
     }
 
-    public void refreshSpritesInRenderer()
+    public synchronized void refreshSpritesInRenderer()
     {
         assert frameRenderer != null;
-        ArrayList<GameObject> staticObjects = (ArrayList<GameObject>) mainGrid.getStaticObjects().clone();
-        ArrayList<GameObject> dynamicObjects = (ArrayList<GameObject>) mainGrid.getDynamicObjects().clone();
+        ArrayList<GameObject> staticObjects = new ArrayList<>(mainGrid.getStaticObjects());
+        ArrayList<GameObject> dynamicObjects = new ArrayList<>(mainGrid.getDynamicObjects());
 
         frameRenderer.getGridRenderer().getSprites().clear();
         Stream.concat(staticObjects.stream(), dynamicObjects.stream()).
@@ -272,44 +293,60 @@ public class GameInstance implements ActionListener
         return userInputManager;
     }
 
-    public void refreshMappedUserInput()
+    public synchronized void refreshMappedUserInput()
     {
+        assert mainGrid != null : "Main grid is null!";
         assert userInputManager != null : "The user input manager is null!";
-        synchronized (this)
+        assert !removeLock;
+        synchronized (frameRenderer.getGridRenderer().getGridPanel())
         {
-            getMainGrid().
-                    getDynamicObjects().
-                    forEach(g -> g.getComponentList().
-                            stream().
-                            filter(c -> c instanceof ControllableComponent).
-                            forEach(c -> ((ControllableComponent) c).onUIMRefresh(userInputManager)));
-            userInputManager.
-                    getKeyboardInputs().
-                    stream().
-                    filter(key1 -> !Arrays.asList(frameRenderer.
-                            getGameFrame().
-                            getKeyListeners()).
-                            contains(key1)).
-                    forEach(k -> frameRenderer.getGameFrame().addKeyListener(k));
 
-            userInputManager.
-                    getMouseInputs().
-                    stream().
-                    filter(m1 -> !Arrays.asList(frameRenderer.
-                            getGameFrame().
-                            getMouseListeners()).
-                            contains(m1)).
-                    forEach(m -> frameRenderer.getGameFrame().addMouseListener(m));
+            ArrayList<GameObject> dynamicObjects = new ArrayList<>(mainGrid.getDynamicObjects());
+            dynamicObjects.stream().
+                    filter(GameObject::isControllable).
+                    map(GameObject::getController).
+                    forEach(c -> c.onUIMRefresh(userInputManager));
+
+            ArrayList<KeyboardInput> keyboardInputs = new ArrayList<>(userInputManager.getKeyboardInputs());
+            keyboardInputs.stream().
+                    filter(key1 -> !Arrays.asList(frameRenderer.getGridRenderer().getGridPanel().getKeyListeners()).contains(key1)).
+                    forEach(k -> frameRenderer.getGridRenderer().getGridPanel().addKeyListener(k));
+
+            ArrayList<MouseInput> mouseInputs = new ArrayList<>(userInputManager.getMouseInputs());
+            mouseInputs.stream().
+                    filter(m1 -> !Arrays.asList(frameRenderer.getGridRenderer().getGridPanel().getMouseListeners()).contains(m1)).
+                    forEach(m -> frameRenderer.getGridRenderer().getGridPanel().addMouseListener(m));
+        }
+
+    }
+    public synchronized void removeAllMappedUserInputFromFrame()
+    {
+        if(userInputManager==null)
+            return;
+
+        synchronized (frameRenderer.getGridRenderer().getGridPanel())
+        {
+                removeLock = true;
+                ArrayList<KeyboardInput> keyboardInputs = new ArrayList<>(userInputManager.getKeyboardInputs());
+                for (KeyboardInput kI : keyboardInputs)
+                {
+                    frameRenderer.getGridRenderer().getGridPanel().removeKeyListener(kI);
+                }
+
+                ArrayList<MouseInput> mouseInputs = new ArrayList<>(userInputManager.getMouseInputs());
+                for (MouseInput mI : mouseInputs)
+                {
+                    frameRenderer.getGridRenderer().getGridPanel().removeMouseListener(mI);
+                }
+                userInputManager.getMouseInputs().clear();
+                userInputManager.getKeyboardInputs().clear();
+                removeLock = false;
         }
     }
 
-    public void loadGridFromSave(String gridSavePath) throws IOException, ClassNotFoundException
+    public synchronized void loadGridFromSave(String gridSavePath) throws IOException, ClassNotFoundException
     {
         setMainGrid(Grid.deserializeGrid(gridSavePath));
-        refreshSpritesInRenderer();
-        if (userInputManager == null)
-            setUserInputManager(new UserInputManager(this));
-        refreshMappedUserInput();
     }
 
     public void loadGridFromSave() throws IOException, ClassNotFoundException
@@ -327,7 +364,7 @@ public class GameInstance implements ActionListener
         Grid.serializeGrid(mainGrid, gridSavePath);
     }
 
-    public void saveMainGrid() throws IOException
+    public synchronized void saveMainGrid() throws IOException
     {
         assert gridSavePath != null;
         Grid.serializeGrid(mainGrid, gridSavePath);
@@ -350,67 +387,75 @@ public class GameInstance implements ActionListener
 
     public boolean removeEvent(EventTrigger eventTrigger)
     {
-        assert events!=null;
+        assert events != null;
         return events.remove(eventTrigger);
     }
+
     public void addEvent(EventTrigger eventTrigger)
     {
-        if(events==null)
+        if (events == null)
             events = new ArrayList<>();
         events.add(eventTrigger);
     }
+
     public ArrayList<EventTrigger> getEvents()
     {
         ArrayList<EventTrigger> eventsCopy = new ArrayList<>();
-                Collections.copy(eventsCopy,events);
+        Collections.copy(eventsCopy, events);
         return eventsCopy;
     }
+
     public void checkEvents()
     {
-        if(events==null)
+        if (events == null)
             return;
-        for (EventTrigger eT:events)
+        for (EventTrigger eT : events)
         {
-            if(eT.checkTrigger())
+            if (eT.checkTrigger())
                 eT.runEvent();
         }
     }
+
     public void startPeriodicEventChecking()
     {
-        assert events!=null&&events.size()>0;
+        assert events != null && events.size() > 0;
         checkEventsOnUpdate = true;
     }
+
     public void stopPeriodicEventChecking()
     {
         checkEventsOnUpdate = false;
     }
+
     public void addSavedGridPath(String path)
     {
-        if(savedGridPaths ==null)
+        if (savedGridPaths == null)
             savedGridPaths = new ArrayList<>();
         savedGridPaths.add(path);
     }
+
     public boolean removeSavedGridPath(String path)
     {
-        if(savedGridPaths ==null)
+        if (savedGridPaths == null)
             return false;
         return savedGridPaths.remove(path);
     }
+
     public boolean removeSavedGridPath(int index)
     {
-        if(savedGridPaths ==null)
+        if (savedGridPaths == null)
             return false;
-        if(index>= savedGridPaths.size() || index<0)
+        if (index >= savedGridPaths.size() || index < 0)
             return false;
         savedGridPaths.remove(index);
-        return  true;
+        return true;
     }
 
     public void switchGrid(int index)
     {
-        assert savedGridPaths !=null;
-        assert savedGridPaths.size()>index;
-        assert index>0;
+        assert savedGridPaths != null;
+        assert savedGridPaths.size() > index;
+        assert index > 0;
         try
         {
             loadGridFromSave(savedGridPaths.get(index));
@@ -420,16 +465,14 @@ public class GameInstance implements ActionListener
         }
 
     }
+
     public void reloadGrid()
     {
-        assert !(currentGridIndex<0||savedGridPaths==null);
+        assert !(currentGridIndex < 0 || savedGridPaths == null);
         try
         {
             loadGridFromSave(savedGridPaths.get(currentGridIndex));
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e)
+        } catch (IOException | ClassNotFoundException e)
         {
             e.printStackTrace();
         }
@@ -439,9 +482,10 @@ public class GameInstance implements ActionListener
     {
         return currentGridIndex;
     }
+
     public int numSavedGrids()
     {
-        if(savedGridPaths==null)
+        if (savedGridPaths == null)
             return 0;
         else
             return savedGridPaths.size();

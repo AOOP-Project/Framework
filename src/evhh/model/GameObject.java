@@ -18,6 +18,7 @@ import java.util.Optional;
 public class GameObject implements Serializable
 {
     private boolean staticObj;
+    private boolean controllable;
     private int x, y;
     private ArrayList<GameComponent> componentList;
     private Grid grid;
@@ -25,13 +26,17 @@ public class GameObject implements Serializable
     private ObjectPrefab creator;
     private Sprite sprite;
 
+
     public GameObject(Grid grid, boolean staticObj, int x, int y, ArrayList<GameComponent> componentList)
     {
         this.staticObj = staticObj;
         this.x = x;
         this.y = y;
         this.componentList = componentList;
+        controllable = componentList.stream().anyMatch(c->c instanceof ControllableComponent);
         this.grid = grid;
+        if(controllable)
+            grid.addControllableObject(this);
     }
 
     public GameObject(Grid grid, boolean staticObj, int x, int y)
@@ -41,6 +46,7 @@ public class GameObject implements Serializable
         this.y = y;
         componentList = new ArrayList<>();
         this.grid = grid;
+        controllable = false;
     }
 
     public boolean isStatic()
@@ -50,8 +56,14 @@ public class GameObject implements Serializable
 
     public void addComponent(GameComponent component)
     {
+        assert  component !=null;
         if(component.getClass()==Sprite.class)
             sprite = (Sprite) component;
+        if(component instanceof ControllableComponent)
+        {
+            grid.addControllableObject(this);
+            controllable = true;
+        }
         componentList.add(component);
     }
 
@@ -143,5 +155,17 @@ public class GameObject implements Serializable
     public Sprite getSprite()
     {
         return sprite;
+    }
+
+    public boolean isControllable()
+    {
+        return controllable;
+    }
+    public ControllableComponent getController()
+    {
+        assert controllable : "This GameObject:{ " + this.toString()+" } is not controllable";
+        Optional<ControllableComponent> controller = componentList.stream().filter(c -> c instanceof ControllableComponent).map(c->(ControllableComponent)c).findFirst();
+        assert controller.isPresent() : "Controllable object is tagged controllable but has no controller";
+        return controller.get();
     }
 }
