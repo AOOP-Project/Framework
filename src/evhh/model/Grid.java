@@ -53,6 +53,7 @@ public class Grid implements Serializable
         return gameObject.orElse(null);
 
     }
+
     public GameObject addGameObject(GameObject gObj, int x, int y)
     {
         if (!isValidCoordinates(x, y))
@@ -117,10 +118,13 @@ public class Grid implements Serializable
             nGameObjects--;
             return;
         }
+        gameInstance.getFrameRenderer().getGridRenderer().removeSprite(grid[x][y].getSprite());
         grid[x][y] = null;
         nGameObjects--;
     }
 
+
+    //region GameObject state
     public boolean isEmpty(int x, int y)
     {
         if (!isValidCoordinates(x, y))
@@ -141,6 +145,7 @@ public class Grid implements Serializable
             throw new NoSuchElementException("The coordinates :{x=" + x + " ,y=" + y + "} Are not valid coordinates");
         return !grid[x][y].isStatic();
     }
+    //endregion
 
     public boolean isValidCoordinates(int x, int y)
     {
