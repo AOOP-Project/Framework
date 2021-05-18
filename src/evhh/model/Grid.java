@@ -17,14 +17,15 @@ import java.util.stream.Stream;
  **********************************************************************************************************************/
 public class Grid implements Serializable
 {
-    private int nGameObjects = 0;
+    //region Fields
+    private int numGameObjects = 0;
     private GameObject[][] grid;
     private int gridWidth, gridHeight;
     private ArrayList<GameObject> staticObjects;
     private ArrayList<GameObject> dynamicObjects;
     private ArrayList<GameObject> controllableObjects;
     private transient GameInstance gameInstance;
-
+    //endregion
 
     public Grid(int gridWidth, int gridHeight)
     {
@@ -36,6 +37,13 @@ public class Grid implements Serializable
         controllableObjects = new ArrayList<>();
     }
 
+    public void onStart()
+    {
+        dynamicObjects.forEach(g -> g.setGrid(this));
+        staticObjects.forEach(g -> g.setGrid(this));
+    }
+
+    //region Field getters
     synchronized public GameObject get(int x, int y)
     {
         if (!isValidCoordinates(x, y))
@@ -44,16 +52,54 @@ public class Grid implements Serializable
 
     }
 
+    public boolean isValidCoordinates(int x, int y)
+    {
+        return !(x >= gridWidth || y >= gridHeight || x < 0 || y < 0);
+    }
+
+    public int getGridWidth()
+    {
+        return gridWidth;
+    }
+
+    public int getGridHeight()
+    {
+        return gridHeight;
+    }
+
+    public ArrayList<GameObject> getStaticObjects()
+    {
+        return staticObjects;
+    }
+
+    public ArrayList<GameObject> getDynamicObjects()
+    {
+        return dynamicObjects;
+    }
+
     public GameObject get(long id)
     {
         Optional<GameObject> gameObject = dynamicObjects.stream().filter(g -> g.getId() == id).findFirst();
-        if(gameObject.isPresent())
+        if (gameObject.isPresent())
             return gameObject.get();
         gameObject = staticObjects.stream().filter(g -> g.getId() == id).findFirst();
         return gameObject.orElse(null);
 
     }
 
+    public GameInstance getGameInstance()
+    {
+        return gameInstance;
+    }
+
+    public int getNumGameObjects()
+    {
+        return numGameObjects;
+    }
+
+    //endregion
+
+    //region GameObject manipulation
     public GameObject addGameObject(GameObject gObj, int x, int y)
     {
         if (!isValidCoordinates(x, y))
@@ -61,12 +107,12 @@ public class Grid implements Serializable
         grid[x][y] = gObj;
         gObj.setGrid(this);
         gObj.setPosition(x, y);
-        nGameObjects++;
+        numGameObjects++;
         if (gObj.isStatic())
             staticObjects.add(gObj);
         else
             dynamicObjects.add(gObj);
-        if(gObj.getComponentList().stream().anyMatch(c->c instanceof ControllableComponent))
+        if (gObj.getComponentList().stream().anyMatch(c -> c instanceof ControllableComponent))
             addControllableObject(gObj);
         return gObj;
     }
@@ -76,7 +122,7 @@ public class Grid implements Serializable
         if (!isValidCoordinates(x, y))
             throw new IndexOutOfBoundsException("The coordinates :{x=" + x + " ,y=" + y + "} Are not valid coordinates");
         grid[x][y] = new GameObject(this, isStatic, x, y);
-        nGameObjects++;
+        numGameObjects++;
         if (grid[x][y].isStatic())
             staticObjects.add(grid[x][y]);
         else
@@ -110,19 +156,20 @@ public class Grid implements Serializable
             staticObjects.remove(grid[x][y]);
         else
             dynamicObjects.remove(grid[x][y]);
-        if(controllableObjects.remove(grid[x][y]))
+        if (controllableObjects.remove(grid[x][y]))
         {
             gameInstance.removeAllMappedUserInputFromFrame();
             grid[x][y] = null;
             gameInstance.refreshMappedUserInput();
-            nGameObjects--;
+            numGameObjects--;
             return;
         }
         gameInstance.getFrameRenderer().getGridRenderer().removeSprite(grid[x][y].getSprite());
         grid[x][y] = null;
-        nGameObjects--;
+        numGameObjects--;
     }
 
+    //endregion
 
     //region GameObject state
     public boolean isEmpty(int x, int y)
@@ -147,39 +194,15 @@ public class Grid implements Serializable
     }
     //endregion
 
-    public boolean isValidCoordinates(int x, int y)
-    {
-        return !(x >= gridWidth || y >= gridHeight || x < 0 || y < 0);
-    }
-
-    public int getGridWidth()
-    {
-        return gridWidth;
-    }
-
-    public int getGridHeight()
-    {
-        return gridHeight;
-    }
-
-    public ArrayList<GameObject> getStaticObjects()
-    {
-        return staticObjects;
-    }
-
-    public ArrayList<GameObject> getDynamicObjects()
-    {
-        return dynamicObjects;
-    }
-
     public GameObject[] getGameObjectsWithComponent(Class<? extends GameComponent> containedComponent)
     {
         Stream<GameObject> stream1 = getStaticObjects().stream();
         Stream<GameObject> stream2 = getDynamicObjects().stream();
-        return Stream.concat(stream1,stream2).
-                filter(Objects::nonNull).filter(g->g.hasComponent(containedComponent)).toArray(GameObject[]::new);
+        return Stream.concat(stream1, stream2).
+                filter(Objects::nonNull).filter(g -> g.hasComponent(containedComponent)).toArray(GameObject[]::new);
     }
 
+    //region Serialization
     public static void serializeGrid(Grid grid, String path) throws IOException
     {
         try (FileOutputStream fileOut = new FileOutputStream(path); ObjectOutputStream out = new ObjectOutputStream(fileOut))
@@ -190,6 +213,7 @@ public class Grid implements Serializable
         }
 
     }
+
     public static Grid deserializeGrid(String path) throws IOException, ClassNotFoundException
     {
         Grid grid = null;
@@ -198,41 +222,39 @@ public class Grid implements Serializable
             grid = (Grid) in.readObject();
         } catch (IOException e1)
         {
-           throw new IOException(e1.getMessage());
+            throw new IOException(e1.getMessage());
         } catch (ClassNotFoundException e2)
         {
             throw new ClassNotFoundException("Grid file wrong version or not found!");
         }
         return grid;
     }
+    //endregion
 
-    public GameInstance getGameInstance()
-    {
-        return gameInstance;
-    }
 
     public void setGameInstance(GameInstance gameInstance)
     {
         this.gameInstance = gameInstance;
     }
-    public void onStart()
-    {
-        dynamicObjects.forEach(g->g.setGrid(this));
-        staticObjects.forEach(g->g.setGrid(this));
-    }
 
+
+    //region Controllers
     public void addControllableObject(GameObject gameObject)
     {
-        assert gameObject !=null;
+        assert gameObject != null;
         controllableObjects.add(gameObject);
     }
+
     public boolean removeControllableObject(GameObject gameObject)
     {
-        assert gameObject!=null;
-        return  controllableObjects.remove(gameObject);
+        assert gameObject != null;
+        return controllableObjects.remove(gameObject);
     }
+
     public ArrayList<GameObject> getControllableObjects()
     {
         return controllableObjects;
     }
+
+    //endregion
 }

@@ -10,6 +10,9 @@ import java.util.Objects;
  **********************************************************************************************************************/
 public abstract class ObjectPrefab implements Serializable
 {
+    /**
+     * Must be reloaded after deserialization
+     */
     protected  transient BufferedImage texture;
     protected  String textureRef;
     protected  int id;
@@ -23,6 +26,7 @@ public abstract class ObjectPrefab implements Serializable
      */
     public ObjectPrefab(BufferedImage texture, String textureRef, boolean isStatic,int id)
     {
+        assert texture!=null;
         this.texture = texture;
         this.textureRef  = textureRef ;
         this.isStatic  = isStatic ;
@@ -37,6 +41,15 @@ public abstract class ObjectPrefab implements Serializable
 
     public GameObject getInstance(Grid grid, int x, int y)
     {
+        if(texture ==null && textureRef!=null)
+            try
+            {
+                texture = grid.getGameInstance().getTexture(textureRef);
+            }catch (Exception ignored){
+                System.err.println("texture is null and load from texture reference failed.");
+                return null;
+            }
+        assert texture!=null:"texture is null and load from texture reference failed.";
         GameObject instance = new GameObject(grid,isStatic,x,y);
         instance.addComponent(new Sprite(instance,texture,textureRef));
         return instance;
@@ -48,7 +61,20 @@ public abstract class ObjectPrefab implements Serializable
      */
     public Sprite getSprite()
     {
+        assert texture!=null: "Texture is null, try reloading GameInstance";
         return new Sprite(null,texture,textureRef);
+    }
+
+    /**
+     * @param gameInstance Current GameInstance which has texture assets loaded
+     * @return if load was successful
+     */
+    public boolean reloadTexture(GameInstance gameInstance)
+    {
+        assert gameInstance!=null;
+        texture = gameInstance.getTexture(textureRef);
+        return texture != null;
+
     }
 
     @Override

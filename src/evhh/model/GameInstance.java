@@ -19,55 +19,156 @@ import java.util.*;
 import java.util.stream.Stream;
 
 /***********************************************************************************************************************
- * @project: MainProject
- * @package: evhh.model
- * ---------------------------------------------------------------------------------------------------------------------
- * @authors: Hamed Haghjo & Elias Vahlberg
- * @date: 2021-05-12
- * @time: 12:26
  **********************************************************************************************************************/
 public class GameInstance implements ActionListener
 {
 
     //region Constants
-    private final long GAMEOBJECT_ID_START = 1000;
-    private final long GAMEOBJECT_ID_INCREMENT = 10;
+    private final long GAMEOBJECT_ID_START = 0x100;
+    private final long GAMEOBJECT_ID_INCREMENT = 0x10;
     private final String[] DEFAULT_ALLOWED_TEXTURE_FILE_EXTENSIONS = {"JPEG", "PNG", "BMP", "WEBMP", "GIF"};
     //endregion
 
 
     //region Fields
+    /**
+     * Grid currently linked to this GameInstance, can be changed by
+     * either manually setting a new Grid or by loading a serialized Grid.
+     * @Serializeable
+     */
     private Grid mainGrid;
+
+    /**
+     * Container for all the mapped user input
+     * @NonSerializeable
+     */
     private UserInputManager userInputManager;
+
+    /**
+     * Housing for main JFrame GameFrame and other different Swing components.
+     * Updates content in the swing components based on the renderTimer.
+     * @NonSerializeable
+     */
     private FrameRenderer frameRenderer;
+
+    /**
+     * Timer responsible for periodically updating the internal game model.
+     * @Serializeable but is preferably reconstructed.
+     */
     private Timer updateTimer;
+
+    /**
+     * Timer responsible for periodically updating the external game view.
+     * @Serializeable but is preferably reconstructed.
+     */
     private Timer renderTimer;
+
+    /**
+     * Name of the current GameInstance used as a reference to the user.
+     * @Serializeable
+     */
     private String gameInstanceName;
+
+    /**
+     * Internal id counter responsible for creating unique GameObject id's
+     * uses basic incrementation of GAMEOBJECT_ID_INCREMENT to the base value GAMEOBJECT_ID_START
+     * @Serializeable
+     */
     private long gObjectId = GAMEOBJECT_ID_START;
+
+    /**
+     * Array of allowed file extension for the texture assets, used in  AssetLoader
+     * default value of DEFAULT_ALLOWED_TEXTURE_FILE_EXTENSIONS
+     * @Serializeable
+     */
     private String[] allowedTextureFileExtension = DEFAULT_ALLOWED_TEXTURE_FILE_EXTENSIONS;
+
+    /**
+     * Map between the string reference and the corresponding BufferedImage
+     * @NonSerializeable BufferedImage is inherantly NonSerializeable.
+     */
     private HashMap<String, BufferedImage> textures;
+
+    /**
+     * If the GameInstance is currently updating, value is changed by calling start()/exit()
+     * @Serializeable
+     */
     private boolean running = false;
+
+    /**
+     * Path to the current mainGrid, set during grid Serialization
+     * @Serializeable yes... believe it or not.
+     */
     private String gridSavePath;
+
+    /**
+     * List of events added to this GameInstance, is null until the first event is added.
+     * @NonSerializeable
+     */
     private ArrayList<EventTrigger> events;
-    private java.util.Timer eventTimer;
+
+    /**
+     * If event status is check during update, at least one event must be set before this can be true.
+     * Can be set by calling startPeriodicEventChecking()/stopPeriodicEventChecking
+     * @Serializeable but should not be
+     */
     private boolean checkEventsOnUpdate = false;
+
+    /**
+     * Saved grids that can be queued upp and switched between during runtime by calling switchGrid()-
+     * Appending paths to this list is done by calling addSavedGridPath().
+     * Removing paths from this list is done by calling removeSavedGridPath().
+     * Is null until one or more paths have been added.
+     * @Serializeable
+     */
     private ArrayList<String> savedGridPaths;
+
+    /**
+     * Index in SavedGridPaths for the current MainGrid if the grid is not loaded using this system then this value is -1.
+     * @Serializeable
+     */
     private int currentGridIndex = -1;
+
+    /**
+     * Internal field used to lock asynchronous operations done during the removing of Listeners from Swing.
+     * @Serializeable
+     */
     private boolean removeLock = false;
     //endregion
 
+    /**
+     * Constructs an empty/incomplete GameInstance, before starting the following must set:
+     * FrameRenderer ,MainGrid ,UpdateTimer ,RenderTimer
+     * @param gameInstanceName Name of the GameInstance only  used as reference to the user
+     */
     public GameInstance(String gameInstanceName)
     {
         this.gameInstanceName = gameInstanceName;
         textures = new HashMap<>();
     }
 
+    /**
+     * @return Name of this GameInstance
+     * Used as user reference only.
+     */
     public String getGameInstanceName()
     {
         return gameInstanceName;
     }
 
     //region Start/Update/Exit
+
+    /**
+     * Starts the GameInstance calling FrameRenderer.start(), MainGrid.start(), UpdateTimer.start()
+     *  the start methods in all active GameObjects in the MainGrid and refreshes the sprites in the render.
+     *  Presupposes that the following are already set: FrameRenderer ,MainGrid ,UpdateTimer ,RenderTimer.
+     *  Called automatically when a new grid is loaded from deserialization/manually.
+     *  Part of the Start/Update/Exit loop
+     *  @precondition frameRenderer != null
+     *  @precondition mainGrid != null
+     *  @precondition updateTimer != null
+     *  @precondition renderTimer != null
+     */
     public void start()
     {
         if (running)
@@ -78,12 +179,17 @@ public class GameInstance implements ActionListener
         assert (renderTimer != null) : "Cant't start while renderTimer is null";
         running = true;
         frameRenderer.start();
+        mainGrid.onStart();
         mainGrid.getDynamicObjects().forEach(GameObject::onStart);
         mainGrid.getStaticObjects().forEach(GameObject::onStart);
         updateTimer.start();
         refreshSpritesInRenderer();
     }
 
+    /**
+     * Is called internally at fixed intervals based on the delay set in the UpdateTimer.
+     * Part of the Start/Update/Exit loop
+     */
     private void update()
     {
         mainGrid.getDynamicObjects().forEach(GameObject::update);
@@ -91,6 +197,11 @@ public class GameInstance implements ActionListener
             checkEvents();
     }
 
+    /**
+     * Stops the updates from executing until start is called again, calls the onExit methods for each GameObject in the MainGrid.
+     * Also stops the FrameRenderer.
+     * Part of the Start/Update/Exit loop
+     */
     public void exit()
     {
         running = false;
@@ -99,6 +210,9 @@ public class GameInstance implements ActionListener
         mainGrid.getStaticObjects().forEach(GameObject::onExit);
     }
 
+    /**
+     * @return If the GameInstance is currently updating
+     */
     public boolean isRunning()
     {
         return running;
@@ -106,11 +220,18 @@ public class GameInstance implements ActionListener
     //endregion
 
     //region Internal Timers
+
+    /**
+     * @param updateTimer Timer with a set delay between updating.
+     */
     public void setUpdateTimer(Timer updateTimer)
     {
         this.updateTimer = updateTimer;
     }
 
+    /**
+     * @param timeDelta Time delay used to construct the update timer
+     */
     public void setUpdateTimer(int timeDelta)
     {
         this.updateTimer = new Timer(timeDelta, this);
@@ -126,12 +247,19 @@ public class GameInstance implements ActionListener
 
     //region Assets
 
+    /**
+     * @param allowedTextureFileExtension @see #allowedTextureFileExtension
+     */
     public void setAllowedTextureFileExtension(String[] allowedTextureFileExtension)
     {
         assert allowedTextureFileExtension != null;
         this.allowedTextureFileExtension = allowedTextureFileExtension;
     }
 
+    /**
+     * Loads texture assets by opening a JFileChooser window and allowing the user to select the path.
+     * With this path the loadTextureAssets() method is called
+     */
     public void loadTextureAssets()
     {
         String path = AssetLoader.getPathToDir();
@@ -139,6 +267,9 @@ public class GameInstance implements ActionListener
             loadTextureAssets(path);
     }
 
+    /**
+     * @param path The directory path containing ALL used asset textures used by the FrameRenderer
+     */
     public void loadTextureAssets(String path)
     {
         HashMap<String, BufferedImage> map = AssetLoader.LoadImageAssets(path, allowedTextureFileExtension);
@@ -146,11 +277,20 @@ public class GameInstance implements ActionListener
         map.forEach((k, v) -> textures.put(k, v));
     }
 
+    /**
+     * @return Map of String references to BufferedImage textures
+     * String reference is by default set to the filename (without file extension) of the loaded asset without any exten
+     */
     public HashMap<String, BufferedImage> getTextures()
     {
         return textures;
     }
 
+    /**
+     * @param name String reference a BufferedImage texture located in the Textures HashMap
+     * @return BufferedImage texture with the corresponding reference
+     * @precondition textures != null
+     */
     public BufferedImage getTexture(String name)
     {
         assert textures != null : "Texture map is null!";
@@ -159,9 +299,15 @@ public class GameInstance implements ActionListener
     //endregion
 
     //region Grid
+
+    /**
+     * @param mainGrid new MainGrid for this GameInstance
+     * If the MainGrid has been set before the previous mapped UserInput listeners are removed from the corresponding swing components.
+     * Successive calls to this method will cause this thread to repeatedly synchronize with the AWT event queue, this can slow other game aspects.
+     */
     public synchronized void setMainGrid(Grid mainGrid)
     {
-        if (mainGrid != null && userInputManager != null)
+        if (this.mainGrid != null && userInputManager != null)
         {
             removeAllMappedUserInputFromFrame();
         }
@@ -180,11 +326,22 @@ public class GameInstance implements ActionListener
         }
     }
 
+    /**
+     * @return Current active main grid
+     */
     public Grid getMainGrid()
     {
         return mainGrid;
     }
 
+    /**
+     * Adds the GameObject to the grid and sets an instance-unique  id
+     * @param gameObject
+     * @param x X position in the grid
+     * @param y Y position in the grid
+     * @return The updated GameObject used for method-chaining
+     * @precondition mainGrid != null
+     */
     public GameObject addGameObject(GameObject gameObject, int x, int y)
     {
         assert mainGrid != null;
@@ -198,6 +355,15 @@ public class GameInstance implements ActionListener
         return gameObject;
     }
 
+    /**
+     * Adds a new GameObject to the grid and sets an instance-unique  id.
+     * NOT recommended since no default sprite can be set.
+     * @param x
+     * @param y
+     * @param isStatic
+     * @return
+     * @precondition mainGrid != null
+     */
     public GameObject addGameObject(int x, int y, boolean isStatic)
     {
         assert mainGrid != null;
@@ -207,29 +373,56 @@ public class GameInstance implements ActionListener
         return gameObject;
     }
 
+    /**
+     * @param x X position in the grid
+     * @param y Y position in the grid
+     * @return GameObject at that coordinate if it is not empty otherwise null
+     * @precondition mainGrid != null
+     * @precondition mainGrid.isValidCoordinates(x,y)
+     */
     public GameObject getGameObject(int x, int y)
     {
         assert mainGrid != null;
+        assert mainGrid.isValidCoordinates(x,y);
         return mainGrid.get(x, y);
     }
 
+    /**
+     * @param id unique id of the requested GameObject
+     * @return requested GameObject
+     */
     public GameObject getGameObject(long id)
     {
         assert mainGrid != null;
         return mainGrid.get(id);
     }
 
+    /**
+     * @param containedComponent Type of the specific component
+     * @return  All GameObjects in the scene that house a component of the provided type
+     */
     public GameObject[] getGameObjects(Class<? extends GameComponent> containedComponent)
     {
         assert mainGrid != null;
         return mainGrid.getGameObjectsWithComponent(containedComponent);
     }
 
+    /**
+     * @param gridSavePath path to the serialized grid
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public synchronized void loadGridFromSave(String gridSavePath) throws IOException, ClassNotFoundException
     {
         setMainGrid(Grid.deserializeGrid(gridSavePath));
     }
 
+    /**
+     * Loads serialized grid and sets it using gridSavePath
+     * @throws IOException
+     * @throws ClassNotFoundException
+     * @precondition gridSavePath != null
+     */
     public void loadGridFromSave() throws IOException, ClassNotFoundException
     {
         assert gridSavePath != null;
@@ -240,27 +433,45 @@ public class GameInstance implements ActionListener
         refreshMappedUserInput();
     }
 
+    /**
+     * @param gridSavePath Path where the current MainGrid grid will be saved
+     * @throws IOException if invalid path
+     */
     public void saveMainGrid(String gridSavePath) throws IOException
     {
         Grid.serializeGrid(mainGrid, gridSavePath);
     }
 
+    /**
+     * same as above but uses gridSavePath
+     * @throws IOException if invalid path
+     * @precondition gridSavePath != null
+     */
     public synchronized void saveMainGrid() throws IOException
     {
         assert gridSavePath != null;
         Grid.serializeGrid(mainGrid, gridSavePath);
     }
 
+    /**
+     * @return current set grid save/load path
+     */
     public String getGridSavePath()
     {
         return gridSavePath;
     }
 
+    /**
+     * @param gridSavePath new MainGrid save/load path
+     */
     public void setGridSavePath(String gridSavePath)
     {
         this.gridSavePath = gridSavePath;
     }
 
+    /**
+     * Same as above but uses the JFileChooser system
+     */
     public void setGridSavePath()
     {
         this.gridSavePath = AssetLoader.setPathToSaveData();
