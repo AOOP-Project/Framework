@@ -548,11 +548,19 @@ public class GameInstance implements ActionListener
 
     //region Renderer
 
+    /**
+     * @return Active FrameRenderer of this GameInstance
+     */
     public FrameRenderer getFrameRenderer()
     {
         return frameRenderer;
     }
 
+    /**
+     * Assigns a new FrameRenderer for this GameInstance, should be done once before starting the GameInstance.
+     * After this the frameRenderer should not be reassigned or this could cause loose AWT event threads.
+     * @param frameRenderer new frameRenderer
+     */
     public void setFrameRenderer(FrameRenderer frameRenderer)
     {
         this.frameRenderer = frameRenderer;
@@ -579,24 +587,43 @@ public class GameInstance implements ActionListener
         }
     }
 
+    /**
+     * Adds a new sprite to the current FrameRenderer, changes to the sprite after it has been passed to the FrameRenderer
+     * will also affect the visuals of the frame.
+     * @param sprite Sprite housing positional information via the object parent and the texture to be rendered at this position
+     * @precondition frameRenderer != null
+     */
     public void addSprite(Sprite sprite)
     {
         assert frameRenderer != null;
         frameRenderer.getGridRenderer().addSprite(sprite);
     }
 
+    /**
+     * Starts the the assigned FrameRender, the GameFrame can still be visible before this but will not be updated.
+     * @precondition frameRenderer != null
+     */
     public void startRenderer()
     {
         assert frameRenderer != null;
         frameRenderer.start();
     }
 
+    /**
+     * Stops updating of the FrameRenderer but does not close the frame this can be done by setting GameFrame.setVisible(false)
+     * @precondition frameRenderer != null
+     */
     public void stopRenderer()
     {
         assert frameRenderer != null;
         frameRenderer.stop();
     }
 
+    /**
+     * @param timer Timer responsible for calling the rendering of each frame, the delay value should not be less than that of the updateTimer.
+     *              Can be the same as the update timer but this can in some instance cause threading issues.
+     * @precondition frameRenderer != null
+     */
     public void addRendererTimer(Timer timer)
     {
         assert frameRenderer != null;
@@ -604,11 +631,21 @@ public class GameInstance implements ActionListener
         frameRenderer.addTimer(timer);
     }
 
+    /**
+     * @param delay Delay of internally constructed Timer in the FrameRenderer, delay value should be greater than that of the updateTimer.
+     * @precondition frameRenderer != null
+     */
     public void addRendererTimer(int delay)
     {
+        assert frameRenderer != null;
         frameRenderer.addTimer(delay);
     }
 
+    /**
+     * @return whether the renderer is started, this is not allways the same as isRunning() since the renderer
+     * can run independently from the GameInstance but the state of the model will only be updated manually.
+     * @precondition frameRenderer != null
+     */
     public boolean isRendererStarted()
     {
         assert frameRenderer != null;
@@ -619,16 +656,33 @@ public class GameInstance implements ActionListener
     //endregion
 
     //region UI
+
+    /**
+     * @param userInputManager Assigns a new UserInputManager to this GameInstance, @see #userInputManager
+     */
     public void setUserInputManager(UserInputManager userInputManager)
     {
         this.userInputManager = userInputManager;
     }
 
+    /**
+     * @return The currently active UserInputManager to this GameInstance
+     */
     public UserInputManager getUserInputManager()
     {
         return userInputManager;
     }
 
+    /**
+     * Retrieves all MouseInput and KeyInput controllers from the mainGrid and adds it to the userInputManager and then maps the Listeners it to the gridPanel.
+     * Does not remove unused mapped input due to thread access limitations with the AWT event queue. To remove mapped user input Remove the responsible GameObject/GameComponent
+     * then call the removeAllMappedUserInputFromFrame() after that to remap the rest of the user input call refreshMappedUserInput(). Doing it this way ensures that all
+     * operations are thread safe.
+     * @precondition mainGrid != null
+     * @precondition userInputManager != null
+     * @precondition removeLock == false
+     *
+     */
     public synchronized void refreshMappedUserInput()
     {
         assert mainGrid != null : "Main grid is null!";
@@ -656,10 +710,20 @@ public class GameInstance implements ActionListener
 
     }
 
+    /**
+     * Removes all added listeners to the GridPanel refreshing the AWT event queue.
+     * Synchronizes with the GridPanel threads providing access to threaded swing/AWT components.
+     * Does not guarantee thread safety but minimizes threading issues in most basic thread configuration.
+     * Creates shallow copies of the keyboardInputs and mouseInputs in the user input manager.
+     * Blocks any calls to refreshMappedUserInput() by setting the removeLock.
+     * The thread calling this function should have a high priority compared to the Timer threads
+     * updating the renderer and gameInstance. Preferably this should be the main thread though this can
+     * be dangerous if there is current modifications to the userInputManager.
+     * @precondition userInputManager != null
+     */
     public synchronized void removeAllMappedUserInputFromFrame()
     {
-        if (userInputManager == null)
-            return;
+        assert userInputManager != null : "The user input manager is null!";
 
         synchronized (frameRenderer.getGridRenderer().getGridPanel())
         {
@@ -683,12 +747,24 @@ public class GameInstance implements ActionListener
     //endregion
 
     //region Events
+
+    /**
+     * Removes and event from the events list. If an event should not be checked on update but should be preserved this must
+     * be done externally since GameInstance does not house events that should not be checked if the field
+     * checkEventsOnUpdate is set.
+     * @param eventTrigger Event that should be removed from the event list
+     * @return if the event was removed, if the event is not contained in the event list this will return false
+     *
+     */
     public boolean removeEvent(EventTrigger eventTrigger)
     {
         assert events != null;
         return events.remove(eventTrigger);
     }
 
+    /**
+     * @param eventTrigger EventTrigger housing the condition and the action of the event
+     */
     public void addEvent(EventTrigger eventTrigger)
     {
         if (events == null)
@@ -696,6 +772,9 @@ public class GameInstance implements ActionListener
         events.add(eventTrigger);
     }
 
+    /**
+     * @return A shallow copy of the events list
+     */
     public ArrayList<EventTrigger> getEvents()
     {
         ArrayList<EventTrigger> eventsCopy = new ArrayList<>();
@@ -703,10 +782,15 @@ public class GameInstance implements ActionListener
         return eventsCopy;
     }
 
+    /**
+     * Checks all the events in the event list. If an event is triggered then the action of that event is preformed.
+     * This can be done periodically by calling startPeriodicEventChecking() which is done on the update thread after
+     * the game objects in the scene have been updated.
+     * @precondition events != null && events.size() > 0
+     */
     public void checkEvents()
     {
-        if (events == null)
-            return;
+        assert events != null && events.size() > 0;
         for (EventTrigger eT : events)
         {
             if (eT.checkTrigger())
@@ -714,12 +798,21 @@ public class GameInstance implements ActionListener
         }
     }
 
+    /**
+     * Adds event checking of each added event at the end of the GameInstance.update(),
+     * if synchronization of the renderer and checking of these events is required then
+     * the updateTimer and the renderTimer should be the same.
+     * @precondition events != null && events.size() > 0
+     */
     public void startPeriodicEventChecking()
     {
         assert events != null && events.size() > 0;
         checkEventsOnUpdate = true;
     }
 
+    /**
+     * Removes event checking of each added event at the end of the GameInstance.update().
+     */
     public void stopPeriodicEventChecking()
     {
         checkEventsOnUpdate = false;
