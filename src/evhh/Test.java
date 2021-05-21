@@ -2,15 +2,20 @@ package evhh;
 
 import evhh.controller.InputManager.UserInputManager;
 import evhh.model.GameInstance;
+import evhh.model.GameObject;
 import evhh.model.Grid;
+import evhh.model.gamecomponents.AudioComponent;
 import evhh.model.prefabs.MovingSquare;
 import evhh.model.prefabs.TestPlayerPrefab;
 import evhh.model.prefabs.WallPrefab;
+import evhh.view.audio.AudioListener;
 import evhh.view.renderers.FrameRenderer;
 import evhh.view.renderers.GameFrame;
 
 import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
+import java.text.FieldPosition;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,6 +33,9 @@ public class Test
     public static final int DEFAULT_GRID_HEIGHT = 16;
     public static final int DEFAULT_CELL_SIZE = 32;
     public static final String GRID_SAVE_PATH = System.getProperty("user.dir")+"\\SavedData\\grid1.ser";
+
+    public static GameObject soundObject;
+
     public static void main(String[] args)
     {
         GameInstance game1 = new GameInstance("Game1");
@@ -80,6 +88,7 @@ public class Test
 
         game1.start();
         game1.refreshSpritesInRenderer();
+        ((AudioComponent)soundObject.getComponent(AudioComponent.class)).play(0);
     }
 
 
@@ -100,6 +109,11 @@ public class Test
         game1.addGameObject(movingSquare.getInstance(game1.getMainGrid(),3, 3), 3, 3);
         TestPlayerPrefab playerPrefab = new TestPlayerPrefab(game1.getTexture("player"), "player", 150,game1.getUserInputManager());
         game1.addGameObject(playerPrefab.getInstance(game1.getMainGrid(),15, 15), 15, 15);
+        soundObject = new GameObject(game1.getMainGrid(),false,13,13);
+        game1.getFrameRenderer().setAudioListener(new AudioListener());
+        File[] audioFiles= new File[1];
+        audioFiles[0] = new File(System.getProperty("user.dir") + "/Assets/Music/MOOSIK.wav");
+        soundObject.addComponent(new AudioComponent(soundObject,game1.getFrameRenderer().getAudioListener(),audioFiles));
     }
     public static void saveGameWithDelay(int delay, GameInstance game1)
     {

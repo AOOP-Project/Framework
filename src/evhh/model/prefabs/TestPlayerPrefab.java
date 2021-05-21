@@ -27,7 +27,7 @@ public class TestPlayerPrefab extends ObjectPrefab
     private final int DEFAULT_RIGHT_KEY = KeyEvent.VK_D;
     private final int DEFAULT_LEFT_KEY  = KeyEvent.VK_A;
 
-    private UserInputManager uIM;
+    transient private UserInputManager uIM;
     @UniqueSerializableField
     private int upKey                   = DEFAULT_UP_KEY;
     @UniqueSerializableField
