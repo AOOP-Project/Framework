@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 public class TestPlayerComponent extends ControllableComponent
 {
     private int upKeyCode, downKeyCode,rightKeyCode, leftKeyCode;
-    private KeyboardInput keyboardInput;
+    transient private KeyboardInput keyboardInput;
 
     public TestPlayerComponent(GameObject parent, UserInputManager uIM, int upKeyCode, int downKeyCode, int rightKeyCode, int leftKeyCode)
     {

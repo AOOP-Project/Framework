@@ -1,5 +1,7 @@
 package evhh.view.renderers;
 
+import evhh.view.audio.AudioListener;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +21,7 @@ public class FrameRenderer implements ActionListener
     private GameFrame gameFrame;
     private Timer renderTimer;
     private boolean started = false;
+    private AudioListener audioListener;
 
     public FrameRenderer(GameFrame gameFrame, int gridWidth, int gridHeight, int cellSize)
     {
@@ -111,5 +114,15 @@ public class FrameRenderer implements ActionListener
     public void setGridBackgroundImage(BufferedImage image)
     {
         gridRenderer.setBackground(image);
+    }
+
+    public AudioListener getAudioListener()
+    {
+        return audioListener;
+    }
+
+    public void setAudioListener(AudioListener audioListener)
+    {
+        this.audioListener = audioListener;
     }
 }
