@@ -36,7 +36,6 @@ public class AudioComponent extends GameComponent
 
     public boolean play(int index)
     {
-        System.out.println("PLAY");
         try
         {
             audioStream = AudioSystem.getAudioInputStream(audioFiles[index]);
