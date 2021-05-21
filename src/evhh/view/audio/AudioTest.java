@@ -23,7 +23,7 @@ public class AudioTest implements LineListener
     public static void main(String[] args)
     {
         AudioTest dis = new AudioTest();
-        dis.play(System.getProperty("user.dir") +"/Assets/Music/incredibox-v6-beats.wav");
+        dis.play(System.getProperty("user.dir") +"/Assets/Music/MOOSIK.wav");
     }
 
     public void play(String path)
