@@ -151,6 +151,7 @@ public class MapEditorFrame extends JFrame
                                 "Pleas try again and select a valid file destination.",
                         "Saving Error",
                         JOptionPane.ERROR_MESSAGE);
+                ioException.printStackTrace();
             }
         };
         ActionListener loadListener = e ->
@@ -174,6 +175,7 @@ public class MapEditorFrame extends JFrame
                                 "And make sure there is no class version mismatch.",
                         "Loading Error",
                         JOptionPane.ERROR_MESSAGE);
+                ioException.printStackTrace();
             }
         };
         saveButton.addActionListener(saveListener);

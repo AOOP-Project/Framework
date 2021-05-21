@@ -30,25 +30,33 @@ public class GridPanel extends JPanel
         this.cellSize = cellSize;
         this.gridRenderer = gridRenderer;
         setPreferredSize(new Dimension(gridWidth*cellSize,gridHeight*cellSize));
+        setFocusable(true);
+        requestFocusInWindow();
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        if(backgroundImage!=null)
-            g2d.drawImage(backgroundImage,0,0,this);
-        ArrayList<Sprite> sprites = (ArrayList<Sprite>) gridRenderer.getSprites().clone(); //This is to avoid ConcurrentModificationException
-        sprites.stream().parallel().forEach(s->
-                g2d.drawImage(
-                        s.getTexture(),
-                        (int) s.getX()*cellSize,
-                        (int) gridHeight*cellSize-((s.getY()+1)*cellSize),
-                        this
-                )
-        );
+        if (backgroundImage != null)
+            g2d.drawImage(backgroundImage, 0, 0, this);
+        if(!gridRenderer.getSprites().isEmpty())
+        {
+            synchronized (gridRenderer.getSprites().get(0).getGameObject().getGrid().getGameInstance())
+            {
+                ArrayList<Sprite> sprites = new ArrayList<>(gridRenderer.getSprites()); //This is to avoid ConcurrentModificationException
+                sprites.stream().forEach(s ->
+                        g2d.drawImage(
+                                s.getTexture(),
+                                (int) s.getX() * cellSize,
+                                (int) gridHeight * cellSize - ((s.getY() + 1) * cellSize),
+                                this
+                        )
+                );
 
-        Toolkit.getDefaultToolkit().sync();
+                Toolkit.getDefaultToolkit().sync();
+            }
+        }
     }
 
     public Image getBackgroundImage()

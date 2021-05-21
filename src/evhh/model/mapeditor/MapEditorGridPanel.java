@@ -132,7 +132,7 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
                 {
                     if(workingGrid.isEmpty(x,y))
                     {
-                        workingGrid.addGameObject(mapEditor.getSelectedPrefab().getInstance(x,y),x,y);
+                        workingGrid.addGameObject(mapEditor.getSelectedPrefab().getInstance(workingGrid,x,y),x,y);
                         addedPrefabTextures.add(new SimpleEntry<>(mapEditor.getSelectedPrefab().getSprite().getTexture(), new Point(cellSize * x, cellSize * y)));
                         repaint();
                     }
@@ -159,7 +159,7 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
             }while (mouseDown);
         } catch (Exception ignored)
         {
-
+            ignored.printStackTrace();
         }
 
     }

@@ -18,7 +18,7 @@ import java.util.Objects;
  * @date: 2021-05-12
  * @time: 12:31
  **********************************************************************************************************************/
-public class KeyboardInput implements KeyListener, Serializable
+public class KeyboardInput implements KeyListener //Removed Serializeable
 {
     RunnableArg<KeyEvent> action;
     private HashMap<Integer,Integer> keyEventMap;
@@ -78,5 +78,6 @@ public class KeyboardInput implements KeyListener, Serializable
                     action.run(e);
         });
     }
+
 
 }
