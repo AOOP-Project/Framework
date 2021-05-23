@@ -6,6 +6,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -81,5 +83,39 @@ public class AssetLoader
             map.put(name, img);
         }
         return map;
+    }
+
+    public static File[] LoadFileAssetsFromDir(String path, String[] acceptedFileExtensions)
+    {
+        File dir = new File(path);
+        if (!dir.isDirectory())
+            return null;
+        File[] files = new File[Objects.requireNonNull(dir.listFiles()).length];
+        int i = 0;
+        for (File file : Objects.requireNonNull(dir.listFiles()))
+        {
+            String fileName = file.toString();
+
+            int index = fileName.lastIndexOf('.');
+            if(index > 0) {
+                String extension = fileName.substring(index + 1);
+                if(Arrays.asList(acceptedFileExtensions).contains(extension))
+                    files[i++]=file;
+            }
+        }
+        File[] shortened = new File[i+1];
+        System.arraycopy(files, 0, shortened, 0, i + 1);
+        return shortened;
+    }
+    public static File loadFileUsingJFileChooser()
+    {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        int response = fileChooser.showSaveDialog(null);
+        if (response == JFileChooser.APPROVE_OPTION)
+            return new File(fileChooser.getSelectedFile().getAbsolutePath());
+        else
+            return null;
     }
 }

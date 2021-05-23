@@ -165,6 +165,7 @@ public class Grid implements Serializable
             return;
         }
         gameInstance.getFrameRenderer().getGridRenderer().removeSprite(grid[x][y].getSprite());
+        grid[x][y].onExit();
         grid[x][y] = null;
         numGameObjects--;
     }

@@ -25,12 +25,22 @@ public class AudioComponent extends GameComponent
     transient private AudioInputStream audioStream;
     transient private DataLine.Info info;
     transient private AudioFormat format;
+    private float volume = 0.5f;
+    private FloatControl volumeControl;
 
     public AudioComponent(GameObject parent, AudioListener audioListener, File[] audioFiles)
     {
         super(parent);
         this.audioListener = audioListener;
         this.audioFiles = audioFiles;
+
+    }
+    public AudioComponent(GameObject parent, AudioListener audioListener, File[] audioFiles,float volume)
+    {
+        super(parent);
+        this.audioListener = audioListener;
+        this.audioFiles = audioFiles;
+        this.volume = volume;
 
     }
 
@@ -42,8 +52,12 @@ public class AudioComponent extends GameComponent
             format = audioStream.getFormat();
             info = new DataLine.Info(Clip.class, format);
             audioClip = (Clip) AudioSystem.getLine(info);
+
             audioClip.addLineListener(audioListener);
             audioClip.open(audioStream);
+
+            volumeControl = (FloatControl) audioClip.getControl(FloatControl.Type.MASTER_GAIN);
+            volumeControl.setValue(volume);
 
             audioClip.start();
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException | IndexOutOfBoundsException ignored)
@@ -76,7 +90,17 @@ public class AudioComponent extends GameComponent
             return false;
         return  audioClip.isRunning();
     }
+    public void setVolume(float gain)
+    {
+        volume = gain;
+        if(isPlaying()&&volumeControl!=null)
+            volumeControl.setValue(gain);
+    }
 
+    public float getVolume()
+    {
+        return volume;
+    }
 
     @Override
     public void onStart()
