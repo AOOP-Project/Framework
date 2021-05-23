@@ -17,12 +17,14 @@ import java.util.Date;
 public class TimeReference
 {
     private Date time;
-    Duration deltaTime = Duration.ZERO;
-    Instant startTime;
+    private Duration deltaTime = Duration.ZERO;
+    private Instant startTime;
+    private boolean started = false;
 
 
     public void start()
     {
+        started = true;
         startTime = Instant.now();
     }
     public void  reset()
@@ -31,6 +33,8 @@ public class TimeReference
     }
     public long getDeltaTime()
     {
+        if(!started)
+            return 0;
         deltaTime = Duration.between(startTime, Instant.now());
         return deltaTime.toMillis();
     }

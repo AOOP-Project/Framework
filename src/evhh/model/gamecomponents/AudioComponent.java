@@ -70,6 +70,12 @@ public class AudioComponent extends GameComponent
         assert audioClip != null;
         audioClip.close();
     }
+    public boolean isPlaying()
+    {
+        if(audioClip==null)
+            return false;
+        return  audioClip.isRunning();
+    }
 
 
     @Override
