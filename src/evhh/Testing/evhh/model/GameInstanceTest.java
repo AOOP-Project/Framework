@@ -282,90 +282,254 @@ class GameInstanceTest
     @Test
     void testLoadGridFromSave()
     {
+        try
+        {
+
+            GameObject[] constObjs = new GameObject[Math.min(mainGrid.getGridWidth(),mainGrid.getGridHeight())];
+            for (int i = 0; i <Math.min(mainGrid.getGridWidth(),mainGrid.getGridHeight()); i++)
+            {
+                constObjs[i] = getTestObject(game1.getMainGrid(), true, i, i);
+                game1.addGameObject(constObjs[i],i,i);
+            }
+            game1.saveMainGrid(GRID_SAVE_PATH);
+
+            game1.loadGridFromSave(GRID_SAVE_PATH);
+            assertNotEquals(mainGrid, game1.getMainGrid());
+            assertEquals(constObjs.length ,game1.getMainGrid().getStaticObjects().size());
+            assertEquals(constObjs.length ,game1.getGameObjects(TestComponent.class).length);
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail();
+        }
     }
 
-    @Test
-    void saveMainGrid()
-    {
-    }
-
-    @Test
-    void testSaveMainGrid()
-    {
-    }
-
-    @Test
-    void getGridSavePath()
-    {
-    }
 
     @Test
     void addSavedGridPath()
     {
+        try
+        {
+
+            GameObject[] constObjs = new GameObject[Math.min(mainGrid.getGridWidth(),mainGrid.getGridHeight())];
+            for (int i = 0; i <Math.min(mainGrid.getGridWidth(),mainGrid.getGridHeight()); i++)
+            {
+                constObjs[i] = getTestObject(game1.getMainGrid(), true, i, i);
+                game1.addGameObject(constObjs[i],i,i);
+            }
+            game1.saveMainGrid(GRID_SAVE_PATH);
+
+            game1.addSavedGridPath(GRID_SAVE_PATH);
+            game1.switchGrid(0);
+            assertNotEquals(mainGrid, game1.getMainGrid());
+            assertEquals(constObjs.length ,game1.getMainGrid().getStaticObjects().size());
+            assertEquals(constObjs.length ,game1.getGameObjects(TestComponent.class).length);
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail();
+        }
     }
 
     @Test
     void switchGrid()
     {
+        try
+        {
+
+            GameObject[] constObjs = new GameObject[Math.min(mainGrid.getGridWidth(),mainGrid.getGridHeight())];
+            for (int i = 0; i <Math.min(mainGrid.getGridWidth(),mainGrid.getGridHeight()); i++)
+            {
+                constObjs[i] = getTestObject(game1.getMainGrid(), true, i, i);
+                game1.addGameObject(constObjs[i],i,i);
+            }
+            game1.saveMainGrid(GRID_SAVE_PATH);
+
+            game1.addSavedGridPath(GRID_SAVE_PATH);
+            game1.addSavedGridPath(GRID_SAVE_PATH);
+            game1.addSavedGridPath(GRID_SAVE_PATH);
+            game1.addSavedGridPath(GRID_SAVE_PATH);
+            game1.addSavedGridPath(GRID_SAVE_PATH);
+            for (int i = 0; i < 4; i++)
+            {
+            game1.switchGrid(i);
+
+            assertNotEquals(mainGrid, game1.getMainGrid());
+            assertEquals(constObjs.length ,game1.getMainGrid().getStaticObjects().size());
+            assertEquals(constObjs.length ,game1.getGameObjects(TestComponent.class).length);
+            }
+            assertThrows(AssertionError.class,()->game1.switchGrid(5));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail();
+        }
     }
 
     @Test
     void reloadGrid()
     {
+        try
+        {
+
+            GameObject[] constObjs = new GameObject[Math.min(mainGrid.getGridWidth(),mainGrid.getGridHeight())];
+            for (int i = 0; i <Math.min(mainGrid.getGridWidth(),mainGrid.getGridHeight()); i++)
+            {
+                constObjs[i] = getTestObject(game1.getMainGrid(), true, i, i);
+                game1.addGameObject(constObjs[i],i,i);
+            }
+            game1.saveMainGrid(GRID_SAVE_PATH);
+
+            game1.addSavedGridPath(GRID_SAVE_PATH);
+            game1.switchGrid(0);
+            for (int i = 0; i < 100; i++)
+            {
+                Grid prevGrid = game1.getMainGrid();
+                game1.reloadGrid();
+                assertNotEquals(prevGrid, game1.getMainGrid());
+                assertEquals(constObjs.length ,game1.getMainGrid().getStaticObjects().size());
+                assertEquals(constObjs.length ,game1.getGameObjects(TestComponent.class).length);
+            }
+            assertThrows(AssertionError.class,()->game1.switchGrid(5));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail();
+        }
     }
 
     @Test
     void refreshSpritesInRenderer()
     {
+        try
+        {
+            game1.loadTextureAssets(System.getProperty("user.dir")+"\\Assets\\Images");
+            GameObject[] gameObjects = new GameObject[Math.min(game1.getMainGrid().getGridWidth(),game1.getMainGrid().getGridHeight())];
+            for (int i = 0; i < Math.min(game1.getMainGrid().getGridWidth(),game1.getMainGrid().getGridHeight()); i++)
+            {
+                gameObjects[i] = getTestObject(game1.getMainGrid(),false,i,i);
+                gameObjects[i].addComponent(new Sprite(gameObjects[i],game1.getTexture("img1"),"img1"));
+                game1.addGameObject(gameObjects[i],i,i);
+
+            }
+            game1.refreshSpritesInRenderer();
+            assertTrue(game1.getFrameRenderer().getGridRenderer().getSprites().stream().allMatch(sprite -> Arrays.stream(gameObjects).anyMatch(gameObject -> gameObject.getSprite().equals(sprite))));
+
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail();
+        }
     }
 
     @Test
     void addSprite()
     {
-    }
+        try
+        {
+            game1.loadTextureAssets(System.getProperty("user.dir")+"\\Assets\\Images");
+            GameObject[] gameObjects = new GameObject[Math.min(game1.getMainGrid().getGridWidth(),game1.getMainGrid().getGridHeight())];
+            for (int i = 0; i < Math.min(game1.getMainGrid().getGridWidth(),game1.getMainGrid().getGridHeight()); i++)
+            {
+                gameObjects[i] = getTestObject(game1.getMainGrid(),false,i,i);
+                gameObjects[i].addComponent(new Sprite(gameObjects[i],game1.getTexture("img1"),"img1"));
+                game1.addGameObject(gameObjects[i],i,i);
+                game1.addSprite(gameObjects[i].getSprite());
 
-    @Test
-    void addRendererTimer()
-    {
-    }
-
-    @Test
-    void testAddRendererTimer()
-    {
+            }
+            assertTrue(game1.getFrameRenderer().getGridRenderer().getSprites().stream().allMatch(sprite -> Arrays.stream(gameObjects).anyMatch(gameObject -> gameObject.getSprite().equals(sprite))));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail();
+        }
     }
 
     @Test
     void refreshMappedUserInput()
     {
+        try
+        {
+            GameObject[] gameObjects = new GameObject[Math.min(game1.getMainGrid().getGridWidth(),game1.getMainGrid().getGridHeight())];
+            for (int i = 0; i < Math.min(game1.getMainGrid().getGridWidth(),game1.getMainGrid().getGridHeight()); i++)
+            {
+                gameObjects[i] = getTestObject(game1.getMainGrid(),false,i,i);
+                gameObjects[i].addComponent(new TestControllableComponent(gameObjects[i],game1.getUserInputManager(),i));
+                game1.addGameObject(gameObjects[i],i,i);
+
+            }
+            refreshMappedUserInput();
+            assertTrue(game1.getFrameRenderer().getGridRenderer().getSprites().stream().allMatch(sprite -> Arrays.stream(gameObjects).anyMatch(gameObject -> gameObject.getSprite().equals(sprite))));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail();
+        }
     }
 
     @Test
     void removeAllMappedUserInputFromFrame()
     {
+        try
+        {
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail();
+        }
     }
 
     @Test
     void removeEvent()
     {
+        try
+        {
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail();
+        }
     }
 
     @Test
     void addEvent()
     {
+        try
+        {
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail();
+        }
     }
 
     @Test
     void checkEvents()
     {
+        try
+        {
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            fail();
+        }
     }
 
     @Test
     void startPeriodicEventChecking()
-    {
-    }
-
-    @Test
-    void stopPeriodicEventChecking()
     {
     }
 

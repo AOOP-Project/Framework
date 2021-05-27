@@ -1,4 +1,4 @@
-package functional.testingcomponents;
+
 
 import evhh.common.RunnableArg;
 import evhh.controller.InputManager.KeyboardInput;

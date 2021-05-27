@@ -409,6 +409,7 @@ public class GameInstance implements ActionListener
     }
 
     /**
+     * See: {@link evhh.model.Grid#deserializeGrid(String)}
      * @param gridSavePath path to the serialized grid
      * @throws IOException
      * @throws ClassNotFoundException
@@ -440,7 +441,9 @@ public class GameInstance implements ActionListener
      */
     public void saveMainGrid(String gridSavePath) throws IOException
     {
+        assert mainGrid!=null;
         Grid.serializeGrid(mainGrid, gridSavePath);
+        this.gridSavePath = gridSavePath;
     }
 
     /**
@@ -450,6 +453,7 @@ public class GameInstance implements ActionListener
      */
     public synchronized void saveMainGrid() throws IOException
     {
+        assert mainGrid!=null;
         assert gridSavePath != null;
         Grid.serializeGrid(mainGrid, gridSavePath);
     }
@@ -507,7 +511,7 @@ public class GameInstance implements ActionListener
     {
         assert savedGridPaths != null;
         assert savedGridPaths.size() > index;
-        assert index > 0;
+        assert index >= 0;
         try
         {
             loadGridFromSave(savedGridPaths.get(index));
