@@ -8,6 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/Assets" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/SavedData" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/evhh/Testing/JUnit" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/evhh/Testing/TestAssets" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/evhh/Testing/evhh" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/evhh/Testing/evhh/model" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/evhh/Testing/functional" isTestSource="true" />

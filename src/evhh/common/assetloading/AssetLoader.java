@@ -5,6 +5,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
@@ -65,15 +66,17 @@ public class AssetLoader
         File dir = new File(path);
         if (!dir.isDirectory())
             return null;
+        File[] files = dir.listFiles((dir1, name1) -> Arrays.stream(acceptedFileExtensions).anyMatch(ext-> name1.toLowerCase().endsWith(ext)));
         HashMap<String, BufferedImage> map = new HashMap<>();
-        for (File file : Objects.requireNonNull(dir.listFiles()))
+        for (File file : Objects.requireNonNull(files))
         {
             BufferedImage img = null;
             String name = "";
 
             try
             {
-                img = ImageIO.read(file);
+
+                    img = ImageIO.read(file);
                 name = file.getName().replaceFirst("[.][^.]+$", "");
             } catch (IOException e)
             {

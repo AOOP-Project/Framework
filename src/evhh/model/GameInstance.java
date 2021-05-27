@@ -26,7 +26,7 @@ public class GameInstance implements ActionListener
     //region Constants
     private final long GAMEOBJECT_ID_START = 0x100;
     private final long GAMEOBJECT_ID_INCREMENT = 0x10;
-    private final String[] DEFAULT_ALLOWED_TEXTURE_FILE_EXTENSIONS = {"JPEG", "PNG", "BMP", "WEBMP", "GIF"};
+    private final String[] DEFAULT_ALLOWED_TEXTURE_FILE_EXTENSIONS = {".jpeg", ".png", ".bmp", ".webmp", ".gif"};
     //endregion
 
 
@@ -307,6 +307,7 @@ public class GameInstance implements ActionListener
      */
     public synchronized void setMainGrid(Grid mainGrid)
     {
+        assert mainGrid !=null;
         if (this.mainGrid != null && userInputManager != null)
         {
             removeAllMappedUserInputFromFrame();
@@ -639,6 +640,7 @@ public class GameInstance implements ActionListener
     {
         assert frameRenderer != null;
         frameRenderer.addTimer(delay);
+        renderTimer = frameRenderer.getRenderTimer();
     }
 
     /**

@@ -25,7 +25,8 @@ public class ExtendedMapEditorTest
     {
         Grid grid1 = new Grid(16,16);
 
-        HashMap<String, BufferedImage> map = AssetLoader.LoadImageAssets(System.getProperty("user.dir")+"\\Assets\\Images", new String[]{"png,jpg"});
+        HashMap<String, BufferedImage> map = AssetLoader.LoadImageAssets(System.getProperty("user.dir")+"\\Assets\\Images", new String[]{".png",".jpg"});
+        System.out.println(map);
 
         WallPrefab wallPrefab = new WallPrefab(map.get("wall"), "wall",210);
         MovingSquare movingSquare = new MovingSquare(map.get("blank"), "blank",220 ,500);
