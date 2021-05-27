@@ -1,10 +1,9 @@
-package evhh.model.prefabs;
+package functional.testingprefabs;
 
 import evhh.annotations.UniqueSerializableField;
 import evhh.model.GameObject;
 import evhh.model.Grid;
 import evhh.model.ObjectPrefab;
-import evhh.model.gamecomponents.SimpleMove;
 import evhh.model.gamecomponents.Sprite;
 
 import java.awt.image.BufferedImage;
@@ -16,30 +15,20 @@ import java.util.Objects;
  * ---------------------------------------------------------------------------------------------------------------------
  * @authors: Hamed Haghjo & Elias Vahlberg
  * @date: 2021-05-13
- * @time: 14:56
+ * @time: 14:38
  **********************************************************************************************************************/
-public class MovingSquare extends ObjectPrefab
+public class WallPrefab extends ObjectPrefab
 {
 
-    @UniqueSerializableField
-    private int deltaTime;
-
-    public MovingSquare(BufferedImage squareTexture,String textureRef,int id,int deltaTime)
+    public WallPrefab(BufferedImage wallTexture,String textureRef,int id)
     {
-        super(squareTexture,textureRef,false,id);
-        this.deltaTime = deltaTime;
-    }
-
-    public void setDeltaTime(int deltaTime)
-    {
-        this.deltaTime = deltaTime;
+        super(wallTexture,textureRef,true,id);
     }
 
     @Override
-    public GameObject getInstance(Grid grid, int x, int y)
+    public GameObject getInstance(Grid grid,int x, int y)
     {
         GameObject instance = super.getInstance(grid,x,y);
-        instance.addComponent(new SimpleMove(instance,deltaTime));
         instance.setCreator(this);
         return instance;
     }

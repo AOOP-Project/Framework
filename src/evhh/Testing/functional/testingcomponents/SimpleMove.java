@@ -1,6 +1,4 @@
-package evhh.model.gamecomponents;
-
-import evhh.annotations.Precondition;
+package functional.testingcomponents;
 import evhh.common.TimeReference;
 import evhh.model.GameComponent;
 import evhh.model.GameObject;

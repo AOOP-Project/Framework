@@ -192,7 +192,7 @@ public class GameInstance implements ActionListener
      */
     private void update()
     {
-        mainGrid.getDynamicObjects().forEach(GameObject::update);
+        new ArrayList<>(mainGrid.getDynamicObjects()).forEach(GameObject::update);
         if (checkEventsOnUpdate)
             checkEvents();
     }

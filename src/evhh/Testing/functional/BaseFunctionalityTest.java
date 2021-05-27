@@ -1,22 +1,20 @@
-package evhh;
+package functional;
 
 import evhh.controller.InputManager.UserInputManager;
 import evhh.model.GameInstance;
 import evhh.model.GameObject;
 import evhh.model.Grid;
 import evhh.model.gamecomponents.AudioComponent;
-import evhh.model.prefabs.MovingSquare;
-import evhh.model.prefabs.TestPlayerPrefab;
-import evhh.model.prefabs.WallPrefab;
+import functional.testingprefabs.MovingSquare;
+import functional.testingprefabs.TestPlayerPrefab;
+import functional.testingprefabs.WallPrefab;
 import evhh.view.audio.AudioListener;
 import evhh.view.renderers.FrameRenderer;
 import evhh.view.renderers.GameFrame;
 
 import javax.swing.*;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.text.FieldPosition;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,7 +26,7 @@ import java.util.TimerTask;
  * @date: 2021-05-12
  * @time: 11:18
  **********************************************************************************************************************/
-public class Test
+public class BaseFunctionalityTest
 {
     public static final int DEFAULT_GRID_WIDTH = 16;
     public static final int DEFAULT_GRID_HEIGHT = 16;

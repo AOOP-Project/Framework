@@ -1,11 +1,11 @@
-package evhh;
+package functional;
 
 import evhh.common.assetloading.AssetLoader;
 import evhh.model.Grid;
 import evhh.model.ObjectPrefab;
 import evhh.model.mapeditor.MapEditor;
-import evhh.model.prefabs.MovingSquare;
-import evhh.model.prefabs.WallPrefab;
+import functional.testingprefabs.MovingSquare;
+import functional.testingprefabs.WallPrefab;
 
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import java.util.HashMap;
  * @date: 2021-05-14
  * @time: 23:19
  **********************************************************************************************************************/
-public class TestMapEditor
+public class ExtendedMapEditorTest
 {
 
     public static void main(String[] args)

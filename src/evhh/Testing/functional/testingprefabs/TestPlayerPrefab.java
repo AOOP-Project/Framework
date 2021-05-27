@@ -1,11 +1,11 @@
-package evhh.model.prefabs;
+package functional.testingprefabs;
 
 import evhh.annotations.UniqueSerializableField;
 import evhh.controller.InputManager.UserInputManager;
 import evhh.model.GameObject;
 import evhh.model.Grid;
 import evhh.model.ObjectPrefab;
-import evhh.model.gamecomponents.TestPlayerComponent;
+import functional.testingcomponents.TestPlayerComponent;
 
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;

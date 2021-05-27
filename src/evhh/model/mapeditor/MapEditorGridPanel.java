@@ -159,7 +159,6 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
             }while (mouseDown);
         } catch (Exception ignored)
         {
-            ignored.printStackTrace();
         }
 
     }
