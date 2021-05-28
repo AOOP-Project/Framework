@@ -13,56 +13,59 @@ public abstract class ObjectPrefab implements Serializable
     /**
      * Must be reloaded after deserialization
      */
-    protected  transient BufferedImage texture;
-    protected  String textureRef;
-    protected  int id;
-    protected  boolean isStatic;
+    protected transient BufferedImage texture;
+    protected String textureRef;
+    protected int id;
+    protected boolean isStatic;
 
     /**
-     * @param texture Texture used in sprite
+     * @param texture    Texture used in sprite
      * @param textureRef Reference to the image file
-     * @param isStatic If objects created using this prefab should be static or dynamic
-     * @param id Unique id used for hash
+     * @param isStatic   If objects created using this prefab should be static or dynamic
+     * @param id         Unique id used for hash
      */
-    public ObjectPrefab(BufferedImage texture, String textureRef, boolean isStatic,int id)
+    public ObjectPrefab(BufferedImage texture, String textureRef, boolean isStatic, int id)
     {
-        assert texture!=null;
+        assert texture != null;
         this.texture = texture;
-        this.textureRef  = textureRef ;
-        this.isStatic  = isStatic ;
-        this.id  = id ;
+        this.textureRef = textureRef;
+        this.isStatic = isStatic;
+        this.id = id;
     }
+
     /**
      * @param grid the current grid
-     * @param x X position in grid
-     * @param y Y position in grid
+     * @param x    X position in grid
+     * @param y    Y position in grid
      * @return instantiated Game object
      */
 
     public GameObject getInstance(Grid grid, int x, int y)
     {
-        if(texture ==null && textureRef!=null)
+        if (texture == null && textureRef != null)
             try
             {
                 texture = grid.getGameInstance().getTexture(textureRef);
-            }catch (Exception ignored){
+            } catch (Exception ignored)
+            {
                 System.err.println("texture is null and load from texture reference failed.");
                 return null;
             }
-        assert texture!=null:"texture is null and load from texture reference failed.";
-        GameObject instance = new GameObject(grid,isStatic,x,y);
-        instance.addComponent(new Sprite(instance,texture,textureRef));
+        assert texture != null : "texture is null and load from texture reference failed.";
+        GameObject instance = new GameObject(grid, isStatic, x, y);
+        instance.addComponent(new Sprite(instance, texture, textureRef));
         return instance;
     }
 
     /**
      * When creating the sprite the (@param GameObject parent) should be null
+     *
      * @return A reference sprite used in map editing
      */
     public Sprite getSprite()
     {
-        assert texture!=null: "Texture is null, try reloading GameInstance";
-        return new Sprite(null,texture,textureRef);
+        assert texture != null : "Texture is null, try reloading GameInstance";
+        return new Sprite(null, texture, textureRef);
     }
 
     /**
@@ -71,7 +74,7 @@ public abstract class ObjectPrefab implements Serializable
      */
     public boolean reloadTexture(GameInstance gameInstance)
     {
-        assert gameInstance!=null;
+        assert gameInstance != null;
         texture = gameInstance.getTexture(textureRef);
         return texture != null;
 

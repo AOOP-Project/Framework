@@ -18,10 +18,10 @@ public abstract class ControllableComponent extends GameComponent
     transient protected UserInputManager uIM;
 
     /**
-     * @param parent  Parent GameObject passed to GameComponent default constructor
-     * @param uIM The UserInputManager where KeyboardInput/MouseInput is stored
+     * @param parent Parent GameObject passed to GameComponent default constructor
+     * @param uIM    The UserInputManager where KeyboardInput/MouseInput is stored
      */
-    public ControllableComponent(GameObject parent,UserInputManager uIM)
+    public ControllableComponent(GameObject parent, UserInputManager uIM)
     {
         super(parent);
         assert !parent.isStatic() : "Controllable componenet can't be added to a static GameObject";
@@ -31,10 +31,10 @@ public abstract class ControllableComponent extends GameComponent
 
     /**
      * Called from GameInstance after deserialization of a new grid or if a clear connection between the mapped input and component it is attached to.
-     *      This function must reconstruct the non-serializable types from serializable types.
-     *      Framework specific non-serializable types include: KeyboardInput, MouseInput, RunnableArg, ImageTiler
-     * @param uIM New user input manager passed from the game instance
+     * This function must reconstruct the non-serializable types from serializable types.
+     * Framework specific non-serializable types include: KeyboardInput, MouseInput, RunnableArg, ImageTiler
      *
+     * @param uIM New user input manager passed from the game instance
      */
     public abstract void onUIMRefresh(UserInputManager uIM);
 

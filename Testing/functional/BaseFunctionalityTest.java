@@ -31,7 +31,7 @@ public class BaseFunctionalityTest
     public static final int DEFAULT_GRID_WIDTH = 16;
     public static final int DEFAULT_GRID_HEIGHT = 16;
     public static final int DEFAULT_CELL_SIZE = 32;
-    public static final String GRID_SAVE_PATH = System.getProperty("user.dir")+"\\SavedData\\grid1.ser";
+    public static final String GRID_SAVE_PATH = System.getProperty("user.dir") + "\\SavedData\\grid1.ser";
 
     public static GameObject soundObject;
 
@@ -40,29 +40,31 @@ public class BaseFunctionalityTest
         GameInstance game1 = new GameInstance("Game1");
         FrameRenderer frameRenderer = new FrameRenderer(
                 new GameFrame(
-                     DEFAULT_GRID_WIDTH*DEFAULT_CELL_SIZE,
-                     DEFAULT_GRID_WIDTH*DEFAULT_CELL_SIZE,
+                        DEFAULT_GRID_WIDTH * DEFAULT_CELL_SIZE,
+                        DEFAULT_GRID_WIDTH * DEFAULT_CELL_SIZE,
                         game1.getGameInstanceName()),
-                        DEFAULT_GRID_WIDTH,
-                        DEFAULT_GRID_HEIGHT,
-                        DEFAULT_CELL_SIZE);
+                DEFAULT_GRID_WIDTH,
+                DEFAULT_GRID_HEIGHT,
+                DEFAULT_CELL_SIZE);
         game1.setFrameRenderer(frameRenderer);
         game1.addRendererTimer(100);
-        game1.loadTextureAssets(System.getProperty("user.dir")+"\\Assets\\Images");
+        game1.loadTextureAssets(System.getProperty("user.dir") + "\\Assets\\Images");
         game1.setUpdateTimer(100);
 
         /*********/
         boolean loadingSave;
         int reply = JOptionPane.showConfirmDialog(null, "Do you want to load saved grid?", "Load Save", JOptionPane.YES_NO_OPTION);
-        if (reply == JOptionPane.YES_OPTION) {
+        if (reply == JOptionPane.YES_OPTION)
+        {
             JOptionPane.showMessageDialog(null, "Loading saved grid");
             loadingSave = true;
-        } else {
+        } else
+        {
             JOptionPane.showMessageDialog(null, "Creating new Grid");
             loadingSave = false;
         }
         /*********/
-        if(loadingSave)
+        if (loadingSave)
         {
             try
             {
@@ -72,11 +74,10 @@ public class BaseFunctionalityTest
                 System.err.println(e);
                 createTestInstance(game1);
             }
-        }
-        else
+        } else
         {
             createTestInstance(game1);
-            saveGameWithDelay(5000,game1);
+            saveGameWithDelay(5000, game1);
         }
 
 
@@ -87,7 +88,7 @@ public class BaseFunctionalityTest
 
         game1.start();
         game1.refreshSpritesInRenderer();
-        ((AudioComponent)soundObject.getComponent(AudioComponent.class)).play(0);
+        ((AudioComponent) soundObject.getComponent(AudioComponent.class)).play(0);
     }
 
 
@@ -95,25 +96,26 @@ public class BaseFunctionalityTest
     {
         game1.setUserInputManager(new UserInputManager(game1));
         game1.setMainGrid(new Grid(DEFAULT_GRID_WIDTH, DEFAULT_GRID_HEIGHT));
-        WallPrefab wallPrefab = new WallPrefab(game1.getTexture("wall"), "wall",100);
-        MovingSquare movingSquare = new MovingSquare( game1.getTexture("blank"), "blank", 120,500);
+        WallPrefab wallPrefab = new WallPrefab(game1.getTexture("wall"), "wall", 100);
+        MovingSquare movingSquare = new MovingSquare(game1.getTexture("blank"), "blank", 120, 500);
 
         for (int i = 5; i < 14; i++)
-            game1.addGameObject(wallPrefab.getInstance(game1.getMainGrid(),i, i), i, i);
+            game1.addGameObject(wallPrefab.getInstance(game1.getMainGrid(), i, i), i, i);
 
-        game1.addGameObject(movingSquare.getInstance(game1.getMainGrid(),1, 1), 1, 1);
+        game1.addGameObject(movingSquare.getInstance(game1.getMainGrid(), 1, 1), 1, 1);
         movingSquare.setDeltaTime(400);
-        game1.addGameObject(movingSquare.getInstance(game1.getMainGrid(),2, 2), 2, 2);
+        game1.addGameObject(movingSquare.getInstance(game1.getMainGrid(), 2, 2), 2, 2);
         movingSquare.setDeltaTime(300);
-        game1.addGameObject(movingSquare.getInstance(game1.getMainGrid(),3, 3), 3, 3);
-        TestPlayerPrefab playerPrefab = new TestPlayerPrefab(game1.getTexture("player"), "player", 150,game1.getUserInputManager());
-        game1.addGameObject(playerPrefab.getInstance(game1.getMainGrid(),15, 15), 15, 15);
-        soundObject = new GameObject(game1.getMainGrid(),false,13,13);
+        game1.addGameObject(movingSquare.getInstance(game1.getMainGrid(), 3, 3), 3, 3);
+        TestPlayerPrefab playerPrefab = new TestPlayerPrefab(game1.getTexture("player"), "player", 150, game1.getUserInputManager());
+        game1.addGameObject(playerPrefab.getInstance(game1.getMainGrid(), 15, 15), 15, 15);
+        soundObject = new GameObject(game1.getMainGrid(), false, 13, 13);
         game1.getFrameRenderer().setAudioListener(new AudioListener());
-        File[] audioFiles= new File[1];
+        File[] audioFiles = new File[1];
         audioFiles[0] = new File(System.getProperty("user.dir") + "/Assets/Music/MOOSIK.wav");
-        soundObject.addComponent(new AudioComponent(soundObject,game1.getFrameRenderer().getAudioListener(),audioFiles));
+        soundObject.addComponent(new AudioComponent(soundObject, game1.getFrameRenderer().getAudioListener(), audioFiles));
     }
+
     public static void saveGameWithDelay(int delay, GameInstance game1)
     {
         TimerTask timerTask = new TimerTask()
@@ -135,7 +137,7 @@ public class BaseFunctionalityTest
         };
 
         Timer timer = new Timer();
-        timer.schedule(timerTask,delay);
+        timer.schedule(timerTask, delay);
     }
 
 }

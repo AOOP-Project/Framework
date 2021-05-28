@@ -27,9 +27,9 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
 {
     private static final int REPAINT_REPEAT_DELAY = 20;
     private MapEditor mapEditor;
-    private int cellSize,gridWidth,gridHeight;
+    private int cellSize, gridWidth, gridHeight;
     private Grid workingGrid;
-    private LinkedList<SimpleEntry<BufferedImage,Point>> addedPrefabTextures;
+    private LinkedList<SimpleEntry<BufferedImage, Point>> addedPrefabTextures;
     volatile private boolean mouseDown = false;
 
     public MapEditorGridPanel(MapEditor mapEditor, int cellSize)
@@ -41,7 +41,7 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
         this.gridWidth = workingGrid.getGridWidth();
         this.gridHeight = workingGrid.getGridHeight();
         addedPrefabTextures = new LinkedList<>();
-        setPreferredSize(new Dimension(gridWidth*cellSize,gridHeight*cellSize));
+        setPreferredSize(new Dimension(gridWidth * cellSize, gridHeight * cellSize));
         addMouseListener(this);
         setBorder(new LineBorder(Color.BLACK, 1));
         mapEditor.setAddedPrefabTextures(addedPrefabTextures);
@@ -62,15 +62,16 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
     {
         addedPrefabTextures = new LinkedList<>();
         workingGrid = mapEditor.getWorkingGrid();
-        Stream.concat(workingGrid.getStaticObjects().stream(),workingGrid.getDynamicObjects().stream()).forEach(g-> {
-            Optional<ObjectPrefab> prefab = Arrays.stream(mapEditor.getAvailablePrefabs()).filter(p->g.getCreator().equals(p)).findFirst();
-            prefab.ifPresent(objectPrefab -> addedPrefabTextures.add(new SimpleEntry<>(objectPrefab.getSprite().getTexture(), new Point(g.getX()*cellSize, g.getY()*cellSize))));
+        Stream.concat(workingGrid.getStaticObjects().stream(), workingGrid.getDynamicObjects().stream()).forEach(g ->
+        {
+            Optional<ObjectPrefab> prefab = Arrays.stream(mapEditor.getAvailablePrefabs()).filter(p -> g.getCreator().equals(p)).findFirst();
+            prefab.ifPresent(objectPrefab -> addedPrefabTextures.add(new SimpleEntry<>(objectPrefab.getSprite().getTexture(), new Point(g.getX() * cellSize, g.getY() * cellSize))));
         });
         mapEditor.setAddedPrefabTextures(addedPrefabTextures);
 
 
-
     }
+
     @Override
     protected void paintComponent(Graphics g)
     {
@@ -79,14 +80,17 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
         Graphics2D g2d = (Graphics2D) g;
         for (int i = 0; i < gridWidth; i++)
         {
-            g2d.drawLine(i*cellSize,0,i*cellSize,getHeight());
+            g2d.drawLine(i * cellSize, 0, i * cellSize, getHeight());
         }
         for (int i = 0; i < gridHeight; i++)
         {
-         g2d.drawLine(0,i*cellSize,getWidth(),i*cellSize);
+            g2d.drawLine(0, i * cellSize, getWidth(), i * cellSize);
         }
 
-        addedPrefabTextures.forEach(sE->{g2d.drawImage(sE.getKey(), sE.getValue().x, (gridHeight-1)*cellSize-sE.getValue().y,this);});
+        addedPrefabTextures.forEach(sE ->
+        {
+            g2d.drawImage(sE.getKey(), sE.getValue().x, (gridHeight - 1) * cellSize - sE.getValue().y, this);
+        });
 
     }
 
@@ -100,7 +104,7 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
     public void mousePressed(MouseEvent e)
     {
 
-        if(e.getButton() == MouseEvent.BUTTON1)
+        if (e.getButton() == MouseEvent.BUTTON1)
         {
             mouseDown = true;
             Thread duringMouseDown = new Thread(() ->
@@ -117,46 +121,46 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
         }
 
 
-
     }
+
     public void mouseHeldDown() throws InterruptedException
     {
         try
         {
-            do{
+            do
+            {
                 Point p = MouseInfo.getPointerInfo().getLocation();
-                SwingUtilities.convertPointFromScreen(p,this);
-                int x = p.x/cellSize;
-                int y = (gridHeight-1)-p.y/cellSize;
+                SwingUtilities.convertPointFromScreen(p, this);
+                int x = p.x / cellSize;
+                int y = (gridHeight - 1) - p.y / cellSize;
                 if (mapEditor.getSelectedPrefab() != null)
                 {
-                    if(workingGrid.isEmpty(x,y))
+                    if (workingGrid.isEmpty(x, y))
                     {
-                        workingGrid.addGameObject(mapEditor.getSelectedPrefab().getInstance(workingGrid,x,y),x,y);
+                        workingGrid.addGameObject(mapEditor.getSelectedPrefab().getInstance(workingGrid, x, y), x, y);
                         addedPrefabTextures.add(new SimpleEntry<>(mapEditor.getSelectedPrefab().getSprite().getTexture(), new Point(cellSize * x, cellSize * y)));
                         repaint();
                     }
 
-                }
-                else
+                } else
                 {
-                    if(!workingGrid.isEmpty(x,y))
+                    if (!workingGrid.isEmpty(x, y))
                     {
                         for (int i = 0; i < addedPrefabTextures.size(); i++)
                         {
-                            int x2 = addedPrefabTextures.get(i).getValue().x/cellSize;
-                            int y2 = addedPrefabTextures.get(i).getValue().y/cellSize;
-                            if (x==x2&&y==y2)
+                            int x2 = addedPrefabTextures.get(i).getValue().x / cellSize;
+                            int y2 = addedPrefabTextures.get(i).getValue().y / cellSize;
+                            if (x == x2 && y == y2)
                             {
                                 addedPrefabTextures.remove(i);
                             }
                         }
-                        workingGrid.removeGameObject(x,y);
+                        workingGrid.removeGameObject(x, y);
                     }
                     repaint();
                 }
                 Thread.sleep(REPAINT_REPEAT_DELAY);
-            }while (mouseDown);
+            } while (mouseDown);
         } catch (Exception ignored)
         {
         }
@@ -166,7 +170,7 @@ public class MapEditorGridPanel extends JPanel implements MouseListener
     @Override
     public void mouseReleased(MouseEvent e)
     {
-        if(e.getButton() == MouseEvent.BUTTON1)
+        if (e.getButton() == MouseEvent.BUTTON1)
             mouseDown = false;
     }
 

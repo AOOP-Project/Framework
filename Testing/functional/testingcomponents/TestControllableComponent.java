@@ -1,3 +1,5 @@
+package functional.testingcomponents;
+
 import evhh.common.RunnableArg;
 import evhh.controller.InputManager.KeyboardInput;
 import evhh.controller.InputManager.UserInputManager;
@@ -33,10 +35,10 @@ public class TestControllableComponent extends ControllableComponent
         this.uIM = uIM;
         this.keyCode = keyCode;
         RunnableArg<KeyEvent> keyInputEvent = keyEvent -> pressed(keyEvent.getKeyCode());
-        HashMap<Integer,Integer> map = new HashMap<>();
+        HashMap<Integer, Integer> map = new HashMap<>();
 
-        map.put(keyCode,KeyEvent.KEY_PRESSED);
-        keyboardInput = new KeyboardInput(keyInputEvent,map);
+        map.put(keyCode, KeyEvent.KEY_PRESSED);
+        keyboardInput = new KeyboardInput(keyInputEvent, map);
         uIM.addKeyInput(keyboardInput);
     }
 
@@ -45,11 +47,12 @@ public class TestControllableComponent extends ControllableComponent
     {
         this.uIM = uIM;
         RunnableArg<KeyEvent> keyInputEvent = keyEvent -> pressed(keyEvent.getKeyCode());
-        HashMap<Integer,Integer> map = new HashMap<>();
-        map.put(keyCode,KeyEvent.KEY_PRESSED);
-        keyboardInput = new KeyboardInput(keyInputEvent,map);
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(keyCode, KeyEvent.KEY_PRESSED);
+        keyboardInput = new KeyboardInput(keyInputEvent, map);
         uIM.addKeyInput(keyboardInput);
     }
+
     public void pressed(int key)
     {
         hasBeenPressed = true;

@@ -11,7 +11,7 @@ import evhh.model.GameObject;
  * @date: 2021-05-27
  * @time: 11:35
  **********************************************************************************************************************/
- public class TestComponent extends GameComponent
+public class TestComponent extends GameComponent
 {
 
     public boolean ranStart = true;

@@ -23,24 +23,25 @@ public class GridPanel extends JPanel
     private GridRenderer gridRenderer;
     private Image backgroundImage;
 
-    public GridPanel(int gridWidth, int gridHeight, int cellSize,GridRenderer gridRenderer)
+    public GridPanel(int gridWidth, int gridHeight, int cellSize, GridRenderer gridRenderer)
     {
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;
         this.cellSize = cellSize;
         this.gridRenderer = gridRenderer;
-        setPreferredSize(new Dimension(gridWidth*cellSize,gridHeight*cellSize));
+        setPreferredSize(new Dimension(gridWidth * cellSize, gridHeight * cellSize));
         setFocusable(true);
         requestFocusInWindow();
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g)
+    {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
         if (backgroundImage != null)
             g2d.drawImage(backgroundImage, 0, 0, this);
-        if(!gridRenderer.getSprites().isEmpty())
+        if (!gridRenderer.getSprites().isEmpty())
         {
             synchronized (gridRenderer.getSprites().get(0).getGameObject().getGrid().getGameInstance())
             {

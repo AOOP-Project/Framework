@@ -35,7 +35,8 @@ public class AudioComponent extends GameComponent
         this.audioFiles = audioFiles;
 
     }
-    public AudioComponent(GameObject parent, AudioListener audioListener, File[] audioFiles,float volume)
+
+    public AudioComponent(GameObject parent, AudioListener audioListener, File[] audioFiles, float volume)
     {
         super(parent);
         this.audioListener = audioListener;
@@ -67,12 +68,14 @@ public class AudioComponent extends GameComponent
         }
         return true;
     }
+
     public void resume()
     {
         assert audioClip != null;
         assert audioClip.isOpen();
         audioClip.start();
     }
+
     public void pause()
     {
         assert audioClip != null;
@@ -84,16 +87,18 @@ public class AudioComponent extends GameComponent
         assert audioClip != null;
         audioClip.close();
     }
+
     public boolean isPlaying()
     {
-        if(audioClip==null)
+        if (audioClip == null)
             return false;
-        return  audioClip.isRunning();
+        return audioClip.isRunning();
     }
+
     public void setVolume(float gain)
     {
         volume = gain;
-        if(isPlaying()&&volumeControl!=null)
+        if (isPlaying() && volumeControl != null)
             volumeControl.setValue(gain);
     }
 

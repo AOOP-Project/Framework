@@ -22,9 +22,9 @@ public class MovingSquare extends ObjectPrefab
     @UniqueSerializableField
     private int deltaTime;
 
-    public MovingSquare(BufferedImage squareTexture,String textureRef,int id,int deltaTime)
+    public MovingSquare(BufferedImage squareTexture, String textureRef, int id, int deltaTime)
     {
-        super(squareTexture,textureRef,false,id);
+        super(squareTexture, textureRef, false, id);
         this.deltaTime = deltaTime;
     }
 
@@ -36,8 +36,8 @@ public class MovingSquare extends ObjectPrefab
     @Override
     public GameObject getInstance(Grid grid, int x, int y)
     {
-        GameObject instance = super.getInstance(grid,x,y);
-        instance.addComponent(new SimpleMove(instance,deltaTime));
+        GameObject instance = super.getInstance(grid, x, y);
+        instance.addComponent(new SimpleMove(instance, deltaTime));
         instance.setCreator(this);
         return instance;
     }

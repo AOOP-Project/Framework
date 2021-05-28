@@ -20,7 +20,7 @@ import java.util.HashMap;
 public class MouseInput implements MouseListener //Removed Serializeable
 {
     private RunnableArg<MouseEvent> action;
-    private HashMap<Integer,Integer> buttonEventMap;
+    private HashMap<Integer, Integer> buttonEventMap;
 
     public MouseInput(RunnableArg<MouseEvent> action, HashMap<Integer, Integer> buttonEventMap)
     {
@@ -31,10 +31,10 @@ public class MouseInput implements MouseListener //Removed Serializeable
     @Override
     public void mouseClicked(MouseEvent e)
     {
-        buttonEventMap.forEach((button,event)->
+        buttonEventMap.forEach((button, event) ->
         {
-            if(button == e.getButton())
-                if(event==MouseEvent.MOUSE_CLICKED)
+            if (button == e.getButton())
+                if (event == MouseEvent.MOUSE_CLICKED)
                     action.run(e);
         });
     }
@@ -42,10 +42,10 @@ public class MouseInput implements MouseListener //Removed Serializeable
     @Override
     public void mousePressed(MouseEvent e)
     {
-        buttonEventMap.forEach((button,event)->
+        buttonEventMap.forEach((button, event) ->
         {
-            if(button == e.getButton())
-                if(event==MouseEvent.MOUSE_PRESSED)
+            if (button == e.getButton())
+                if (event == MouseEvent.MOUSE_PRESSED)
                     action.run(e);
         });
     }
@@ -53,10 +53,10 @@ public class MouseInput implements MouseListener //Removed Serializeable
     @Override
     public void mouseReleased(MouseEvent e)
     {
-        buttonEventMap.forEach((button,event)->
+        buttonEventMap.forEach((button, event) ->
         {
-            if(button == e.getButton())
-                if(event==MouseEvent.MOUSE_RELEASED)
+            if (button == e.getButton())
+                if (event == MouseEvent.MOUSE_RELEASED)
                     action.run(e);
         });
     }
@@ -64,10 +64,10 @@ public class MouseInput implements MouseListener //Removed Serializeable
     @Override
     public void mouseEntered(MouseEvent e)
     {
-        buttonEventMap.forEach((button,event)->
+        buttonEventMap.forEach((button, event) ->
         {
-            if(button == e.getButton())
-                if(event==MouseEvent.MOUSE_ENTERED)
+            if (button == e.getButton())
+                if (event == MouseEvent.MOUSE_ENTERED)
                     action.run(e);
         });
     }
@@ -75,10 +75,10 @@ public class MouseInput implements MouseListener //Removed Serializeable
     @Override
     public void mouseExited(MouseEvent e)
     {
-        buttonEventMap.forEach((button,event)->
+        buttonEventMap.forEach((button, event) ->
         {
-            if(button == e.getButton())
-                if(event==MouseEvent.MOUSE_EXITED)
+            if (button == e.getButton())
+                if (event == MouseEvent.MOUSE_EXITED)
                     action.run(e);
         });
     }

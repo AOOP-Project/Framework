@@ -21,7 +21,7 @@ import java.util.Objects;
 public class KeyboardInput implements KeyListener //Removed Serializeable
 {
     RunnableArg<KeyEvent> action;
-    private HashMap<Integer,Integer> keyEventMap;
+    private HashMap<Integer, Integer> keyEventMap;
 
     @Override
     public boolean equals(Object o)
@@ -29,13 +29,13 @@ public class KeyboardInput implements KeyListener //Removed Serializeable
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         KeyboardInput that = (KeyboardInput) o;
-        return that.hashCode()==this.hashCode();
+        return that.hashCode() == this.hashCode();
     }
 
     @Override
     public int hashCode()
     {
-        int result =  keyEventMap.hashCode();
+        int result = keyEventMap.hashCode();
         return result;
     }
 
@@ -48,10 +48,10 @@ public class KeyboardInput implements KeyListener //Removed Serializeable
     @Override
     public void keyTyped(KeyEvent e)
     {
-        keyEventMap.forEach((button,event)->
+        keyEventMap.forEach((button, event) ->
         {
-            if(button == e.getKeyCode())
-                if(event== KeyEvent.KEY_TYPED)
+            if (button == e.getKeyCode())
+                if (event == KeyEvent.KEY_TYPED)
                     action.run(e);
         });
 
@@ -60,10 +60,10 @@ public class KeyboardInput implements KeyListener //Removed Serializeable
     @Override
     public void keyPressed(KeyEvent e)
     {
-        keyEventMap.forEach((button,event)->
+        keyEventMap.forEach((button, event) ->
         {
-            if(button == e.getKeyCode())
-                if(event== KeyEvent.KEY_PRESSED)
+            if (button == e.getKeyCode())
+                if (event == KeyEvent.KEY_PRESSED)
                     action.run(e);
         });
     }
@@ -71,10 +71,10 @@ public class KeyboardInput implements KeyListener //Removed Serializeable
     @Override
     public void keyReleased(KeyEvent e)
     {
-        keyEventMap.forEach((button,event)->
+        keyEventMap.forEach((button, event) ->
         {
-            if(button == e.getKeyCode())
-                if(event== KeyEvent.KEY_RELEASED)
+            if (button == e.getKeyCode())
+                if (event == KeyEvent.KEY_RELEASED)
                     action.run(e);
         });
     }

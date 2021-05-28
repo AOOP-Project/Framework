@@ -22,7 +22,7 @@ public class PrefabPanel extends JPanel implements MouseListener
     MapEditor mapEditor;
     ObjectPrefab prefab;
 
-    public PrefabPanel(ObjectPrefab prefab,BufferedImage preFabSprite,Dimension dimension,MapEditor mapEditor)
+    public PrefabPanel(ObjectPrefab prefab, BufferedImage preFabSprite, Dimension dimension, MapEditor mapEditor)
     {
         super();
         this.prefab = prefab;
@@ -37,8 +37,8 @@ public class PrefabPanel extends JPanel implements MouseListener
     {
         super.paintComponent(g);
         Graphics2D g2d = (Graphics2D) g;
-        assert preFabSpriteTexture!=null;
-        g2d.drawImage(preFabSpriteTexture,0,0,this);
+        assert preFabSpriteTexture != null;
+        g2d.drawImage(preFabSpriteTexture, 0, 0, this);
 
     }
 
@@ -52,7 +52,7 @@ public class PrefabPanel extends JPanel implements MouseListener
     @Override
     public void mousePressed(MouseEvent e)
     {
-        if(e.getSource()==this)
+        if (e.getSource() == this)
         {
             mapEditor.setSelectedPrefab(prefab);
         }

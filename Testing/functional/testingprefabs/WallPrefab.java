@@ -20,15 +20,15 @@ import java.util.Objects;
 public class WallPrefab extends ObjectPrefab
 {
 
-    public WallPrefab(BufferedImage wallTexture,String textureRef,int id)
+    public WallPrefab(BufferedImage wallTexture, String textureRef, int id)
     {
-        super(wallTexture,textureRef,true,id);
+        super(wallTexture, textureRef, true, id);
     }
 
     @Override
-    public GameObject getInstance(Grid grid,int x, int y)
+    public GameObject getInstance(Grid grid, int x, int y)
     {
-        GameObject instance = super.getInstance(grid,x,y);
+        GameObject instance = super.getInstance(grid, x, y);
         instance.setCreator(this);
         return instance;
     }

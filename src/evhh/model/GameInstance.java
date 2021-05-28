@@ -34,12 +34,14 @@ public class GameInstance implements ActionListener
     /**
      * Grid currently linked to this GameInstance, can be changed by
      * either manually setting a new Grid or by loading a serialized Grid.
+     *
      * @Serializeable
      */
     private Grid mainGrid;
 
     /**
      * Container for all the mapped user input
+     *
      * @NonSerializeable
      */
     private UserInputManager userInputManager;
@@ -47,24 +49,28 @@ public class GameInstance implements ActionListener
     /**
      * Housing for main JFrame GameFrame and other different Swing components.
      * Updates content in the swing components based on the renderTimer.
+     *
      * @NonSerializeable
      */
     private FrameRenderer frameRenderer;
 
     /**
      * Timer responsible for periodically updating the internal game model.
+     *
      * @Serializeable but is preferably reconstructed.
      */
     private Timer updateTimer;
 
     /**
      * Timer responsible for periodically updating the external game view.
+     *
      * @Serializeable but is preferably reconstructed.
      */
     private Timer renderTimer;
 
     /**
      * Name of the current GameInstance used as a reference to the user.
+     *
      * @Serializeable
      */
     private String gameInstanceName;
@@ -72,6 +78,7 @@ public class GameInstance implements ActionListener
     /**
      * Internal id counter responsible for creating unique GameObject id's
      * uses basic incrementation of GAMEOBJECT_ID_INCREMENT to the base value GAMEOBJECT_ID_START
+     *
      * @Serializeable
      */
     private long gObjectId = GAMEOBJECT_ID_START;
@@ -79,30 +86,35 @@ public class GameInstance implements ActionListener
     /**
      * Array of allowed file extension for the texture assets, used in  AssetLoader
      * default value of DEFAULT_ALLOWED_TEXTURE_FILE_EXTENSIONS
+     *
      * @Serializeable
      */
     private String[] allowedTextureFileExtension = DEFAULT_ALLOWED_TEXTURE_FILE_EXTENSIONS;
 
     /**
      * Map between the string reference and the corresponding BufferedImage
+     *
      * @NonSerializeable BufferedImage is inherantly NonSerializeable.
      */
     private HashMap<String, BufferedImage> textures;
 
     /**
      * If the GameInstance is currently updating, value is changed by calling start()/exit()
+     *
      * @Serializeable
      */
     private boolean running = false;
 
     /**
      * Path to the current mainGrid, set during grid Serialization
+     *
      * @Serializeable yes... believe it or not.
      */
     private String gridSavePath;
 
     /**
      * List of events added to this GameInstance, is null until the first event is added.
+     *
      * @NonSerializeable
      */
     private ArrayList<EventTrigger> events;
@@ -110,6 +122,7 @@ public class GameInstance implements ActionListener
     /**
      * If event status is check during update, at least one event must be set before this can be true.
      * Can be set by calling startPeriodicEventChecking()/stopPeriodicEventChecking
+     *
      * @Serializeable but should not be
      */
     private boolean checkEventsOnUpdate = false;
@@ -119,18 +132,21 @@ public class GameInstance implements ActionListener
      * Appending paths to this list is done by calling addSavedGridPath().
      * Removing paths from this list is done by calling removeSavedGridPath().
      * Is null until one or more paths have been added.
+     *
      * @Serializeable
      */
     private ArrayList<String> savedGridPaths;
 
     /**
      * Index in SavedGridPaths for the current MainGrid if the grid is not loaded using this system then this value is -1.
+     *
      * @Serializeable
      */
     private int currentGridIndex = -1;
 
     /**
      * Internal field used to lock asynchronous operations done during the removing of Listeners from Swing.
+     *
      * @Serializeable
      */
     private boolean removeLock = false;
@@ -139,6 +155,7 @@ public class GameInstance implements ActionListener
     /**
      * Constructs an empty/incomplete GameInstance, before starting the following must set:
      * FrameRenderer ,MainGrid ,UpdateTimer ,RenderTimer
+     *
      * @param gameInstanceName Name of the GameInstance only  used as reference to the user
      */
     public GameInstance(String gameInstanceName)
@@ -160,14 +177,15 @@ public class GameInstance implements ActionListener
 
     /**
      * Starts the GameInstance calling FrameRenderer.start(), MainGrid.start(), UpdateTimer.start()
-     *  the start methods in all active GameObjects in the MainGrid and refreshes the sprites in the render.
-     *  Presupposes that the following are already set: FrameRenderer ,MainGrid ,UpdateTimer ,RenderTimer.
-     *  Called automatically when a new grid is loaded from deserialization/manually.
-     *  Part of the Start/Update/Exit loop
-     *  @precondition frameRenderer != null
-     *  @precondition mainGrid != null
-     *  @precondition updateTimer != null
-     *  @precondition renderTimer != null
+     * the start methods in all active GameObjects in the MainGrid and refreshes the sprites in the render.
+     * Presupposes that the following are already set: FrameRenderer ,MainGrid ,UpdateTimer ,RenderTimer.
+     * Called automatically when a new grid is loaded from deserialization/manually.
+     * Part of the Start/Update/Exit loop
+     *
+     * @precondition frameRenderer != null
+     * @precondition mainGrid != null
+     * @precondition updateTimer != null
+     * @precondition renderTimer != null
      */
     public void start()
     {
@@ -302,12 +320,12 @@ public class GameInstance implements ActionListener
 
     /**
      * @param mainGrid new MainGrid for this GameInstance
-     * If the MainGrid has been set before the previous mapped UserInput listeners are removed from the corresponding swing components.
-     * Successive calls to this method will cause this thread to repeatedly synchronize with the AWT event queue, this can slow other game aspects.
+     *                 If the MainGrid has been set before the previous mapped UserInput listeners are removed from the corresponding swing components.
+     *                 Successive calls to this method will cause this thread to repeatedly synchronize with the AWT event queue, this can slow other game aspects.
      */
     public synchronized void setMainGrid(Grid mainGrid)
     {
-        assert mainGrid !=null;
+        assert mainGrid != null;
         if (this.mainGrid != null && userInputManager != null)
         {
             removeAllMappedUserInputFromFrame();
@@ -337,9 +355,10 @@ public class GameInstance implements ActionListener
 
     /**
      * Adds the GameObject to the grid and sets an instance-unique  id
+     *
      * @param gameObject
-     * @param x X position in the grid
-     * @param y Y position in the grid
+     * @param x          X position in the grid
+     * @param y          Y position in the grid
      * @return The updated GameObject used for method-chaining
      * @precondition mainGrid != null
      */
@@ -359,6 +378,7 @@ public class GameInstance implements ActionListener
     /**
      * Adds a new GameObject to the grid and sets an instance-unique  id.
      * NOT recommended since no default sprite can be set.
+     *
      * @param x
      * @param y
      * @param isStatic
@@ -379,12 +399,12 @@ public class GameInstance implements ActionListener
      * @param y Y position in the grid
      * @return GameObject at that coordinate if it is not empty otherwise null
      * @precondition mainGrid != null
-     * @precondition mainGrid.isValidCoordinates(x,y)
+     * @precondition mainGrid.isValidCoordinates(x, y)
      */
     public GameObject getGameObject(int x, int y)
     {
         assert mainGrid != null;
-        assert mainGrid.isValidCoordinates(x,y);
+        assert mainGrid.isValidCoordinates(x, y);
         return mainGrid.get(x, y);
     }
 
@@ -400,7 +420,7 @@ public class GameInstance implements ActionListener
 
     /**
      * @param containedComponent Type of the specific component
-     * @return  All GameObjects in the scene that house a component of the provided type
+     * @return All GameObjects in the scene that house a component of the provided type
      */
     public GameObject[] getGameObjects(Class<? extends GameComponent> containedComponent)
     {
@@ -410,6 +430,7 @@ public class GameInstance implements ActionListener
 
     /**
      * See: {@link evhh.model.Grid#deserializeGrid(String)}
+     *
      * @param gridSavePath path to the serialized grid
      * @throws IOException
      * @throws ClassNotFoundException
@@ -421,6 +442,7 @@ public class GameInstance implements ActionListener
 
     /**
      * Loads serialized grid and sets it using gridSavePath
+     *
      * @throws IOException
      * @throws ClassNotFoundException
      * @precondition gridSavePath != null
@@ -441,19 +463,20 @@ public class GameInstance implements ActionListener
      */
     public void saveMainGrid(String gridSavePath) throws IOException
     {
-        assert mainGrid!=null;
+        assert mainGrid != null;
         Grid.serializeGrid(mainGrid, gridSavePath);
         this.gridSavePath = gridSavePath;
     }
 
     /**
      * same as above but uses gridSavePath
+     *
      * @throws IOException if invalid path
      * @precondition gridSavePath != null
      */
     public synchronized void saveMainGrid() throws IOException
     {
-        assert mainGrid!=null;
+        assert mainGrid != null;
         assert gridSavePath != null;
         Grid.serializeGrid(mainGrid, gridSavePath);
     }
@@ -564,6 +587,7 @@ public class GameInstance implements ActionListener
     /**
      * Assigns a new FrameRenderer for this GameInstance, should be done once before starting the GameInstance.
      * After this the frameRenderer should not be reassigned or this could cause loose AWT event threads.
+     *
      * @param frameRenderer new frameRenderer
      */
     public void setFrameRenderer(FrameRenderer frameRenderer)
@@ -595,6 +619,7 @@ public class GameInstance implements ActionListener
     /**
      * Adds a new sprite to the current FrameRenderer, changes to the sprite after it has been passed to the FrameRenderer
      * will also affect the visuals of the frame.
+     *
      * @param sprite Sprite housing positional information via the object parent and the texture to be rendered at this position
      * @precondition frameRenderer != null
      */
@@ -606,6 +631,7 @@ public class GameInstance implements ActionListener
 
     /**
      * Starts the the assigned FrameRender, the GameFrame can still be visible before this but will not be updated.
+     *
      * @precondition frameRenderer != null
      */
     public void startRenderer()
@@ -616,6 +642,7 @@ public class GameInstance implements ActionListener
 
     /**
      * Stops updating of the FrameRenderer but does not close the frame this can be done by setting GameFrame.setVisible(false)
+     *
      * @precondition frameRenderer != null
      */
     public void stopRenderer()
@@ -684,10 +711,10 @@ public class GameInstance implements ActionListener
      * Does not remove unused mapped input due to thread access limitations with the AWT event queue. To remove mapped user input Remove the responsible GameObject/GameComponent
      * then call the removeAllMappedUserInputFromFrame() after that to remap the rest of the user input call refreshMappedUserInput(). Doing it this way ensures that all
      * operations are thread safe.
+     *
      * @precondition mainGrid != null
      * @precondition userInputManager != null
      * @precondition removeLock == false
-     *
      */
     public synchronized void refreshMappedUserInput()
     {
@@ -725,6 +752,7 @@ public class GameInstance implements ActionListener
      * The thread calling this function should have a high priority compared to the Timer threads
      * updating the renderer and gameInstance. Preferably this should be the main thread though this can
      * be dangerous if there is current modifications to the userInputManager.
+     *
      * @precondition userInputManager != null
      */
     public synchronized void removeAllMappedUserInputFromFrame()
@@ -758,9 +786,9 @@ public class GameInstance implements ActionListener
      * Removes and event from the events list. If an event should not be checked on update but should be preserved this must
      * be done externally since GameInstance does not house events that should not be checked if the field
      * checkEventsOnUpdate is set.
+     *
      * @param eventTrigger Event that should be removed from the event list
      * @return if the event was removed, if the event is not contained in the event list this will return false
-     *
      */
     public boolean removeEvent(EventTrigger eventTrigger)
     {
@@ -792,6 +820,7 @@ public class GameInstance implements ActionListener
      * Checks all the events in the event list. If an event is triggered then the action of that event is preformed.
      * This can be done periodically by calling startPeriodicEventChecking() which is done on the update thread after
      * the game objects in the scene have been updated.
+     *
      * @precondition events != null && events.size() > 0
      */
     public void checkEvents()
@@ -808,6 +837,7 @@ public class GameInstance implements ActionListener
      * Adds event checking of each added event at the end of the GameInstance.update(),
      * if synchronization of the renderer and checking of these events is required then
      * the updateTimer and the renderTimer should be the same.
+     *
      * @precondition events != null && events.size() > 0
      */
     public void startPeriodicEventChecking()

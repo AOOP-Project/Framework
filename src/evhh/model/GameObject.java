@@ -15,7 +15,7 @@ import java.util.Optional;
  * @date: 2021-05-12
  * @time: 12:25
  **********************************************************************************************************************/
-public class GameObject implements Serializable
+public class GameObject  implements Serializable
 {
     //region Fields
     private boolean staticObj;

@@ -66,7 +66,7 @@ public class AssetLoader
         File dir = new File(path);
         if (!dir.isDirectory())
             return null;
-        File[] files = dir.listFiles((dir1, name1) -> Arrays.stream(acceptedFileExtensions).anyMatch(ext-> name1.toLowerCase().endsWith(ext)));
+        File[] files = dir.listFiles((dir1, name1) -> Arrays.stream(acceptedFileExtensions).anyMatch(ext -> name1.toLowerCase().endsWith(ext)));
         HashMap<String, BufferedImage> map = new HashMap<>();
         for (File file : Objects.requireNonNull(files))
         {
@@ -76,7 +76,7 @@ public class AssetLoader
             try
             {
 
-                    img = ImageIO.read(file);
+                img = ImageIO.read(file);
                 name = file.getName().replaceFirst("[.][^.]+$", "");
             } catch (IOException e)
             {
@@ -100,16 +100,18 @@ public class AssetLoader
             String fileName = file.toString();
 
             int index = fileName.lastIndexOf('.');
-            if(index > 0) {
+            if (index > 0)
+            {
                 String extension = fileName.substring(index + 1);
-                if(Arrays.asList(acceptedFileExtensions).contains(extension))
-                    files[i++]=file;
+                if (Arrays.asList(acceptedFileExtensions).contains(extension))
+                    files[i++] = file;
             }
         }
-        File[] shortened = new File[i+1];
+        File[] shortened = new File[i + 1];
         System.arraycopy(files, 0, shortened, 0, i + 1);
         return shortened;
     }
+
     public static File loadFileUsingJFileChooser()
     {
         JFileChooser fileChooser = new JFileChooser();

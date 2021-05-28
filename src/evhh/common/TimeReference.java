@@ -27,24 +27,28 @@ public class TimeReference
         started = true;
         startTime = Instant.now();
     }
-    public void  reset()
+
+    public void reset()
     {
         startTime = Instant.now();
     }
+
     public long getDeltaTime()
     {
-        if(!started)
+        if (!started)
             return 0;
         deltaTime = Duration.between(startTime, Instant.now());
         return deltaTime.toMillis();
     }
+
     public void incrementStartTime(long n)
     {
-        if(n==0)
+        if (n == 0)
             return;
         startTime = startTime.plusMillis(n);
 
     }
+
     public long getStartTime()
     {
         return startTime.toEpochMilli();

@@ -15,9 +15,9 @@ public class ImageTiler
 {
     public static BufferedImage tileImage(BufferedImage image, int cols, int rows)
     {
-        int width = image.getWidth()*cols;
-        int height = image.getWidth()*rows;
-        BufferedImage tiledImage = new BufferedImage(width,height, BufferedImage.TYPE_INT_ARGB);
+        int width = image.getWidth() * cols;
+        int height = image.getWidth() * rows;
+        BufferedImage tiledImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D graphics2D = tiledImage.createGraphics();
         Color oldColor = graphics2D.getColor();
         graphics2D.setPaint(Color.BLACK);
@@ -27,10 +27,10 @@ public class ImageTiler
         {
             for (int j = 0; j < rows; j++)
             {
-                graphics2D.drawImage(image,null,image.getWidth()*i,image.getHeight()*j);
+                graphics2D.drawImage(image, null, image.getWidth() * i, image.getHeight() * j);
             }
         }
-        graphics2D.drawImage(tiledImage,null,0,0);
+        graphics2D.drawImage(tiledImage, null, 0, 0);
         graphics2D.dispose();
         return tiledImage;
 

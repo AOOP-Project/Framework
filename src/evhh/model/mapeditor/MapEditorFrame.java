@@ -39,7 +39,7 @@ public class MapEditorFrame extends JFrame
     private JPanel saveLoadPanel;
     private JButton saveButton;
     private JButton loadButton;
-    private String eraserPath = System.getProperty("user.dir") +"/Assets/Images/eraser.png";
+    private String eraserPath = System.getProperty("user.dir") + "/Assets/Images/eraser.png";
     BufferedImage eraser;
 
     private int gridWidth, gridHeight, cellSize;
@@ -59,8 +59,8 @@ public class MapEditorFrame extends JFrame
         this.gridHeight = workingGrid.getGridHeight();
         this.cellSize = cellSize;
         createSelectedPrefabPanel();
-        workingGridPanel = new MapEditorGridPanel(mapEditor,cellSize);
-        add(workingGridPanel,FlowLayout.CENTER);
+        workingGridPanel = new MapEditorGridPanel(mapEditor, cellSize);
+        add(workingGridPanel, FlowLayout.CENTER);
         createAvailablePrefabsPanel();
         createSaveLoadButtons();
 
@@ -68,14 +68,15 @@ public class MapEditorFrame extends JFrame
 
 
     }
+
     public void createSelectedPrefabPanel()
     {
         selectedPrefabPanel = new JPanel();
         selectedPrefabPanel.setLayout(new BoxLayout(selectedPrefabPanel, BoxLayout.Y_AXIS));
 
-        selectedPrefabLabel = new JLabel("NONE",SwingConstants.LEFT);
-        selectedPrefabIcon= new JLabel(new ImageIcon());
-        JLabel label = new JLabel("<html>Selected<br/>ObjectPrefab</html>",SwingConstants.LEFT);
+        selectedPrefabLabel = new JLabel("NONE", SwingConstants.LEFT);
+        selectedPrefabIcon = new JLabel(new ImageIcon());
+        JLabel label = new JLabel("<html>Selected<br/>ObjectPrefab</html>", SwingConstants.LEFT);
 
         selectedPrefabLabel.setFont(new Font("Courier New", Font.BOLD, 18));
         selectedPrefabLabel.setForeground(new Color(23, 103, 138));
@@ -87,42 +88,42 @@ public class MapEditorFrame extends JFrame
         selectedPrefabPanel.add(selectedPrefabLabel);
         selectedPrefabPanel.add(selectedPrefabIcon);
 
-        add(selectedPrefabPanel,FlowLayout.LEFT);
+        add(selectedPrefabPanel, FlowLayout.LEFT);
     }
+
     public void createAvailablePrefabsPanel()
     {
-        GridLayout layout = new GridLayout(gridHeight/2,2*(prefabs.length+1)/gridHeight+1,1,cellSize/2);
+        GridLayout layout = new GridLayout(gridHeight / 2, 2 * (prefabs.length + 1) / gridHeight + 1, 1, cellSize / 2);
         prefabContainerPanel = new JPanel(layout);
         prefabContainerPanel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
         prefabPanels = new PrefabPanel[prefabs.length];
         try
         {
             eraser = ImageIO.read(new File(eraserPath));
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             System.err.println("Eraser picture not found :< ");
-            eraser = new BufferedImage(cellSize,cellSize,BufferedImage.TYPE_INT_RGB);
-            IntStream.range(cellSize/4,cellSize*3/4).forEach(x->IntStream.range(cellSize/4,cellSize*3/4).forEach(y->eraser.setRGB(x,y,	255)));
+            eraser = new BufferedImage(cellSize, cellSize, BufferedImage.TYPE_INT_RGB);
+            IntStream.range(cellSize / 4, cellSize * 3 / 4).forEach(x -> IntStream.range(cellSize / 4, cellSize * 3 / 4).forEach(y -> eraser.setRGB(x, y, 255)));
         }
-        prefabContainerPanel.add(new PrefabPanel(null,eraser,new Dimension(cellSize, cellSize),mapEditor));
+        prefabContainerPanel.add(new PrefabPanel(null, eraser, new Dimension(cellSize, cellSize), mapEditor));
         int i = 0;
         for (ObjectPrefab prefab : prefabs)
         {
-            prefabPanels[i] = new PrefabPanel(prefab,prefab.getSprite().getTexture(),new Dimension(cellSize, cellSize),mapEditor);
+            prefabPanels[i] = new PrefabPanel(prefab, prefab.getSprite().getTexture(), new Dimension(cellSize, cellSize), mapEditor);
             prefabContainerPanel.add(prefabPanels[i]);
             i++;
         }
         add(prefabContainerPanel);
     }
+
     public void updateSelectedPrefabPanel()
     {
-        if(mapEditor.getSelectedPrefab()==null)
+        if (mapEditor.getSelectedPrefab() == null)
         {
             selectedPrefabLabel.setText("Eraser");
-            ((ImageIcon)selectedPrefabIcon.getIcon()).setImage(eraser);
-        }
-        else
+            ((ImageIcon) selectedPrefabIcon.getIcon()).setImage(eraser);
+        } else
         {
             selectedPrefabLabel.setText(mapEditor.getSelectedPrefab().getClass().getSimpleName());
             ((ImageIcon) selectedPrefabIcon.getIcon()).setImage(mapEditor.getSelectedPrefab().getSprite().getTexture());
@@ -130,6 +131,7 @@ public class MapEditorFrame extends JFrame
         pack();
         selectedPrefabPanel.repaint();
     }
+
     public void createSaveLoadButtons()
     {
         saveLoadPanel = new JPanel();
@@ -141,8 +143,8 @@ public class MapEditorFrame extends JFrame
             try
             {
                 String path = AssetLoader.getPathToSavedData();
-                if(!path.equals(""))
-                    Grid.serializeGrid(workingGrid,path);
+                if (!path.equals(""))
+                    Grid.serializeGrid(workingGrid, path);
                 mapEditor.setWorkingGridSavePath(path);
             } catch (IOException ioException)
             {
@@ -159,7 +161,7 @@ public class MapEditorFrame extends JFrame
             try
             {
                 String path = AssetLoader.getPathToSavedData();
-                if(!path.equals(""))
+                if (!path.equals(""))
                 {
                     setWorkingGrid(Grid.deserializeGrid(path));
                     mapEditor.setWorkingGridLoadPath(path);
@@ -194,7 +196,7 @@ public class MapEditorFrame extends JFrame
         mapEditor.setWorkingGrid(workingGrid);
         this.gridWidth = workingGrid.getGridWidth();
         this.gridHeight = workingGrid.getGridHeight();
-        workingGridPanel = new MapEditorGridPanel(mapEditor,cellSize);
+        workingGridPanel = new MapEditorGridPanel(mapEditor, cellSize);
         validate();
         repaint();
     }

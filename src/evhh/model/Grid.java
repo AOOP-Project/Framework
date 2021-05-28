@@ -15,7 +15,7 @@ import java.util.stream.Stream;
  * @date: 2021-05-12
  * @time: 12:26
  **********************************************************************************************************************/
-public class Grid implements Serializable
+public class Grid  implements Serializable
 {
     //region Fields
     private int numGameObjects = 0;
@@ -150,24 +150,33 @@ public class Grid implements Serializable
 
     public void removeGameObject(int x, int y)
     {
-        if (!isValidCoordinates(x, y))
-            throw new NoSuchElementException("The coordinates :{x=" + x + " ,y=" + y + "} Are not valid coordinates");
-        if (grid[x][y].isStatic())
-            staticObjects.remove(grid[x][y]);
-        else
-            dynamicObjects.remove(grid[x][y]);
-        if (controllableObjects.remove(grid[x][y]))
+        synchronized (getGameInstance())
         {
-            gameInstance.removeAllMappedUserInputFromFrame();
+            if (!isValidCoordinates(x, y))
+                throw new NoSuchElementException("The coordinates :{x=" + x + " ,y=" + y + "} Are not valid coordinates");
+            if (isEmpty(x, y))
+                return;
+            if (grid[x][y].isStatic())
+                staticObjects.remove(grid[x][y]);
+            else
+                dynamicObjects.remove(grid[x][y]);
+            int controllIndex = controllableObjects.indexOf(grid[x][y]);
+            if (controllIndex != -1)
+            {
+                controllableObjects.set(controllIndex, null);
+                gameInstance.removeAllMappedUserInputFromFrame();
+                gameInstance.getFrameRenderer().getGridRenderer().removeSprite(grid[x][y].getSprite());
+                grid[x][y].onExit();
+                grid[x][y] = null;
+                gameInstance.refreshMappedUserInput();
+                numGameObjects--;
+                return;
+            }
+            gameInstance.getFrameRenderer().getGridRenderer().removeSprite(grid[x][y].getSprite());
+            grid[x][y].onExit();
             grid[x][y] = null;
-            gameInstance.refreshMappedUserInput();
             numGameObjects--;
-            return;
         }
-        gameInstance.getFrameRenderer().getGridRenderer().removeSprite(grid[x][y].getSprite());
-        grid[x][y].onExit();
-        grid[x][y] = null;
-        numGameObjects--;
     }
 
     //endregion

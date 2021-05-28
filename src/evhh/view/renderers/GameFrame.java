@@ -17,7 +17,7 @@ public class GameFrame extends JFrame
     {
         super();
         this.setTitle(gameTitle);
-        this.setSize(w,h);
+        this.setSize(w, h);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }

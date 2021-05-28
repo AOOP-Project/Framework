@@ -16,13 +16,14 @@ import java.io.Serializable;
 public class AudioListener implements LineListener, Serializable
 {
     private boolean currentlyPlaying = false;
+
     @Override
     public void update(LineEvent event)
     {
         LineEvent.Type type = event.getType();
         if (type == LineEvent.Type.START)
             currentlyPlaying = true;
-        else if (type == LineEvent.Type.STOP )
+        else if (type == LineEvent.Type.STOP)
             currentlyPlaying = false;
     }
 

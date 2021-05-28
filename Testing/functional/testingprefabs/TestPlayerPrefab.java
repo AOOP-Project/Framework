@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.Objects;
 
+
 /***********************************************************************************************************************
  * @project: MainProject
  * @package: evhh.model.prefabs
@@ -22,32 +23,32 @@ import java.util.Objects;
 public class TestPlayerPrefab extends ObjectPrefab
 {
 
-    private final int DEFAULT_UP_KEY    = KeyEvent.VK_W;
-    private final int DEFAULT_DOWN_KEY  = KeyEvent.VK_S;
+    private final int DEFAULT_UP_KEY = KeyEvent.VK_W;
+    private final int DEFAULT_DOWN_KEY = KeyEvent.VK_S;
     private final int DEFAULT_RIGHT_KEY = KeyEvent.VK_D;
-    private final int DEFAULT_LEFT_KEY  = KeyEvent.VK_A;
+    private final int DEFAULT_LEFT_KEY = KeyEvent.VK_A;
 
     transient private UserInputManager uIM;
     @UniqueSerializableField
-    private int upKey                   = DEFAULT_UP_KEY;
+    private int upKey = DEFAULT_UP_KEY;
     @UniqueSerializableField
-    private int downKey                 = DEFAULT_DOWN_KEY;
+    private int downKey = DEFAULT_DOWN_KEY;
     @UniqueSerializableField
-    private int rightKey                = DEFAULT_RIGHT_KEY;
+    private int rightKey = DEFAULT_RIGHT_KEY;
     @UniqueSerializableField
-    private int leftKey                 = DEFAULT_LEFT_KEY;
+    private int leftKey = DEFAULT_LEFT_KEY;
 
     public TestPlayerPrefab(BufferedImage playerIcon, String textureRef, int id, UserInputManager uIM)
     {
-        super(playerIcon,textureRef,false,id);
+        super(playerIcon, textureRef, false, id);
         this.uIM = uIM;
     }
 
     @Override
     public GameObject getInstance(Grid grid, int x, int y)
     {
-        GameObject instance = super.getInstance(grid,x,y);
-        instance.addComponent(new TestPlayerComponent(instance,uIM ,upKey ,downKey, rightKey, leftKey));
+        GameObject instance = super.getInstance(grid, x, y);
+        instance.addComponent(new TestPlayerComponent(instance, uIM, upKey, downKey, rightKey, leftKey));
         instance.setCreator(this);
         return instance;
     }

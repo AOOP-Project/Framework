@@ -11,5 +11,6 @@ package evhh.model;
 public interface EventTrigger
 {
     public boolean checkTrigger();
+
     public void runEvent();
 }

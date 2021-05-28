@@ -1,4 +1,5 @@
 package functional.testingcomponents;
+
 import evhh.common.TimeReference;
 import evhh.model.GameComponent;
 import evhh.model.GameObject;
@@ -24,30 +25,29 @@ public class SimpleMove extends GameComponent
     }
 
 
-
     /**
-     @precondition deltaTime!=0
+     * @precondition deltaTime!=0
      */
     public void move()
     {
         //Since it is transient
-        if(timeReference ==null)
+        if (timeReference == null)
             timeReference = new TimeReference();
-            assert deltaTime!=0 : "Division by 0";
-            long n = timeReference.getDeltaTime() / deltaTime;
-            timeReference.incrementStartTime(n*deltaTime);
+        assert deltaTime != 0 : "Division by 0";
+        long n = timeReference.getDeltaTime() / deltaTime;
+        timeReference.incrementStartTime(n * deltaTime);
         for (int i = 0; i < n; i++)
         {
             int w = getGameObject().getGrid().getGridWidth();
-            if(parent.getGrid().isEmpty((getX()+1)%w, getY()))
-                getGameObject().setPosition((getX()+1)%w, getY());
+            if (parent.getGrid().isEmpty((getX() + 1) % w, getY()))
+                getGameObject().setPosition((getX() + 1) % w, getY());
         }
     }
 
     @Override
     public void onStart()
     {
-        if(timeReference ==null)
+        if (timeReference == null)
             timeReference = new TimeReference();
         timeReference.start();
     }
@@ -55,7 +55,7 @@ public class SimpleMove extends GameComponent
     @Override
     public void update()
     {
-        if(timeReference ==null)
+        if (timeReference == null)
             timeReference = new TimeReference();
         move();
     }
@@ -63,7 +63,7 @@ public class SimpleMove extends GameComponent
     @Override
     public void onExit()
     {
-        if(timeReference ==null)
+        if (timeReference == null)
             timeReference = new TimeReference();
 
     }
