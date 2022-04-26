@@ -2,7 +2,9 @@
 ---------------------------------------
 A school project where we were asked to create an API that supports creating two-dimensional logical puzzle game.
 ---------------------------------------
+
 **Note to anyone studying this course**
+
 If you are looking to find insight into the subject by reading our code, I suspect that what you instead will find roughly six thousand lines of pain confusion and suffering. You can copy a solution from stackoverflow and it will work but if you try to use someone elses design it most likely won't. 
 If this was you while reading this section :hear_no_evil:, go ahead and try.
 
